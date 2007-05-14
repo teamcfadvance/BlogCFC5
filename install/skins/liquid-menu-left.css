@@ -1,0 +1,31 @@
+/*Layout*/
+#page{
+	width:90%;
+	min-width:800px;
+	margin: 0 auto 0 auto;
+	padding: 0 0 10px 0;
+}
+
+#content {
+	margin: 15px 0 8px -200px ;
+	width:100%;
+	float:right;
+
+}
+
+#menu {
+	width:195px;
+	border-right: 1px dotted #999;
+	margin-bottom:8px;
+	float:left;
+
+}
+
+.footerHeader {
+	margin:3px 8px 0 8px;
+	clear:both;
+}
+
+#blogText{
+	margin-left:200px;
+}
