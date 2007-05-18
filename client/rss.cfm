@@ -4,13 +4,14 @@
 	Name         : RSS
 	Author       : Raymond Camden 
 	Created      : March 12, 2003
-	Last Updated : April 19, 2007
+	Last Updated : May 18, 2007
 	History      : Reset history for version 5.0
 				 : Note that I'm not doing RSS feeds by day or month anymore, so that code is marked for removal (maybe)
 				 : Added additionalTitle support for cats
 				 : Cache for main RSS (rkc 7/10/06)
 				 : Rob Wilkerson added code to handle noting/returning headers for aggregators (rkc 4/19/07)
 				 http://musetracks.instantspot.com/blog/index.cfm/2007/4/19/BlogCFC-Enhancement
+				 : Fix bug where no entries - also support N categories (rkc 5/18/07)
 	Purpose		 : Blog RSS feed.
 --->
 
@@ -40,10 +41,14 @@
 		<cfset params.byYear = val(url.year)>
 	<cfelseif url.mode2 is "cat" and isDefined("url.catid")>
 		<cfset params.byCat = url.catid>
+		<!--- can be a list --->
+		<cfset additionalTitle = "">
+		<cfloop index="cat" list="#url.catid#">
 		<cftry>
-			<cfset additionalTitle = " - " & application.blog.getCategory(url.catid).categoryname>
+			<cfset additionalTitle = additionalTitle & " - " & application.blog.getCategory(cat).categoryname>
 			<cfcatch></cfcatch>
 		</cftry>
+		</cfloop>
 	<cfelseif url.mode2 is "entry">
 		<cfset params.byEntry = url.entry>
 	</cfif>
@@ -60,13 +65,17 @@
 </cfif>
 
 <cfsavecontent variable="variables.feedXML">
-<cfmodule template="tags/scopecache.cfm" cachename="#cachename#" scope="application" timeout="#application.timeout#">
+<cfmodule template="tags/scopecache.cfm" cachename="#cachename#" scope="application" timeout="#application.timeout#" disabled="#disabled#">
 	<cfoutput>#application.blog.generateRSS(mode=mode,params=params,version=version,additionalTitle=additionalTitle)#</cfoutput>
 </cfmodule>
 </cfsavecontent>
 
 <cfset variables.lastModified = XMLSearch ( XMLParse ( variables.feedXML ), '//item[1]/pubDate' ) />
-<cfset variables.lastModified = variables.lastModified[1].XMLText />
+<cfif arrayLen(variables.lastModified) is 0>
+	<cfset variables.lastModified = "">
+<cfelse>
+	<cfset variables.lastModified = variables.lastModified[1].XMLText />
+</cfif>
 <cfset variables.ETag         = hash ( variables.lastModified ) />
 
 <cfset variables.request      = getHTTPRequestData() />
@@ -77,10 +86,14 @@
 		<cfheader statuscode="304" statustext="Not Modified" />
 		<cfexit />
 	<cfelse>
+		<!---
 		<cflog file="rss" text="ETag value don't match '#variables.eTag#'" />
+		--->
 	</cfif>
 <cfelse>
+	<!---
 	<cflog file="rss" text="Last modified dates don't match" />
+	--->
 </cfif>
 
 <cftry>
@@ -105,3 +118,4 @@
 		</cfif>
 	</cfcatch>
 </cftry>
+
