@@ -48,8 +48,7 @@ Shameless Begging:
 	<configs>
 		<config name="outputDirectory" value="images/captcha/"/>
 		<config name="outputDirectoryIsRelative" value="true"/>
-		<config name="saltType" value="auto"/><!-- auto/defined -->
-		<config name="saltValue" value=""/>
+     	<config name="hashValidPeriod" value="1800000"/><!-- in milliseconds --> 
 		<config name="jpegQuality" value="0.90"/>
 		<config name="jpegUseBaseline" value="true"/>
 		<config name="useAntiAlias" value="true"/>
