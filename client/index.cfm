@@ -4,7 +4,7 @@
 	Name         : Index
 	Author       : Raymond Camden 
 	Created      : February 10, 2003
-	Last Updated : December 7, 2006
+	Last Updated : May 18, 2007
 	History      : Reset history for version 5.0
 				 : Link for more entries fixed (rkc 6/25/06)
 				 : Gravatar support (rkc 7/8/06)
@@ -15,6 +15,7 @@
 				 : comment mod support (rkc 12/7/06)
 				 : gravatar fix, thanks Pete F (rkc 12/26/06)
 				 : use app.maxentries, digg link (rkc 2/28/07)
+				 : fix bug where 11 items showed up, not 10 (rkc 5/18/07)
 	Purpose		 : Blog home page
 --->
 
@@ -46,7 +47,7 @@
 <cfmodule template="tags/layout.cfm">
 
 	<cfset lastDate = "">
-	<cfloop query="articles" startrow="#url.startrow#" endRow="#url.startrow+application.maxentries#">
+	<cfloop query="articles" startrow="#url.startrow#" endRow="#url.startrow+application.maxentries-1#">
 	
 		<cfoutput><div class="entry<cfif articles.currentRow EQ articles.recordCount>Last</cfif>"></cfoutput>
 		
@@ -272,7 +273,6 @@
 	</cfif>
 
 </cfmodule>
-
 </cfmodule>
 
 <cfsetting enablecfoutputonly=false>	
