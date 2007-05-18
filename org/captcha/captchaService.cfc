@@ -1,48 +1,22 @@
 <!---
-Copyright: (c) 2006 Maestro Publishing - Peter J. Farrell
+Copyright: (c) 2007 Maestro Publishing, LLC
 Author: Peter J. Farrell (pjf@maestropublishing.com)
-Package: Lyla Captcha - http://lyla.maestropublishing.com
-Based On the Work Of: Mark Mandel (mark@compoundtheory.com) - http://www.compoundtheory.com
-Version: 0.1 Alpha
 License:
-	(c) 2006 Maestro Publishing - Peter J. Farrell
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License. 
-	You may obtain a copy of the License at 
-	
-	http://www.apache.org/licenses/LICENSE-2.0 
-	
-	Unless required by applicable law or agreed to in writing, software 
-	distributed under the License is distributed on an "AS IS" BASIS, 
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-	See the License for the specific language governing permissions and 
-	limitations under the License.
-	
-	This software MAY consist of voluntary contributions made by other individuals.
+Copyright 2007 Maestro Publishing, LLC
 
-Other Restrictions In Addition to the Apache 2.0 License:
-	- The "LylaCaptcha" attribution text must be displayed in the generated Captcha 
-	image. Please do not comment out or otherwise change the the source code to 
-	defeat this request.
-	- You may distribute Lyla Captcha within/embedded your application.
-	- Please to not sell the Lyla Captcha package by itself as this against the
-	spirit of this open source project.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-$Id: captchaService.cfc 3221 2006-04-10 21:13:04Z pfarrell $
+    http://www.apache.org/licenses/LICENSE-2.0
 
-N.B.:
-**********************************************************************************
-* This license may differ from the license of the program that uses LylaCaptcha. *
-**********************************************************************************
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-Shameless Begging:
-	If LylaCaptcha proves to be a useful captcha for you, please consider gifting me 
-	something on my Amazon Wishlist: http://www.amazon.com/gp/registry/2NDKJIPDUYE9W
-	
-	Or you may make a donation with PayPal: pjf@maestropublishing.com
-	
-	Your generosity is greatly appreciated and thank you for supporting Open Source 
-	Software authors.
+$Id: captchaService.cfc 6056 2007-05-13 20:16:22Z pfarrell $
 --->
 <cfcomponent
 	displayname="captchaService"
@@ -53,6 +27,7 @@ Shameless Begging:
 	PROPERTIES
 	--->
 	<cfset variables.instance = StructNew() />
+	<cfset variables.packageVersion = "0.1 Beta" />
 
 	<!---
 	INITIALIZATION / CONFIGURATION
@@ -83,9 +58,6 @@ Shameless Begging:
 
 		<!--- Setup the hash reference cache --->
 		<cfset  setupHashReferenceCache() />
-
-		<!--- Setup the salt --->
-		<cfset setupSalt() />
 	</cffunction>
 
 	<!---
@@ -101,7 +73,7 @@ Shameless Begging:
 		<!--- Create the results struct --->
 		<cfset results.type = "hash" />
 		<cfset results.text = arguments.text />
-		<cfset results.hash = getHash(arguments.text) />
+		<cfset results.hash = createHash() />
 		<cfset results.width = getConfigBean().getWidth() />
 		<cfset results.height = getConfigBean().getHeight() />
 		
@@ -117,67 +89,27 @@ Shameless Begging:
 			hint="Captcah output type. Accepts file or stream." />
 		<cfargument name="hash" type="string" required="true"
 			hint="Hash reference to retrieve from cache." />
-		<cfreturn createCaptcha(arguments.type, getHashReference(arguments.hash)) />		
-	</cffunction>
-
-	<cffunction name="createCaptcha" access="public" returntype="struct" output="false"
-		hint="Creates a captcha to the desired stream.">
-		<cfargument name="type" type="string" required="true"
-			hint="Captcah output type. Accepts file or stream." />
-		<cfargument name="text" type="string" required="false" default="#getRandString()#"
-			hint="Text to create Captcha with. Defaults random string as defined in config file." />
-
-		<cfset var stream = "" />
-		<cfset var results = StructNew() />
-		<cfset var tempFileLocation = "" />
-
-		<cfset results.text = arguments.text />
-		<cfset results.hash = getHash(arguments.text) />
-		<cfset results.width = getConfigBean().getWidth() />
-		<cfset results.height = getConfigBean().getHeight() />
-
-		<!--- Create the results struct --->
-		<cfif arguments.type IS "stream">
-			<cfset stream = createObject("java", "java.io.ByteArrayOutputStream").init() />
-			<cfset results.type = "stream" />
-		<cfelseif arguments.type IS "file">
-			<cfset tempFileLocation = getFileLocation() />
-			<cfset stream = createObject("java", "java.io.FileOutputStream").init(tempFileLocation) />
-			<cfset results.type = "file" />
-			<cfset results.fileLocation = tempFileLocation />
-			<cfset results.fileDirectory = GetDirectoryFromPath(tempFileLocation) />
-			<cfset results.fileName = GetFileFromPath(tempFileLocation) />
-		<cfelse>
-			<cfthrow type="captchaService.invalidType"
-				message="The argument type must be stream or file."
-				detail="Passed type=#arguments.type#" />
-		</cfif>
-		
-		<!--- Write the captcha with the selected stream --->
-		<cfset writeToStream(stream, arguments.text) />
-
-		<cfif arguments.type IS "stream">
-			<cfset results.stream = stream.toByteArray() />
-		<cfelseif arguments.type IS "file">
-			<cfset stream.flush() />
-			<cfset stream.close() />
-		</cfif>
-		
-		<cfreturn results />
+		<cfreturn createCaptcha(arguments.type, getHashReference(arguments.hash), arguments.hash) />		
 	</cffunction>
 
 	<cffunction name="validateCaptcha" access="public" returntype="boolean" output="false"
 		hint="Validates a captcha by hash and user response text.">
 		<cfargument name="hash" type="string" required="true" />
 		<cfargument name="text" type="string" required="true" />
-		<cfreturn NOT Compare(arguments.hash, getHash(arguments.text)) />
+		<cfreturn NOT CompareNoCase(getHashReference(arguments.hash, TRUE), arguments.text) />
 	</cffunction>
 		
 	<!---
 	PUBLIC FUNCTIONS - UTILS
 	--->
+	<cffunction name="getVersion" access="public" returntype="string" output="false"
+		hint="Gets the current version of LylaCAPTCHA.">
+		<cfreturn variables.packageVersion />
+	</cffunction>
+	
 	<cffunction name="getAvailableFontNames" access="public" returntype="array" output="false"
 		hint="Returns an array of all available system fonts. This is useful when deciding on fonts to use for captcha configuration.">
+		
 		<cfset var allFonts = CreateObject("java", "java.awt.GraphicsEnvironment").getLocalGraphicsEnvironment().getAllFonts() />
 		<cfset var fontArray = ArrayNew(1) />
 		<cfset var i = "" />
@@ -192,6 +124,65 @@ Shameless Begging:
 	<!---
 	PROTECTED FUNCTIONS - GENERAL
 	--->
+	<cffunction name="createCaptcha" access="private" returntype="struct" output="false"
+		hint="Creates a captcha to the desired stream.">
+		<cfargument name="type" type="string" required="true"
+			hint="Captcah output type. Accepts file or stream." />
+		<cfargument name="text" type="string" required="true" />
+		<cfargument name="hash" type="string" required="true" />
+
+		<cfset var stream = "" />
+		<cfset var results = StructNew() />
+		<cfset var tempFileLocation = "" />
+
+		<!--- Create the common results --->
+		<cfset results.text = arguments.text />
+		<cfset results.hash = arguments.hash />
+		<cfset results.width = getConfigBean().getWidth() />
+		<cfset results.height = getConfigBean().getHeight() />
+
+		<!--- Create the results struct --->
+		<cfif arguments.type IS "stream">
+			<!--- Create the stream --->
+			<cfset stream = createObject("java", "java.io.ByteArrayOutputStream").init() />
+			
+			<!--- Create the type specific results --->
+			<cfset results.type = "stream" />
+
+			<!--- Write the captcha with the selected stream --->
+			<cfset writeToStream(stream, arguments.text) />			
+			<cfset results.stream = stream.toByteArray() />
+		<cfelseif arguments.type IS "file">
+			<!--- Create the stream --->
+			<cfset tempFileLocation = getFileLocation() />
+			<cftry>
+				<cfset stream = createObject("java", "java.io.FileOutputStream").init(tempFileLocation) />
+				<cfcatch type="any">
+					<cfthrow type="captchaService.invalidOutputDirectory"
+						message="Could not create file output stream. The output directory probably is not a valid path. Please check that it exists."
+						detail="Output Directory:#tempFileLocation#" />
+				</cfcatch>
+			</cftry>
+
+			<!--- Create the type specific results --->
+			<cfset results.type = "file" />
+			<cfset results.fileLocation = tempFileLocation />
+			<cfset results.fileDirectory = GetDirectoryFromPath(tempFileLocation) />
+			<cfset results.fileName = GetFileFromPath(tempFileLocation) />
+
+			<!--- Write the captcha with the selected stream --->
+			<cfset writeToStream(stream, arguments.text) />	
+			<cfset stream.flush() />
+			<cfset stream.close() />
+		<cfelse>
+			<cfthrow type="captchaService.invalidType"
+				message="The argument type must be stream or file."
+				detail="Passed type=#arguments.type#" />
+		</cfif>
+		
+		<cfreturn results />
+	</cffunction>
+
 	<cffunction name="writeToStream" access="private" returntype="void" output="false"
 		hint="Writes a captcha to an outputStream.">
 		<cfargument name="outputStream" type="any" required="true" />
@@ -279,12 +270,23 @@ Shameless Begging:
 			<cfset graphics.drawString(JavaCast("string", "Captcha Not Available"), JavaCast("int", left), JavaCast("int", top)) >
 		</cfif>
 
-		<!--- Draw attribution (please do not removed or comment out this code per the additional license restrictions) --->
+		<!---
+		*************************************************************************
+		*	Draw attribution (please do not removed or comment out this code	* 
+		*	per the additional license restrictions) BELOW						*
+		*************************************************************************	
+		--->
 		<cfset staticCollections.shuffle(definedFonts) />
 		<cfset graphics.setFont(definedFonts[1].deriveFont(JavaCast("float", 10))) />
 		<cfset graphics.setColor(getColorByType(getConfigBean().getBackgroundColor())) />
 		<cfset top = getConfigBean().getHeight() - 4 />
 		<cfset graphics.drawString(JavaCast("string", "LylaCaptcha"), JavaCast("int", 4), JavaCast("int", top)) />
+		<!---
+		*************************************************************************
+		*	Draw attribution (please do not removed or comment out this code	* 
+		*	per the additional license restrictions) ABOVE						*
+		*************************************************************************	
+		--->
 
 		<!--- Encode the captcha into an image based on the output stream --->
 		<cfset encodeImage(arguments.outputStream, bufferedImage) />
@@ -502,43 +504,36 @@ Shameless Begging:
 			<cfset alpha = RandRange(25, 255) />
 		</cfif>
 
-		<cfswitch expression="#arguments.colorType#">
-			<cfcase value="light">
-				<cfset shade1 = JavaCast("int", RandRange(170, 255)) />
-				<cfset shade2 = JavaCast("int", RandRange(170, 255)) />
-				<cfset shade3 = JavaCast("int", RandRange(170, 255)) />
-			</cfcase>
-			<cfcase value="medium">
-				<cfset shade1 = JavaCast("int", RandRange(85, 170)) />
-				<cfset shade2 = JavaCast("int", RandRange(85, 170)) />
-				<cfset shade3 = JavaCast("int", RandRange(85, 170)) />
-			</cfcase>
-			<cfcase value="dark">
-				<cfset shade1 = JavaCast("int", RandRange(0, 85)) />
-				<cfset shade2 = JavaCast("int", RandRange(0, 85)) />
-				<cfset shade3 = JavaCast("int", RandRange(0, 85)) />
-			</cfcase>	
-			<cfcase value="lightGray">
-				<cfset shade1 = JavaCast("int", RandRange(170, 255)) />
-				<cfset shade2 = shade1 />
-				<cfset shade3 = shade1 />
-			</cfcase>
-			<cfcase value="mediumGray">
-				<cfset shade1 = JavaCast("int", RandRange(85, 170)) />
-				<cfset shade2 = shade1 />
-				<cfset shade3 = shade1 />
-			</cfcase>
-			<cfcase value="darkGray">
-				<cfset shade1 = JavaCast("int", RandRange(0, 85)) />
-				<cfset shade2 = shade1 />
-				<cfset shade3 = shade1 />
-			</cfcase>
-			<cfdefaultcase>
-				<cfthrow type="captchaService.invalidColorType"
-					message="The chosen color type is invalid. Please select from light, medium, dark, lightGray, mediumGray or darkGray."
-					detail="Passed colorType=#arguments.colorType#" />
-			</cfdefaultcase>
-		</cfswitch>
+		<!--- Used cfif-cfelseif-cfelse block for performance --->
+		<cfif arguments.colorType EQ "light">
+			<cfset shade1 = JavaCast("int", RandRange(170, 255)) />
+			<cfset shade2 = JavaCast("int", RandRange(170, 255)) />
+			<cfset shade3 = JavaCast("int", RandRange(170, 255)) />
+		<cfelseif arguments.colorType EQ "medium">
+			<cfset shade1 = JavaCast("int", RandRange(85, 170)) />
+			<cfset shade2 = JavaCast("int", RandRange(85, 170)) />
+			<cfset shade3 = JavaCast("int", RandRange(85, 170)) />
+		<cfelseif arguments.colorType EQ "dark">
+			<cfset shade1 = JavaCast("int", RandRange(0, 85)) />
+			<cfset shade2 = JavaCast("int", RandRange(0, 85)) />
+			<cfset shade3 = JavaCast("int", RandRange(0, 85)) />
+		<cfelseif arguments.colorType EQ "lightGray">
+			<cfset shade1 = JavaCast("int", RandRange(170, 255)) />
+			<cfset shade2 = shade1 />
+			<cfset shade3 = shade1 />
+		<cfelseif arguments.colorType EQ "mediumGray">
+			<cfset shade1 = JavaCast("int", RandRange(85, 170)) />
+			<cfset shade2 = shade1 />
+			<cfset shade3 = shade1 />
+		<cfelseif arguments.colorType EQ "darkGray">
+			<cfset shade1 = JavaCast("int", RandRange(0, 85)) />
+			<cfset shade2 = shade1 />
+			<cfset shade3 = shade1 />
+		<cfelse>
+			<cfthrow type="captchaService.invalidColorType"
+				message="The chosen color type is invalid. Please select from light, medium, dark, lightGray, mediumGray or darkGray."
+				detail="Passed colorType=#arguments.colorType#" />
+		</cfif>
 			
 		<cfreturn CreateObject("java", "java.awt.Color").init(shade1, shade2, shade3, JavaCast("int", alpha)) />
 	</cffunction>
@@ -580,18 +575,17 @@ Shameless Begging:
 
 		<!--- Parse the xml file --->
 		<cfset rawXML = XmlParse(configFile) />
-		<!--- Commented out by Raymond till Peter releases a cfmx6 compat version
-		<cfif NOT IsXML(rawXML)>
+		<cfif ListFirst(server.ColdFusion.ProductVersion) GTE 7 AND NOT IsXML(rawXML)>
 			<cfthrow
 				type="captchaService.notXML"
 				message="The config file is not an XML file."/>
 		</cfif>
-		--->
+		
 		<!--- Search for the configs --->
 		<cfset configNodes = XMLSearch(rawXML, "//captcha/configs/config/") />
 		
 		<cfloop from="1" to="#ArrayLen(configNodes)#" index="i">
-			<cfset memento[configNodes[i].XmlAttributes['name']] = configNodes[i].XmlAttributes['value'] />
+			<cfset memento[Trim(configNodes[i].XmlAttributes['name'])] = configNodes[i].XmlAttributes['value'] />
 		</cfloop>
 		
 		<!--- Search for the fonts --->
@@ -600,7 +594,7 @@ Shameless Begging:
 		<cfloop from="1" to="#ArrayLen(fontNodes)#" index="i">
 			<cfif fontNodes[i].XmlAttributes['use']>
 				<!--- Get the font name --->
-				<cfset tempName = fontNodes[i].XmlAttributes['name'] />
+				<cfset tempName = Trim(fontNodes[i].XmlAttributes['name']) />
 
 				<!--- Get array node of desired font --->
 				<cfset location = arrayFind(allFontNames, tempName) />
@@ -638,10 +632,9 @@ Shameless Begging:
 		<cfreturn fileLocation />
 	</cffunction>
 
-	<cffunction name="getHash" access="private" returntype="string" output="false"
-		hint="Gets a hash from the salt and text.">
-		<cfargument name="text" type="string" required="true" />
-		<cfreturn sha1(getConfigBean().getSaltValue() & UCase(arguments.text)) />
+	<cffunction name="createHash" access="private" returntype="string" output="false"
+		hint="Creates a hash.">
+		<cfreturn CreateUUID() />
 	</cffunction>
 
 	<cffunction name="setHashReference" access="private" returntype="void" output="false"
@@ -655,21 +648,26 @@ Shameless Begging:
 	<cffunction name="getHashReference" access="private" returntype="string" output="false"
 		hint="Gets captcha text by hash reference.">
 		<cfargument name="hash" type="string" required="true" />
+		<cfargument name="deleteFromCache" type="boolean" required="false" default="FALSE" />
 		
 		<cfset var text = "" />
 		<cfset cleanupHashReferenceCache() />
 		
 		<!--- Search through the LRU cache starting with the first (and most likely) node --->
 		<cfif StructKeyExists(variables.instance.hashReferenceCache[1], arguments.hash)>
-			<cfset text = variables.instance.hashReferenceCache[1][arguments.hash]>
-			<cfset StructDelete(variables.instance.hashReferenceCache[1], arguments.hash, FALSE) />
+			<cfset text = variables.instance.hashReferenceCache[1][arguments.hash] />			
+			<cfif arguments.deleteFromCache>
+				<cfset StructDelete(variables.instance.hashReferenceCache[1], arguments.hash, FALSE) />
+			</cfif>
 		<cfelseif StructKeyExists(variables.instance.hashReferenceCache[2], arguments.hash)>
-			<cfset text = variables.instance.hashReferenceCache[2][arguments.hash]>
-			<cfset StructDelete(variables.instance.hashReferenceCache[2], arguments.hash, FALSE) />
+			<cfset text = variables.instance.hashReferenceCache[2][arguments.hash] />
+			<cfif arguments.deleteFromCache>
+				<cfset StructDelete(variables.instance.hashReferenceCache[2], arguments.hash, FALSE) />
+			</cfif>
 		<cfelse>
 			<cfset text = "" />
 		</cfif>
-		
+
 		<cfreturn text />
 	</cffunction>
 
@@ -678,10 +676,10 @@ Shameless Begging:
 		<cfset var tick = getTickCount() />
 		
 		<!--- Check if cleanup is required and perform double-checked locking pattern --->
-		<cfif tick - getHashReferenceCacheTimestamp() GTE 30000>
+		<cfif tick - getHashReferenceCacheTimestamp() GTE (getConfigBean().getHashValidPeriod() / 2)>
 			<!--- Obtain named lock --->
 			<cflock name="captchaServiceHashReferenceCache" timeout="1" throwontimeout="false">
-				<cfif tick - getHashReferenceCacheTimestamp() GTE 30000>
+				<cfif tick - getHashReferenceCacheTimestamp() GTE (getConfigBean().getHashValidPeriod() / 2)>
 					<cfset ArrayPrepend(variables.instance.hashReferenceCache, StructNew()) />
 					<cfset ArrayDeleteAt(variables.instance.hashReferenceCache, 3) />
 					<cfset setHashReferenceCacheTimestamp(tick) />
@@ -701,21 +699,6 @@ Shameless Begging:
 		<cfset setHashReferenceCacheTimestamp(getTickCount()) />
 	</cffunction>
 
-	<cffunction name="setupSalt" access="private" returntype="void" output="false"
-		hint="Setups the salt.">
-		<cfif getConfigBean().getSaltType() IS "auto">
-			<cfset getConfigBean().setSaltValue(CreateUUID()) />
-		<cfelseif getConfigBean().getSaltType() IS "defined" AND Len(getConfigBean().getSaltValue()) LT 10>
-			<cfthrow type="captchaService.invalidSaltValue"
-				message="Invalid salt value specified. This value cannot be shorter than 10 characters."
-				detail="Passed saltValue=#getConfigBean().getSaltValue()#" />
-		<cfelse>
-			<cfthrow type="captchaService.invalidSaltType"
-				message="Invalid salt type specified. This attribute can only take auto or defined."
-				detail="Passed saltType=#getConfigBean().getSaltType()#" />
-		</cfif>
-	</cffunction>
-
 	<!---
 	PROTECTED FUNCTIONS - UDFs
 	--->
@@ -732,37 +715,36 @@ Shameless Begging:
 		<cfset var rangeMax = "" />
 		<cfset var useList = "" />
 		<cfset var i = "" />
-				
-		<cfswitch expression="#arguments.type#">
-			<cfcase value="alpha">
-				<cfset useList = alpha_lcase & "," & alpha_ucase />
-				<cfset rangeMax = ListLen(useList) />
-			</cfcase>
-			<cfcase value="alphaLCase">
-				<cfset useList = alpha_lcase />
-				<cfset rangeMax = ListLen(useList) />
-			</cfcase>
-			<cfcase value="alphaUCase">
-				<cfset useList = alpha_ucase />
-				<cfset rangeMax = ListLen(useList) />
-			</cfcase>
-			<cfcase value="alphaNum">
-				<cfset useList = alpha_lcase & "," & alpha_ucase & "," & num />
-				<cfset rangeMax = ListLen(useList) />
-			</cfcase>
-			<cfcase value="alphaNumLCase">
-				<cfset useList = alpha_lcase & "," & "," & num />
-				<cfset rangeMax = ListLen(useList) />
-			</cfcase>
-			<cfcase value="secure">
-				<cfset useList = alpha_lcase & "," & alpha_ucase & "," & num & "," & secure />
-				<cfset rangeMax = ListLen(useList) />
-			</cfcase>
-			<cfdefaultcase>
-				<cfset useList = num />
-				<cfset rangeMax = ListLen(useList) />
-			</cfdefaultcase>
-		</cfswitch>
+		
+		<!--- Used cfif-cfelseif-cfelse block for performance --->
+		<cfif arguments.type EQ "alpha">
+			<cfset useList = alpha_lcase & "," & alpha_ucase />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelseif arguments.type EQ "alphaLCase">
+			<cfset useList = alpha_lcase />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelseif arguments.type EQ "alphaUCase">
+			<cfset useList = alpha_ucase />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelseif arguments.type EQ "alphaNum">
+			<cfset useList = alpha_lcase & "," & alpha_ucase & "," & num />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelseif arguments.type EQ "alphaNumLCase">
+			<cfset useList = alpha_lcase & "," & "," & num />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelseif arguments.type EQ "alphaNumLCase">
+			<cfset useList = alpha_ucase & "," & "," & num />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelseif arguments.type EQ "num">
+			<cfset useList = num />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelseif arguments.type EQ "secure">
+			<cfset useList = alpha_lcase & "," & alpha_ucase & "," & num & "," & secure />
+			<cfset rangeMax = ListLen(useList) />
+		<cfelse>
+			<cfset useList = num />
+			<cfset rangeMax = ListLen(useList) />
+		</cfif>
 
 		<cfloop from="1" to="#arguments.count#" index="i">
 			<cfset randStr = randStr & ListGetAt(useList, RandRange(1, rangeMax)) />
@@ -787,116 +769,6 @@ Shameless Begging:
 		</cfloop>
 		
 		<cfreturn result />
-	</cffunction>
-
-	<cffunction name="sha1" access="private" returntype="string" output="false"
-		hint="Computes a SHA1 message digest.">
-		<cfargument name="message" type="string" required="true" />
-		<!--- Rewritten/Updated UDF from cflib.org Author: author Rob Brooks-Bilson (rbils@amkor.com) --->
-		<cfset var hex_msg = "" />
-		<cfset var hex_msg_len = 0 />
-		<cfset var padded_hex_msg = "" />
-		<cfset var msg_block = "" />
-		<cfset var num = 0 />
-		<cfset var temp = "" />
-		<cfset var h = ArrayNew(1) />
-		<cfset var w = ArrayNew(1) />
-		<cfset var a = "" />
-		<cfset var b = "" />
-		<cfset var c = "" />
-		<cfset var d = "" />
-		<cfset var e = "" />
-		<cfset var f = "" />
-		<cfset var i = 0 />
-		<cfset var k = "" />
-		<cfset var n = 0 />
-		<cfset var t = 0 />
-		
-		<!--- Convert the msg to ASCII binary-coded form --->
-		<cfloop from="1" to="#Len(arguments.message)#" index="i">
-			<cfset hex_msg = hex_msg & Right("0" & FormatBaseN(Asc(Mid(message, i , 1)), 16), 2)>
-		</cfloop>
-
-		<!--- Compute the msg length in bits --->
-		<cfset hex_msg_len = FormatBaseN(8 * Len(message), 16) />
-		
-		<!--- Pad the msg to make it a multiple of 512 bits long --->
-		<cfset padded_hex_msg = hex_msg & "80" & RepeatString("0", 128 - ((Len(hex_msg) + 2 + 16) Mod 128)) & RepeatString("0", 16 - Len(hex_msg_len)) & hex_msg_len />
-
-		<!--- Initialize the buffers --->
-		<cfset h[1] = InputBaseN("0x67452301", 16) />
-		<cfset h[2] = InputBaseN("0xefcdab89", 16) />
-		<cfset h[3] = InputBaseN("0x98badcfe", 16) />
-		<cfset h[4] = InputBaseN("0x10325476", 16) />
-		<cfset h[5] = InputBaseN("0xc3d2e1f0", 16) />
-
-		<!--- Process the msg 512 bits at a time --->
-		<cfloop from="1" to="#Evaluate(Len(padded_hex_msg)/128)#" index="n">
-			<cfset msg_block = Mid(padded_hex_msg, 128 * (n-1) + 1, 128) />
-			
-			<cfset a = h[1] />
-			<cfset b = h[2] />
-			<cfset c = h[3] />
-			<cfset d = h[4] />
-			<cfset e = h[5] />
-			
-			<cfloop from="0" to="79" index="t">
-				<!--- nonlinear functions and constants --->
-				<cfif t LTE 19>
-					<cfset f = BitOr(BitAnd(b, c), BitAnd(BitNot(b), d)) />
-					<cfset k = InputBaseN("0x5a827999", 16) />
-				<cfelseif t LTE 39>
-					<cfset f = BitXor(BitXor(b, c), d) />
-					<cfset k = InputBaseN("0x6ed9eba1", 16) />
-				<cfelseif t LTE 59>
-					<cfset f = BitOr(BitOr(BitAnd(b, c), BitAnd(b, d)), BitAnd(c, d)) />
-					<cfset k = InputBaseN("0x8f1bbcdc", 16) />
-				<cfelse>
-					<cfset f = BitXor(BitXor(b, c), d) />
-					<cfset k = InputBaseN("0xca62c1d6", 16) />
-				</cfif>
-				
-				<!--- Transform the msg block from 16 32-bit words to 80 32-bit words --->
-				<cfif t LTE 15>
-					<cfset w[t + 1] = InputBaseN(Mid(msg_block, 8 * t + 1, 8), 16) />
-				<cfelse>
-					<cfset num = BitXor(BitXor(BitXor(w[t - 3 + 1], w[t - 8 + 1]), w[t -14 + 1]), w[t - 16 + 1]) />
-					<cfset w[t + 1] = BitOr(BitSHLN(num, 1), BitSHRN(num, 32 - 1)) />
-				</cfif>
-				
-				<cfset temp = BitOr(BitSHLN(a, 5), BitSHRN(a, 32 - 5)) + f + e + w[t + 1] + k />
-				<cfset e = d />
-				<cfset d = c />
-				<cfset c = BitOr(BitSHLN(b, 30), BitSHRN(b, 32 - 30)) />
-				<cfset b = a />
-				<cfset a = temp />
-				<cfset num = a />
-				
-				<cfloop condition="(num LT -2^31) OR (num GE 2^31)">
-					<cfset num = num - Sgn(num) * 2 ^ 32 />
-				</cfloop>
-				
-				<cfset a = num />
-			</cfloop>
-			
-			<cfset h[1] = h[1] + a />
-			<cfset h[2] = h[2] + b />
-			<cfset h[3] = h[3] + c />
-			<cfset h[4] = h[4] + d />
-			<cfset h[5] = h[5] + e />
-			
-			<cfloop from="1" to="5" index="i">
-				<cfloop condition="(h[i] LT -2 ^ 31) OR (h[i] GTE 2 ^ 31)">
-					<cfset h[i] = h[i] - Sgn(h[i])* 2 ^ 32 />
-				</cfloop>
-			</cfloop>
-		</cfloop>
-		
-		<cfloop from="1" to="5" index="i">
-			<cfset h[i] = RepeatString("0", 8 - Len(FormatBaseN(h[i], 16))) & UCase(FormatBaseN(h[i], 16)) />
-		</cfloop>
-		
-		<cfreturn h[1] & h[2] & h[3] & h[4] & h[5] />
 	</cffunction>
 
 	<!---

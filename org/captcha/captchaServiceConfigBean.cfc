@@ -1,48 +1,22 @@
 <!---
-Copyright: (c) 2006 Maestro Publishing - Peter J. Farrell
+Copyright: (c) 2007 Maestro Publishing, LLC
 Author: Peter J. Farrell (pjf@maestropublishing.com)
-Package: Lyla Captcha - http://lyla.maestropublishing.com
-Based On the Work Of: Mark Mandel (mark@compoundtheory.com) - http://www.compoundtheory.com
-Version: 0.1 Alpha
 License:
-	(c) 2006 Maestro Publishing - Peter J. Farrell
-	Licensed under the Apache License, Version 2.0 (the "License");
-	you may not use this file except in compliance with the License. 
-	You may obtain a copy of the License at 
-	
-	http://www.apache.org/licenses/LICENSE-2.0 
-	
-	Unless required by applicable law or agreed to in writing, software 
-	distributed under the License is distributed on an "AS IS" BASIS, 
-	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-	See the License for the specific language governing permissions and 
-	limitations under the License.
-	
-	This software MAY consist of voluntary contributions made by other individuals.
+Copyright 2007 Maestro Publishing, LLC
 
-Other Restrictions In Addition to the Apache 2.0 License:
-	- The "LylaCaptcha" attribution text must be displayed in the generated Captcha 
-	image. Please do not comment out or otherwise change the the source code to 
-	defeat this request.
-	- You may distribute Lyla Captcha within/embedded your application.
-	- Please to not sell the Lyla Captcha package by itself as this against the
-	spirit of this open source project.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-$Id: captchaServiceConfigBean.cfc 2746 2006-03-08 18:57:10Z pfarrell $
+    http://www.apache.org/licenses/LICENSE-2.0
 
-N.B.:
-**********************************************************************************
-* This license may differ from the license of the program that uses LylaCaptcha. *
-**********************************************************************************
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-Shameless Begging:
-	If LylaCaptcha proves to be a useful captcha for you, please consider gifting me 
-	something on my Amazon Wishlist: http://www.amazon.com/gp/registry/2NDKJIPDUYE9W
-	
-	Or you may make a donation with PayPal: pjf@maestropublishing.com
-	
-	Your generosity is greatly appreciated and thank you for supporting Open Source 
-	Software authors.
+$Id: captchaServiceConfigBean.cfc 6056 2007-05-13 20:16:22Z pfarrell $
 --->
 <cfcomponent
 	displayname="captchaServiceConfigBean"
@@ -60,8 +34,7 @@ Shameless Begging:
 	<cffunction name="init" access="public" returntype="captchaServiceConfigBean" output="false">
 		<cfargument name="outputDirectory" type="string" required="false" default="img/" />
 		<cfargument name="outputDirectoryIsRelative" type="boolean" required="false" default="TRUE" />
-		<cfargument name="saltType" type="string" required="false" default="auto" />
-		<cfargument name="saltValue" type="string" required="false" default="" />
+		<cfargument name="hashValidPeriod" type="numeric" required="false" default="1800000" />
 		<cfargument name="jpegQuality" type="numeric" required="false" default="0.90" />
 		<cfargument name="jpegUseBaseline" type="boolean" required="false" default="TRUE" />
 		<cfargument name="useAntiAlias" type="boolean" required="false" default="TRUE" />
@@ -98,8 +71,7 @@ Shameless Begging:
 			// run setters
 			setOutputDirectory(arguments.outputDirectory);
 			setOutputDirectoryIsRelative(arguments.outputDirectoryIsRelative);
-			setSaltType(arguments.saltType);
-			setSaltValue(arguments.saltValue);
+			setHashValidPeriod(arguments.hashValidPeriod);
 			setJpegQuality(arguments.jpegQuality);
 			setJpegUseBaseline(arguments.jpegUseBaseline);
 			setUseAntiAlias(arguments.useAntiAlias);
@@ -166,21 +138,13 @@ Shameless Begging:
 	<cffunction name="getOutputDirectoryIsRelative" access="public" returntype="boolean" output="false">
 		<cfreturn variables.instance.outputDirectoryIsRelative />
 	</cffunction>
-
-	<cffunction name="setSaltType" access="private" returntype="void" output="false">
-		<cfargument name="saltType" type="string" required="true" />
-		<cfset variables.instance.saltType = trim(arguments.saltType) />
+	
+	<cffunction name="setHashValidPeriod" access="private" returntype="void" output="false">
+		<cfargument name="hashValidPeriod" type="numeric" required="true" />
+		<cfset variables.instance.hashValidPeriod = trim(arguments.hashValidPeriod) />
 	</cffunction>
-	<cffunction name="getSaltType" access="public" returntype="string" output="false">
-		<cfreturn variables.instance.saltType />
-	</cffunction>
-
-	<cffunction name="setSaltValue" access="public" returntype="void" output="false">
-		<cfargument name="saltValue" type="string" required="true" />
-		<cfset variables.instance.saltValue = trim(arguments.saltValue) />
-	</cffunction>
-	<cffunction name="getSaltValue" access="public" returntype="string" output="false">
-		<cfreturn variables.instance.saltValue />
+	<cffunction name="getHashValidPeriod" access="public" returntype="numeric" output="false">
+		<cfreturn variables.instance.hashValidPeriod />
 	</cffunction>
 
 	<cffunction name="setJpegQuality" access="private" returntype="void" output="false">
