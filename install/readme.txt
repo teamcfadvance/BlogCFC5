@@ -17,11 +17,23 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: May 18, 2007 (BlogCFC 5.8)
+/org/captcha/* - Please replace all captcha files with these new ones. Updates described at Lyla Captcha site: http://lyla.maestropublishing.com/
+/client/includes/captcha.xml - support for above
+/org/camden/blog/blog.cfc - Category passed ot getEntries can be a list. New approveComment method.
+/client/tags/layout.cfm - support category as a list.
+/client/rss.cfm - support category as a list.
+/client/index.cfm - bug where 11 items showed up instead of 11
+/client/admin/moderate.cfm - When approving a comment, use approveComment. Also, it doesn't make sense to show the IP of the sender, so we just say Moderated.
+/client/admin/entry.cfm - delete cookies on cancel
+
+I updated the docs to talk about the new "blended" RSS/front page view. It lets you display N categories at once.
+
+----------------------------------------------------------------
 Last Updated: April 20, 2007 (BlogCFC 5.7.002)
 /client/error.cfm - I left a OR 1 in. Thanks Todd! 
 /org/camden/blog/blog.cfc - Just the version
 
-----------------------------------------------------------------
 Last pdated: April 19, 2007 (BlogCFC 5.7.001)
 /client/rss.cfm - Major performance updates in regards to aggregators. Code written by Rob Wilkerson
 /client/search.cfm - Changes to how search results are displayed:
