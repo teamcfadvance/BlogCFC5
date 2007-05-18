@@ -4,9 +4,10 @@
 	Name         : /client/admin/moderate.cfm
 	Author       : Trent Richardson
 	Created      : 12/7/06
-	Last Updated : 4/13/07
+	Last Updated : 5/18/07
 	History      : Handle sending email for moderated comments. Note the sucky duplication of the email
 	 			   here. I need to fix that in the future. (rkc 4/13/07)
+	 			 : Call approveCOmment, and use 'Moderated' for ip. I may just hide the whole line (rkc 5/18/07)
 --->
 
 <!--- handle deletes --->
@@ -19,7 +20,7 @@
 <cfif structKeyExists(url, "approve")>
 	<cfset c = application.blog.getComment(url.approve)>
 	<cfset entry = application.blog.getEntry(c.entryidfk)>
-	<cfset application.blog.saveComment(url.approve,c.name,c.email,c.website,c.comment,c.subscribe,true)>
+	<cfset application.blog.approveComment(url.approve)>
 
 	<cfset subject = rb("commentaddedtoblog") & ": " & application.blog.getProperty("blogTitle") & " / " & rb("entry") & ": " & entry.title>
 	<cfsavecontent variable="email">
@@ -27,7 +28,7 @@
 #rb("commentaddedtoblogentry")#:	#entry.title#
 #rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(now())# / #application.localeUtils.timeLocaleFormat(now())#
 #rb("commentmadeby")#:	 	#c.name# <cfif len(c.website)>(#c.website#)</cfif>
-#rb("ipofposter")#:			#cgi.REMOTE_ADDR#
+#rb("ipofposter")#:			Moderated
 URL: #application.blog.makeLink(entry.id)###c#c.id#
 
 	
