@@ -4,9 +4,10 @@
 	Name         : C:\projects\blogcfc5\client\admin\entry.cfm
 	Author       : Raymond Camden 
 	Created      : 04/07/06
-	Last Updated : 4/13/07
+	Last Updated : 5/18/07
 	History      : Nuked old history for 5.7 (rkc 4/13/07)
 				   Don't save text when editing existing entries (rkc 4/13/07)
+				   Delete cookies on cancel (rkc 5/18/07)
 --->
 
 <cftry>
@@ -75,6 +76,8 @@
 <cfparam name="form.newcategory" default="">
 
 <cfif structKeyExists(form, "cancel")>
+	<cfcookie name="savedtitle" expires="now">
+	<cfcookie name="savedbody" expires="now">
 	<cflocation url="entries.cfm" addToken="false">
 </cfif>
 
