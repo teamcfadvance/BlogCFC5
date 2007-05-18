@@ -2,7 +2,7 @@
 	Name         : blog
 	Author       : Raymond Camden 
 	Created      : February 10, 2003
-	Last Updated : April 13, 2007
+	Last Updated : May 18, 2007
 	History      : Reset history for version 5.7
 				 : delete enclosure on delete entry
 				 : generateRSS fix for utc strings
@@ -10,6 +10,7 @@
 				 : notifyentry has filters now to suppress email
 				 : oracle fix in savecomment
 				 : saveEntry will correctly schedule task 
+				 : approveComment, category can be list, version (rkc 5/18/07)
 	Purpose		 : Blog CFC
 --->
 <cfcomponent displayName="Blog" output="false" hint="BlogCFC by Raymond Camden">
@@ -31,7 +32,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.7.002">
+	<cfset version = "5.8">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -459,6 +460,24 @@
 		
 		<cfreturn newID>
 	</cffunction>
+	
+	<cffunction name="approveComment" access="public" returnType="void" output="false"
+				hint="Approves a comment.">
+		<cfargument name="commentid" type="uuid" required="true">
+		
+		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		update tblblogcomments
+		set	   moderated = 
+			<cfif instance.blogDBType is "MSSQL" or instance.blogDBType is "MSACCESS">
+				<cfqueryparam value="true" cfsqltype="CF_SQL_BIT"> 
+			<cfelse>
+				<cfqueryparam value="1" cfsqltype="CF_SQL_TINYINT"> 
+			</cfif> 
+		where	id = <cfqueryparam value="#arguments.commentid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+		</cfquery>
+				
+	</cffunction>
+
 		
 	<cffunction name="assignCategory" access="remote" returnType="void" roles="admin" output="false"
 				hint="Assigns entry ID to category X">
@@ -1268,7 +1287,7 @@
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byCat")>
 				and tblblogentriescategories.entryidfk = tblblogentries.id
-				and tblblogentriescategories.categoryidfk = <cfqueryparam value="#arguments.params.byCat#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+				and tblblogentriescategories.categoryidfk in (<cfqueryparam value="#arguments.params.byCat#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" list=true>)
 			</cfif>
 			<cfif structKeyExists(arguments.params,"searchTerms")>
 				<cfif not structKeyExists(arguments.params, "dontlogsearch")>
