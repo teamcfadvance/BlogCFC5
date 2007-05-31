@@ -26,10 +26,15 @@ and I call your method. What you return I replace in the string.
 	<cfargument name="method" required="true">
 	<cfset var tags = getTags(arguments.string, arguments.tag)>
 	<cfset var x = "">
-	
+	<cfset var key = "">
+		
 	<cfloop index="x" from="1" to="#arrayLen(tags)#">
 		<!--- first, call method with args --->
-		<cfinvoke method="#arguments.method#" attributeCollection="#tags[x].args#" returnVariable="result">
+		<cfinvoke method="#arguments.method#" returnVariable="result">
+			<cfloop item="key" collection="#tags[x].args#">
+				<cfinvokeargument name="#key#" value="#tags[x].args[key]#">
+			</cfloop>
+		</cfinvoke>
 		<cfset arguments.string = replace(arguments.string, tags[x].match, result)>
 	</cfloop>
 	
