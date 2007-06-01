@@ -17,6 +17,13 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated:  (BlogCFC 5.8.001)
+/org/camden/blog/render/render.cfc - CF8 compatability fix
+/client/includes/pods/recent.cfm - Future entries were showing up.
+/org/camden/blog/blog.ini.cfm - Nothingimportant - just changed to mysql for my local env.
+/org/camden/blog/blog.cfc - Version
+
+----------------------------------------------------------------
 Last Updated: May 18, 2007 (BlogCFC 5.8)
 /org/captcha/* - Please replace all captcha files with these new ones. Updates described at Lyla Captcha site: http://lyla.maestropublishing.com/
 /client/includes/captcha.xml - support for above
@@ -29,7 +36,6 @@ Last Updated: May 18, 2007 (BlogCFC 5.8)
 
 I updated the docs to talk about the new "blended" RSS/front page view. It lets you display N categories at once.
 
-----------------------------------------------------------------
 Last Updated: April 20, 2007 (BlogCFC 5.7.002)
 /client/error.cfm - I left a OR 1 in. Thanks Todd! 
 /org/camden/blog/blog.cfc - Just the version
