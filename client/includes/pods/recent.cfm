@@ -4,9 +4,10 @@
 	Name         : recent.cfm
 	Author       : Raymond Camden 
 	Created      : October 29, 2003
-	Last Updated : July 12, 2005
+	Last Updated : June 1, 2007
 	History      : added processingdir (rkc 11/10/03)
 				   New link code (rkc 7/12/05)
+				   Hide future entries (rkc 6/1/07)
 	Purpose		 : Display recent entries
 --->
 
@@ -17,6 +18,7 @@
 	<cfset params = structNew()>
 	<cfset params.maxEntries = 5>
 	<cfset params.lastXDays = 20>
+	<cfset params.releasedonly = true>
 	<cfset entries = application.blog.getEntries(duplicate(params))>
 	<cfloop query="entries">
 		<cfoutput><a href="#application.blog.makeLink(id)#">#title#</a><br></cfoutput>
