@@ -25,6 +25,10 @@
 <cfif not isNumeric(url.startrow) or url.startrow lte 0 or round(url.startrow) neq url.startrow>
 	<cfset url.startrow = 1>
 </cfif>
+<!--- handle people passing super big #s --->
+<cfif application.isColdFusionMX7 and not isValid("integer", url.startrow)>
+	<cfset url.startrow = 1>
+</cfif>
 
 <!--- Handle cleaning of day, month, year --->
 <cfif isDefined("url.day") and (not isNumeric(url.day) or val(url.day) is not url.day)>
@@ -64,8 +68,6 @@
 <cfelseif url.mode is "alias" and isDefined("url.alias") and len(trim(url.alias))>
 	<cfset params.byAlias = url.alias>
 <cfelse>
-	<!--- For default view, limit by date and max entries --->
-	<cfset params.lastXDays = 30>
 	<cfset url.mode = "">
 </cfif>
 
