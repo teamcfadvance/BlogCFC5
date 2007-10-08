@@ -35,7 +35,7 @@ and I call your method. What you return I replace in the string.
 				<cfinvokeargument name="#key#" value="#tags[x].args[key]#">
 			</cfloop>
 		</cfinvoke>
-		<cfset arguments.string = replace(arguments.string, tags[x].match, result)>
+		<cfset arguments.string = replace(arguments.string, tags[x].match, trim(result))>
 	</cfloop>
 	
 	<cfreturn arguments.string>
