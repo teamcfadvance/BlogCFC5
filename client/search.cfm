@@ -10,7 +10,11 @@
 --->
 
 <!--- allow for /xxx shortcut --->
-<cfset searchAlias = listLast(cgi.path_info, "/")>
+<cfif cgi.path_info is not "/search.cfm">
+	<cfset searchAlias = listLast(cgi.path_info, "/")>
+<cfelse>
+	<cfset searchAlias = "">
+</cfif>
 <cfparam name="form.search" default="#searchAlias#">
 <cfparam name="form.category" default="">
 
@@ -18,7 +22,7 @@
 	<cflocation url="#application.rooturl#/index.cfm" addToken="false">
 </cfif>
 
-<cfset form.search = htmlEditFormat(trim(form.search))>
+<cfset form.search = left(htmlEditFormat(trim(form.search)),255)>
 
 <cfset cats = application.blog.getCategories()>
 
@@ -69,11 +73,8 @@
 			</cfif>
 			<cfset end = match + len(form.search) + 500>
 
-			<!---<cfoutput><b>debug: #match#, end=#end#, len new #len(newbody)#<P></b></cfoutput>--->
-
 			<cfif len(newbody) gt 500>
 				<cfif match gt 1>
-					<cfoutput>mid on #match-250#, #end-match#<P></cfoutput>
 					<cfset excerpt = "..." & mid(newbody, match-250, end-match)>
 				<cfelse>
 					<cfset excerpt = left(newbody,end)>
