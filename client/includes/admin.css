@@ -41,7 +41,7 @@ body{ background: url('../images/blogcfc_195.gif') no-repeat 15px 5px;}
 }
 
 .txtField {
-	width: 500px;
+	width: 100%;
 }
 
 .txtFieldShort {
@@ -49,7 +49,7 @@ body{ background: url('../images/blogcfc_195.gif') no-repeat 15px 5px;}
 }
 
 .txtArea {
-	width: 500px;
+	width: 100%;
 	height: 300px;
 }
 
@@ -59,7 +59,7 @@ body{ background: url('../images/blogcfc_195.gif') no-repeat 15px 5px;}
 }
 
 .txtDropdown {
-	width: 500px;
+	width: 100%;
 }
 
 .errors {
