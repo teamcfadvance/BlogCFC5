@@ -21,7 +21,7 @@
 
 	<cftry>
 		<cfset theURL = "http://weblogs.macromedia.com/mxna/xml/rss.cfm?query=byMostRecent&amp;languages=1">
-		<cfhttp url="#theURL#">
+		<cfhttp url="#theURL#" timeout="5">
 
 		<cfset xml = xmlParse(cfhttp.filecontent)>
 		<cfset items = xmlSearch(xml, "//*[local-name() = 'item']")>
