@@ -60,8 +60,7 @@
 
 	<cfcase value="getcategories">
 		<cfset categories = application.blog.getCategories()>
-		<cfcontent type="text/xml">	
-		<cfoutput>#queryToXML(categories, "categories", "category")#</cfoutput>
+        <cfcontent type="text/xml; charset=utf-8"><cfoutput>#queryToXML(categories, "categories", "category")#</cfoutput>
 	</cfcase>
 
 	<cfcase value="getentries">
@@ -76,8 +75,7 @@
 			from	entries
 			</cfquery>
 
-			<cfcontent type="text/xml">	
-			<cfoutput>#queryToXML(entries, "entries", "entry")#</cfoutput>
+	        <cfcontent type="text/xml; charset=utf-8"><cfoutput>#queryToXML(entries, "entries", "entry")#</cfoutput>
 	
 		</cfif>
 	</cfcase>
