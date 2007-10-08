@@ -27,12 +27,13 @@
 		  (server.coldfusion.productname is "BlueDragon" and cfversion lte 6.1)>
 		<cfset variables.utils.throw("Blog must be run under ColdFusion 6.1, BlueDragon 6.2, or higher.")>
 	</cfif>
+	<cfset variables.isColdFusionMX8 = server.coldfusion.productname is "ColdFusion Server" and cfversion gte 8>
 
 	<!--- Valid database types --->
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.8.001">
+	<cfset version = "5.9">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -96,8 +97,13 @@
 		</cfif>
 
 		<!--- get a copy of ping --->
-		<cfset variables.ping = createObject("component", "ping")>
-		
+		<cfif variables.isColdFusionMX8>
+		<cfset variables.ping = createObject("component", "ping8")>
+	
+		<cfelse>
+			<cfset variables.ping = createObject("component", "ping7")>
+		</cfif>
+			
 		<!--- get a copy of textblock --->
 		<cfset variables.textblock = createObject("component","textblock").init(dsn=instance.dsn, username=instance.username, password=instance.password, blog=instance.name)>
 
@@ -707,10 +713,10 @@
 		<cfset articles = getEntries(arguments.params)>
 
 		<cfif not find("-", z.utcHourOffset)>
-			<cfset utcPrefix = "-">
+			<cfset utcPrefix = " -">
 		<cfelse>
 			<cfset z.utcHourOffset = right(z.utcHourOffset, len(z.utcHourOffset) -1 )>
-			<cfset utcPrefix = "+">
+			<cfset utcPrefix = " +">
 		</cfif>
 		
 		
@@ -2062,13 +2068,7 @@ To unsubscribe, please go to this URL:
 		
 		<cfset var cfc = "">
 		<cfset var newstring = "">
-		
-		<!--- call our render funcs --->
-		<cfloop item="cfc" collection="#variables.renderMethods#">
-			<cfinvoke component="#variables.renderMethods[cfc].cfc#" method="renderDisplay" argumentCollection="#arguments#" returnVariable="newstring" />
-			<cfset arguments.string = newstring>
-		</cfloop>
-				
+						
 		<!--- Check for code blocks --->
 		<cfif findNoCase("<code>",arguments.string) and findNoCase("</code>",arguments.string)>
 			<cfset counter = findNoCase("<code>",arguments.string)>
@@ -2096,6 +2096,12 @@ To unsubscribe, please go to this URL:
 				</cfif>
 			</cfloop>
 		</cfif>
+		
+		<!--- call our render funcs --->
+		<cfloop item="cfc" collection="#variables.renderMethods#">
+			<cfinvoke component="#variables.renderMethods[cfc].cfc#" method="renderDisplay" argumentCollection="#arguments#" returnVariable="newstring" />
+			<cfset arguments.string = newstring>
+		</cfloop>	
 
 		<!--- New enclosure support. If enclose if a jpg, png, or gif, put it on top, aligned left. --->
 		<cfif len(arguments.enclosure) and listFindNoCase("gif,jpg,png", listLast(arguments.enclosure, "."))>
