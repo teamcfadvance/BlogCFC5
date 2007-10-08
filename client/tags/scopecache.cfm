@@ -84,7 +84,9 @@
 <cfset dontRun = false>
 
 <cfif isDefined("attributes.clear") and attributes.clear and structKeyExists(ptr.scopeCache,attributes.name) and thisTag.executionMode is "start">
-	<cfset cleanup = ptr.scopeCache[attributes.name].dependancies>
+	<cfif structKeyExists(ptr.scopeCache[attributes.name],"dependancies")>
+		<cfset cleanup = ptr.scopeCache[attributes.name].dependancies>
+	</cfif>
 	<cfset structDelete(ptr.scopeCache,attributes.name)>
 	<cfset dontRun = true>
 </cfif>
@@ -104,8 +106,10 @@
 		</cfif>
 	<cfelse>
 		<!--- It is possible I'm here because I'm refreshing. If so, check my dependancies --->
-		<cfif structKeyExists(ptr.scopeCache,attributes.name)>
-			<cfset cleanup = listAppend(cleanup, ptr.scopeCache[attributes.name].dependancies)>
+		<cfif structKeyExists(ptr.scopeCache,attributes.name) and structKeyExists(ptr.scopeCache[attributes.name],"dependancies")>
+			<cfif structKeyExists(ptr.scopeCache[attributes.name],"dependancies")>
+				<cfset cleanup = listAppend(cleanup, ptr.scopeCache[attributes.name].dependancies)>
+			</cfif>
 		</cfif>
 		<cfset ptr.scopeCache[attributes.name] = structNew()>
 		<cfif not isDefined("attributes.data")>
