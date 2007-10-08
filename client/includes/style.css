@@ -158,8 +158,8 @@ input, select, textarea {
 }
 
 .code {
-	font-family: courier,monospace;
-	font-size: .7em;
+	font-family: "courier new",courier,monospace;
+	font-size: 1em;
 	color: black;
 	border: solid thin #0000cc;
 	background-color: #ffffcc;
@@ -243,11 +243,13 @@ background-color:#efefef;
 	font-size:1.1em;
 }
 
-
-
 .autoImage {
 	float: left;
 	margin: 0 5px 5px 0;
+}
+
+.byline img{
+	vertical-align: top;
 }
 
 /*==================Forms======================*/
