@@ -53,7 +53,11 @@
 		<tr class="adminList<cfif currentRow mod 2>1</cfif>">
 			<td><input type="checkbox" name="ShowPods" value="#name#" <cfif len(sortOrder)>checked</cfif>></td>
 			<td>#name#</td>
-			<td>[<a href="showpods.cfm?pod=#name#" target="PodWin" onclick="window.open(this.href,this.target,'width=215,height=400');return false;">Show sample output</a> ] [<a href="pods.cfm?deletePod=#name#">Delete Pod</a>]</td>
+			<td>
+				[<a href="showpods.cfm?pod=#name#" target="PodWin" onclick="window.open(this.href,this.target,'width=215,height=400');return false;">Show sample output</a> ]
+				[<a href="podform.cfm?pod=#name#">Edit Pod</a>]
+				[<a href="pods.cfm?deletePod=#name#">Delete Pod</a>]
+ 			</td>
 			<td align="center"><input type="text" name="#name#" value="#sortOrder#" size="3" tabindex="#currentrow#"></td>
 		</tr>
 	</cfoutput>

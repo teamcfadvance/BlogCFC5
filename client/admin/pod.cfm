@@ -19,12 +19,21 @@ Check for adding pods, return to the pods page after processing
 	<cfset form.newPod = reReplace(form.newPod," ","_","ALL")>
 	<cfset form.newPod = reReplace(form.newPod,",","","ALL")>
 	<cfset form.newPod = reReplace(form.newPod,"'","","ALL")>
+	<cfset form.newPod = rereplace(form.newPod,".cfm","","ALL")>
+
+	<cfif fileExists(dir & "/" & form.newPod & ".cfm") >
+
+		<cffile action="write" output="#form.newPodText#" file="#dir#/#form.newPod#.cfm" nameconflict="overwrite">
 	
-	<cfset form.newPodText = reReplace(form.newPodText,"__PAGENAME__","#form.newPod#.cfm")>
-	<cfset form.newPodText = reReplace(form.newPodText,"__PAGENAME__","#form.newPod#")>
-	<cfset form.newPodText = reReplace(form.newPodText,"__TITLE__","#newPodTitle#")>
+	<cfelse>
+
+		<cfset form.newPodText = reReplace(form.newPodText,"__PAGENAME__","#form.newPod#.cfm")>
+		<cfset form.newPodText = reReplace(form.newPodText,"__PAGENAME__","#form.newPod#")>
+		<cfset form.newPodText = reReplace(form.newPodText,"__TITLE__","#newPodTitle#")>
 	
-	<cffile action="write" output="#form.newPodText#" file="#dir#/#form.newPod#.cfm">
+		<cffile action="write" output="#form.newPodText#" file="#dir#/#form.newPod#.cfm">
+	</cfif>
+	
 	<cflocation url="pods.cfm" addtoken="no">
 </cfif>
 
