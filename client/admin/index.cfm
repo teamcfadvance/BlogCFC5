@@ -4,12 +4,13 @@
 	Name         : /client/admin/index.cfm
 	Author       : Raymond Camden 
 	Created      : 04/06/06
-	Last Updated : 2/28/07
+	Last Updated : 8/1/07
 	History      : Added blog name (rkc 5/17/06)
 				 : typo (rkc 8/20/06)
 				 : JS alert when coming from settings page (rkc 9/5/06)
 				 : htmlEditFormat the title (rkc 10/12/06)
 				 : added top entries for past 7 days (rkc 2/28/07)
+				 : fixed link to my blog, made "past few days" say seven to be more clear (rkc 8/1/07)
 --->
 
 <!--- As with my stats page, this should most likely be abstracted into the CFC. --->
@@ -34,14 +35,14 @@ order by views desc
 	<p>
 	Welcome to BlogCFC Administrator. You are running BlogCFC version #application.blog.getVersion()#. This blog is named
 	#htmlEditFormat(application.blog.getProperty("blogtitle"))#. For more information, please visit the BlogCFC blog at <a href="http://www.blogcfc.com">http://www.blogcfc.com</a>.
-	BlogCFC was created by <a href="http://ray.camdenfamily.com">Raymond Camden</a>. For support, please visit the <a href="http://ray.camdenfamily.com/forums/forums.cfm?conferenceid=CBD210FD-AB88-8875-EBDE545BF7B67269">forums</a>
+	BlogCFC was created by <a href="http://www.coldfusionjedi.com">Raymond Camden</a>. For support, please visit the <a href="http://www.coldfusionjedi.com/forums/forums.cfm?conferenceid=CBD210FD-AB88-8875-EBDE545BF7B67269">forums</a>
 	or send me an <a href="mailto:ray@camdenfamily.com">email</a>.
 	</p>
 	
 	<cfif topByViews.recordCount>
 	<h3>Top Entries</h3>
 	<p>
-	Here are the top entries over the past few days based on the number of views:
+	Here are the top entries over the past seven days based on the number of views:
 	</p>
 	<p>
 	<cfloop query="topByViews">
