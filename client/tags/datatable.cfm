@@ -180,6 +180,9 @@ function checksubmit() {
 					<cfif findNoCase("$id$", value)>
 						<cfset value = replace(value, "$id$", id, "all")>
 					</cfif>
+					<cfif findNoCase("$email$", value)>
+						<cfset value = replace(value, "$email$", urlEncodedFormat(email), "all")>
+					</cfif>
 					<cfif findNoCase("$name$", value)>
 						<cfset value = replace(value, "$name$", name, "all")>
 					</cfif>

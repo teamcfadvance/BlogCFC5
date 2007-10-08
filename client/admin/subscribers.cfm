@@ -21,6 +21,10 @@
 		<cfset application.blog.removeUnverifiedSubscribers()>
 </cfif>
 
+<cfif structKeyExists(url, "verify")>
+	<cfset application.blog.confirmSubscription(email=url.verify)>
+</cfif>
+
 <cfset subscribers = application.blog.getSubscribers()>
 
 <cfquery name="verifiedSubscriber" dbtype="query">
@@ -56,7 +60,9 @@ where	verified = 1
 	<cfmodule template="../tags/datatable.cfm" data="#subscribers#" editlink="" label="Subscribers"
 			  linkcol="" linkval="email" showAdd="false" defaultsort="email">
 		<cfmodule template="../tags/datacol.cfm" colname="email" label="Email" />
-		<cfmodule template="../tags/datacol.cfm" colname="verified" label="Verified" format="yesno"/>		
+		<cfmodule template="../tags/datacol.cfm" colname="verified" label="Verified" format="yesno"/>
+		<cfmodule template="../tags/datacol.cfm" label="Verify" data="<a href=""subscribers.cfm?verify=$email$"">Verify</a>" sort="false"/>
+		
 	</cfmodule>
 	
 </cfmodule>

@@ -578,12 +578,19 @@
 	
 	<cffunction name="confirmSubscription" access="public" returnType="void" output="false"
 				hint="Confirms a user's subscription to the blog.">
-		<cfargument name="token" type="uuid" required="true">
+		<cfargument name="token" type="uuid" required="false">
+		<cfargument name="email" type="string" required="false">
 		
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		update	tblblogsubscribers
 		set		verified = 1
+		<cfif structKeyExists(arguments, "token")>
 		where	token = <cfqueryparam cfsqltype="cf_sql_varchar" maxlength="35" value="#arguments.token#">
+		<cfelseif structKeyExists(arguments, "email")>
+		where	email = <cfqueryparam cfsqltype="cf_sql_varchar" maxlength="255" value="#arguments.email#">
+		<cfelse>
+			<cfthrow message="Invalid call to confirmSubscription. Must pass token or email.">
+		</cfif>
 		</cfquery>
 		
 	</cffunction>
