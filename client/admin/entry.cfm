@@ -249,7 +249,16 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 	
 	<cfif not structKeyExists(form, "preview")>
 
-		<cfif lsIsDate(form.posted) and not isDefined("form.fieldnames")>
+		<!--- 
+		Ok, so this line below here has been the cuase of MUCH pain in agony. The problem is in noticing
+		when you save and ensuring you have a valid date. I don't know why this is so evil, but it caused
+		me a lot of trouble a few months back. A new bug cropped up where if you hit the 'new entry'
+		url direct (entry.cfm?id=0), the date would default to odbc date. So now the logic ensures
+		that you either have NO form post, of a form post with username from the login. 
+		
+		I can bet I'll be back here one day soon.
+		--->
+		<cfif lsIsDate(form.posted) and (not isDefined("form.fieldnames") or isDefined("form.username"))>
 			<cfset form.posted = createODBCDateTime(form.posted)>
 			<cfset form.posted = application.localeUtils.dateLocaleFormat(form.posted,"short") & " " & application.localeUtils.timeLocaleFormat(form.posted)>
 		</cfif>
@@ -363,7 +372,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		</cfif>
 		</script>
 
-		<table>
+		<table width="75%"	>
 			<tr>
 				<td align="right">title:</td>
 				<td><input type="text" name="title" id="title" value="#htmlEditFormat(form.title)#" class="txtField" maxlength="100"></td>
