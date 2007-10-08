@@ -245,7 +245,7 @@ function toList(str) {
 		</tr>
 		<tr>
 			<td align="right">users:</td>
-			<td><input type="text" name="users" value="#form.users#" class="txtField" maxlength="50"></td>
+			<td><input type="text" name="users" value="#form.users#" class="txtField" maxlength="255"></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
