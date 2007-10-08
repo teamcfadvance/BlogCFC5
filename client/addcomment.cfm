@@ -3,7 +3,7 @@
 	Name         : addcomment.cfm
 	Author       : Raymond Camden 
 	Created      : February 11, 2003
-	Last Updated : April 13, 2007
+	Last Updated : October 8, 2007
 	History      : Reset history for version 5.0
 				 : Lengths allowed for name/email were 100, needed to be 50
 				 : Cancel confirmation (rkc 8/1/06)
@@ -34,7 +34,7 @@
 <cfparam name="form.name" default="">
 <cfparam name="form.email" default="">
 <!--- RBB 11/02/2005: Added new website parameter --->
-<cfparam name="form.website" default="">
+<cfparam name="form.website" default="http://">
 <cfparam name="form.comments" default="">
 <cfparam name="form.rememberMe" default="false">
 <cfparam name="form.subscribe" default="false">
@@ -67,6 +67,11 @@
 	<cfset form.website = trim(form.website)>
 	<cfset form.comments = trim(form.comments)>
 
+	<!-- if website is just http://, remove it --->
+	<cfif form.website is "http://">
+		<cfset form.website = "">
+	</cfif>
+	
 	<cfset errorStr = "">
 
 	<cfif not len(form.name)>
@@ -98,10 +103,11 @@
 			<cfset commentID = application.blog.addComment(url.id,left(form.name,50), left(form.email,50), left(form.website,255), form.comments, form.subscribe)>
 			<!--- Form a message about the comment --->
 			<cfset subject = rb("commentaddedtoblog") & ": " & application.blog.getProperty("blogTitle") & " / " & rb("entry") & ": " & entry.title>
+			<cfset commentTime = dateAdd("h", application.blog.getProperty("offset"), now())>
 			<cfsavecontent variable="email">
 			<cfoutput>
 #rb("commentaddedtoblogentry")#:	#entry.title#
-#rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(now())# / #application.localeUtils.timeLocaleFormat(now())#
+#rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(commentTime)# / #application.localeUtils.timeLocaleFormat(commentTime)#
 #rb("commentmadeby")#:	 	#form.name# <cfif len(form.website)>(#form.website#)</cfif>
 #rb("ipofposter")#:			#cgi.REMOTE_ADDR#
 URL: #application.blog.makeLink(url.id)###c#commentID#
