@@ -257,6 +257,16 @@
 			<td align="right">#getTotalViews.total#</td>
 		</tr>
 		<tr>
+			<td width="50%"><b>#rb("avgviews")#:</b></td>
+			<td align="right">
+				<cfif gettotalentries.totalentries gt 0 and gettotalviews.total gt 0>
+				#numberFormat(gettotalviews.total/gettotalentries.totalentries,"999.99")#
+				<cfelse>
+				0
+				</cfif>
+			</td>
+		</tr>
+		<tr>
 			<td width="50%"><b>#rb("totalsubscribers")#:</b></td>
 			<td align="right">#getTotalSubscribers.totalsubscribers#</td>
 		</tr>
