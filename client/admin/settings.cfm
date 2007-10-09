@@ -32,6 +32,13 @@ function toList(str) {
 <cfloop item="setting" collection="#settings#">
 	<cfparam name="form.#setting#" default="#settings[setting]#">
 </cfloop>
+<!--- 
+we can use all the settings, but username and password may get overwritten
+by a login attempt, see this bug report:
+http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1E-17FD790A1A7DE997
+--->
+<cfparam name="form.dsn_username" default="#settings.username#">
+<cfparam name="form.dsn_password" default="#settings.password#">
 
 <cfif structKeyExists(form, "cancel")>
 	<cflocation url="index.cfm" addToken="false">
@@ -76,6 +83,10 @@ function toList(str) {
 	<cfset form.trackbackspamlist = toList(form.trackbackspamlist)>
 
 	<cfif not arrayLen(errors)>
+		<!--- copy dsn_* --->
+		<cfset form.username = form.dsn_username>
+		<cfset form.password = form.dsn_password>
+		
 		<!--- make a list of the keys we will send. --->
 		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,trackbackspamlist,mailserver,mailusername,mailpassword,users,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot">
 		<cfloop index="key" list="#keylist#">
@@ -164,11 +175,11 @@ function toList(str) {
 		</tr>
 		<tr valign="top">
 			<td align="right">dsn username:</td>
-			<td><input type="text" name="username" value="#form.username#" class="txtField" maxlength="255"></td>
+			<td><input type="text" name="dsn_username" value="#form.dsn_username#" class="txtField" maxlength="255"></td>
 		</tr>
 		<tr valign="top">
 			<td align="right">dsn password:</td>
-			<td><input type="text" name="password" value="#form.password#" class="txtField" maxlength="255"></td>
+			<td><input type="text" name="dsn_password" value="#form.dsn_password#" class="txtField" maxlength="255"></td>
 		</tr>
 		<tr>
 			<td align="right">locale:</td>
