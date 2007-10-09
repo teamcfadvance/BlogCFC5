@@ -17,7 +17,12 @@
 			<cfelseif aURL is "@icerocket">
 				<cfset pingIceRocket(arguments.blogTitle, arguments.blogURL)>
 			<cfelse>
-				<cfhttp url="#aURL#" method="GET" resolveurl="false">
+				<cftry>
+					<cfhttp url="#aURL#" method="GET" resolveurl="false">
+					<cfcatch>
+					<!--- silently fail --->
+					</cfcatch>
+				</cftry>
 			</cfif>
 		
 		</cfloop>		
