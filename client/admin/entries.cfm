@@ -13,6 +13,8 @@
 	<cfloop index="u" list="#form.mark#">
 		<cfset application.blog.deleteEntry(u)>
 	</cfloop>
+	<!--- clear cache --->
+	<cfmodule template="../tags/scopecache.cfm" scope="application" clearall="true">
 </cfif>
 
 
