@@ -1416,7 +1416,11 @@
 	
 	<cffunction name="getNumberUnmoderated" access="public" returntype="numeric" output="false">
 		<cfquery name="getUnmoderated" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select count(moderated) as unmoderated from tblblogcomments where moderated=0
+			select count(c.moderated) as unmoderated 
+			from tblblogcomments c, tblblogentries e
+			where c.moderated=0
+			and	 e.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			and c.entryidfk = e.id
 		</cfquery>
 		
 		<cfreturn getUnmoderated.unmoderated>
