@@ -199,10 +199,14 @@
 				<cfset variables.utils.throw("Comment blocked for spam.")>
 			</cfif>
 		</cfloop>
-		<cfif len(cgi.REMOTE_ADDR) and listFind(instance.ipblocklist, cgi.REMOTE_ADDR)>
-			<cfset variables.utils.throw("Comment blocked for spam.")>
-		</cfif>
-		
+		<cfloop list="#instance.ipblocklist#" index="spam">
+			<cfif spam contains "*" and reFindNoCase(replaceNoCase(spam, '.', '\.','all'), cgi.REMOTE_ADDR)>
+				<cfset variables.utils.throw("Comment blocked for spam.")>
+			<cfelseif spam is cgi.REMOTE_ADDR>		
+				<cfset variables.utils.throw("Comment blocked for spam.")>
+			</cfif>
+      	</cfloop>
+			
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		<!--- RBB 11/02/2005:  Added website element --->
 		insert into tblblogcomments(id,entryidfk,name,email,website,comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>,posted,subscribe,moderated)
