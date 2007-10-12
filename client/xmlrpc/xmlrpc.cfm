@@ -4,12 +4,13 @@
 	Name         : C:\projects\blogcfc5\client\xmlrpc\xmlrpc.cfm
 	Author       : Raymond Camden 
 	Created      : 09/15/06
-	Last Updated : 4/13/07
+	Last Updated : 7/20/07
 	History      : Scott Pinkstonadded newMediaObject
 				 : fix for categories (rkc 10/12/06)
 				 : multiple udpates related to Captivate (rkc 10/31/06)
 				 : Another fix. Did someone say XML-RPC was a spec? Bull-pucky. (rkc 11/30/06)
 				 : Fix so remote clients can see unreleased/future entries
+				 : ScottP added metaWeblog.getUB to first cfcase (rkc 7/20/07)
 --->
 
 <cffunction name="translateCategory" returnType="uuid">
@@ -32,7 +33,7 @@
 
 <cfswitch expression="#requestData.method#">
 
-	<cfcase value="blogger.getUsersBlogs">
+	<cfcase value="blogger.getUsersBlogs,metaWeblog.getUsersBlogs">
 		<cfset info = structNew()>
 		<cfset info["url"] = application.rooturl>
 		<cfset info["blogid"] = "$string" & "1">
