@@ -17,13 +17,55 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: (BlogCFC 5.9)
+
+Note - for this release, I decided to stop updating the headers in the files. It was redundant when I'm providing
+the information here, and while I see merit in it (makes it easy when editing the file to see the history), I 
+decided I'd skip that since BlogCFC 6 will have new files. 
+
+/client/addcomment.cfm - Default http:// in the URL. For times, use BlogCFC's offset time. 
+/client/admin/index.cfm - Two small text changes.
+/client/admin/pod.cfm, podform.cfm, pods.cfm - Scott P's changes to allow you to edit pods
+/client/admin/settings.cfm - Increase maxlength on users field.
+/client/admin/spryproxy.cfm - specify UTF-8
+/client/includes/admin.css - made some form fields 100% wide. To me - makes editing easier.
+/client/includes/pod.cfm - add a timeout to the CFHTTP
+/client/includes/style.css - few small changes. Only one I remember is the Mac font fix. 
+/client/rss.cfm - specify UTF-8
+/client/search.cfm - remove debug code, fix cgi code
+/client/tags/getmode.cfm - Don't restrict to last 30 days, and handle 'large url var' issue.
+/client/tags/scopecache.cfm - Fix the damn 'dependancies' error that shouldn't exist.
+/client/install/mysql.sql - updated install sql
+/org/camden/blog/ping.cfc, ping7.cfc, ping8.cfc - New ping support. In CF8, we use CFTHREAD to fire the pings.
+/org/camden/blog/blog.cfc - Detect if cf8, load right ping, fix in generateRSS for format of times, run <code> blocks before Render, 
+							allow for verify via email, getNumberUnmoderated fixed to get # for blog
+/org/camden/blog/render/render.cfm - Trim results, this was someone else's idea - I believe Scott P.
+/client/admin/entry.cfm - Fix a bug with dates (again), make the table wider.
+/client/includes/spry/* - Minimized, 1.6 versions
+/client/admin/subscribers.cfm - Let admin verify people
+/client/tags/datatable.cfm - support for above
+/client/admin/entries.cfm - On delete, clear cache
+/client/admin/settings.cfm - Handle cases where a login attempt sets username/password in the form scope
+/client/stats.cfm - Added an average views per entry value
+/client/includes/main.properties - For above
+/client/includes/main_en_US.properties - For above (and added stuff for contact form)
+/org/camden/blog/ping7.cfc - wrap the cfhttp with a try/catch. Only done for bare pings.
+/org/camden/blog/blog.cfc - Use Brian Kotek's code to allow IP wildcards for spam blocking.
+
+Removed: sex, lesbian, porn, from the spam block list. I felt these words were a bit too vague to be included.
+
+/client/contact.cfm - New contact form
+/client/tags/layout.cfm - new URLs for me, link to contact.
+/client/xmlrpc/xmlrpc.cfm - Scott P's tweak
+
+
+----------------------------------------------------------------
 Last Updated:  (BlogCFC 5.8.001)
 /org/camden/blog/render/render.cfc - CF8 compatability fix
 /client/includes/pods/recent.cfm - Future entries were showing up.
 /org/camden/blog/blog.ini.cfm - Nothingimportant - just changed to mysql for my local env.
 /org/camden/blog/blog.cfc - Version
 
-----------------------------------------------------------------
 Last Updated: May 18, 2007 (BlogCFC 5.8)
 /org/captcha/* - Please replace all captcha files with these new ones. Updates described at Lyla Captcha site: http://lyla.maestropublishing.com/
 /client/includes/captcha.xml - support for above
