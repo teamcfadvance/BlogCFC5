@@ -355,8 +355,8 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<cfif url.id eq 0>
 		//used to save your form info (title/body) in case your browser crashes
 		function saveText() {
-			var titleField = $("title");
-			var bodyField = $("body");
+			var titleField = Spry.$("title");
+			var bodyField = Spry.$("body");
 			var expire = new Date();
 			expire.setDate(expire.getDate()+7);
 			
