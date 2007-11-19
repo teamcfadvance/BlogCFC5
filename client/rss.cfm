@@ -12,6 +12,7 @@
 				 : Rob Wilkerson added code to handle noting/returning headers for aggregators (rkc 4/19/07)
 				 http://musetracks.instantspot.com/blog/index.cfm/2007/4/19/BlogCFC-Enhancement
 				 : Fix bug where no entries - also support N categories (rkc 5/18/07)
+				 : DanS fix for unreleased entries, cap url.byentry to 35 (rkc 11/17/07)
 	Purpose		 : Blog RSS feed.
 --->
 
@@ -29,6 +30,9 @@
 </cfif>
 
 <cfset params = structNew()>
+<!---// dgs: only get released items //--->
+<cfset params.releasedonly = true />
+
 <cfset additionalTitle = "">
 
 <cfif isDefined("url.mode2")>
@@ -50,7 +54,7 @@
 		</cftry>
 		</cfloop>
 	<cfelseif url.mode2 is "entry">
-		<cfset params.byEntry = url.entry>
+		<cfset params.byEntry = left(url.entry,35)>
 	</cfif>
 </cfif>
 

@@ -4,8 +4,9 @@
 	Name         : search.cfm
 	Author       : Raymond Camden 
 	Created      : February 9, 2007
-	Last Updated : April 19, 2007
+	Last Updated : November 17, 2007
 	History      : Small changes to search display (rkc 4/19/07)
+				 : Fix by Dan S to block unreleased entries (rkc 11/17/07)
 	Purpose		 : Search Logic
 --->
 
@@ -32,6 +33,8 @@
 	<cfset params.byCat = form.category>
 </cfif>
 <cfset params.maxEntries = 100>
+<!---// dgs: only get released items //--->
+<cfset params.releasedonly = true />
 <cfset results = application.blog.getEntries(params)>
 
 <cfset title = rb("search")>
