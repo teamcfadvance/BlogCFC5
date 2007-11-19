@@ -4,8 +4,8 @@
    Name			: feed.cfm
    Author 		: Raymond Camden
    Created 		: September 20, 2006
-   Last Updated :
-   History 		:
+   Last Updated : November 17, 2007
+   History 		: Forgot the enableoutputonly false
 
 	Note - this pod is meant to allow you to easily show
 	another site's RSS feed on your blog. You should 
@@ -41,3 +41,4 @@
 </cfmodule>
 	
 </cfmodule>
+<cfsetting enablecfoutputonly=false>
