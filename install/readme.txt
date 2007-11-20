@@ -17,6 +17,13 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: November 19, 2007 (BlogCFC 5.9.001)
+NOTE - Many of these fixes thanks to Dan Switzer
+/client/admin/entry.cfm - fix to Spry code
+/client/includes/pod.cfm and recentcomments.cfm - missing cfsetting
+/client/rss.cfm and search.cfm - don't show unreleased items.
+/org/camden/blog/blog.cfc - just the version
+
 Last Updated: October 12, 2007 (BlogCFC 5.9)
 
 Note - for this release, I decided to stop updating the headers in the files. It was redundant when I'm providing
