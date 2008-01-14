@@ -2,7 +2,7 @@
 	Name         : blog
 	Author       : Raymond Camden 
 	Created      : February 10, 2003
-	Last Updated : May 18, 2007
+	Last Updated : 1/14/08
 	History      : Reset history for version 5.7
 				 : delete enclosure on delete entry
 				 : generateRSS fix for utc strings
@@ -11,6 +11,7 @@
 				 : oracle fix in savecomment
 				 : saveEntry will correctly schedule task 
 				 : approveComment, category can be list, version (rkc 5/18/07)
+				 : some additional xmlformtting (rkc 1/14/08)
 	Purpose		 : Blog CFC
 --->
 <cfcomponent displayName="Blog" output="false" hint="BlogCFC by Raymond Camden">
@@ -33,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.001">
+	<cfset version = "5.9.002">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -715,7 +716,7 @@
 		<cfset var cat = "">
 		<cfset var lastid = "">
 		<cfset var catid = "">
-		
+
 		<!--- Right now, we force this in. Useful to limit throughput of RSS feed. I may remove this later. --->
 		<cfif (structKeyExists(arguments.params,"maxEntries") and arguments.params.maxEntries gt 15) or not structKeyExists(arguments.params,"maxEntries")>
 			<cfset arguments.params.maxEntries = 15>
@@ -748,7 +749,7 @@
 			<cfsavecontent variable="channel">
 			<cfoutput>
 			<channel rdf:about="#xmlFormat(instance.blogURL)#">
-			<title>#xmlFormat(instance.blogTitle)##arguments.additionalTitle#</title>
+			<title>#xmlFormat(instance.blogTitle)##xmlFormat(arguments.additionalTitle)#</title>
 			<description>#xmlFormat(instance.blogDescription)#</description>
 			<link>#xmlFormat(instance.blogURL)#</link>
 		
@@ -792,7 +793,7 @@
 			
 			<rss version="2.0">
 			<channel>
-			<title>#xmlFormat(instance.blogTitle)##arguments.additionalTitle#</title>
+			<title>#xmlFormat(instance.blogTitle)##xmlFormat(arguments.additionalTitle)#</title>
 			<link>#xmlFormat(instance.blogURL)#</link>
 			<description>#xmlFormat(instance.blogDescription)#</description>
 			<language>#replace(lcase(instance.locale),'_','-','one')#</language>
