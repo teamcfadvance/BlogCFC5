@@ -4,10 +4,11 @@
 	Name         : C:\projects\blogcfc5\client\admin\entry.cfm
 	Author       : Raymond Camden 
 	Created      : 04/07/06
-	Last Updated : 5/18/07
+	Last Updated : 1/14/08
 	History      : Nuked old history for 5.7 (rkc 4/13/07)
 				   Don't save text when editing existing entries (rkc 4/13/07)
 				   Delete cookies on cancel (rkc 5/18/07)
+				   Yet another date fix (rkc 1/14/08)
 --->
 
 <cftry>
@@ -246,7 +247,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 	document.write('<style type="text/css">.tabber{display:none;}<\/style>');
 	</script>
 	</cfoutput>
-	
+
 	<cfif not structKeyExists(form, "preview")>
 
 		<!--- 
@@ -549,7 +550,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<cfoutput>
 		<form action="entry.cfm?#cgi.query_string#" method="post">
 		<cfloop item="key" collection="#form#">
-			<cfif not listFindNoCase("preview,fieldnames,enclosure", key)>
+			<cfif not listFindNoCase("preview,fieldnames,enclosure,username", key)>
 				<input type="hidden" name="#key#" value="#htmlEditFormat(form[key])#">
 			</cfif>
 		</cfloop>
