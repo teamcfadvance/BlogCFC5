@@ -2,11 +2,12 @@
 	Name         : utils
 	Author       : Raymond Camden 
 	Created      : A long time ago in a galaxy far, far away
-	Last Updated : August 20, 2006
+	Last Updated : January 14, 2008
 	History      : Reset history for version 4.0
 				 : Added this header, and moved coloredCode in (rkc 9/22/05)
 				 : Added Mail (rkc 7/7/06)
 				 : Added getResource (rkc 8/20/06)
+				 : fix in the comment area, not from me, but I forget who did it (rkc 1/18/08)
 	Purpose		 : Utilities
 --->
 <cfcomponent displayName="Utils" output="false" hint="Utility functions for the Blog">
@@ -59,8 +60,9 @@ Copyright for coloredCode function. Also note that Jeff Coughlin made some mods 
 		data = REReplaceNoCase(data, "<(/?)((cf[^>]*)|(sc[^>]*)|(wddx[^>]*))>", "«span style='color: ##800000'»<\1\2>«/span»", "ALL");
 	
 		/* Convert all inline "//" comments to gray (revised) */
-		data = REReplaceNoCase(data, "([^:/]\/{2,2})([^[:cntrl:]]+)($|[[:cntrl:]])", "«span style='color: ##808080'»«em»\1\2«/em»«/span»", "ALL");
-	
+		//data = REReplaceNoCase(data, "([^:/]\/{2,2})([^[:cntrl:]]+)($|[[:cntrl:]])", "«span style='color: ##808080'»«em»\1\2«/em»«/span»", "ALL");
+		data = REReplaceNoCase(data, "([^:/]\/{2,2})([^\n]+)($|[\n])", "Çspan style='color: ##808080'ÈÇemÈ\1\2Ç/emÈÇ/spanÈ", "ALL");
+		
 		/* Convert all multi-line script comments to gray */
 		data = REReplaceNoCase(data, "(\/\*[^\*]*\*\/)", "«span style='color: ##808080'»«em»\1«/em»«/span»", "ALL");
 	
