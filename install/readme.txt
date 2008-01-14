@@ -17,6 +17,10 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: January 14, 2008 (BlogCFC 5.9.002)
+/client/admin/entry.cfm - another date fix
+/org/camden/blog/blog.cfc - additional xmlformatting
+
 Last Updated: November 19, 2007 (BlogCFC 5.9.001)
 NOTE - Many of these fixes thanks to Dan Switzer
 /client/admin/entry.cfm - fix to Spry code
