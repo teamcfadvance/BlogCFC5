@@ -109,7 +109,7 @@
 		<cfoutput>
     	<img src="#application.rooturl#/images/icon_delicious.gif" align="middle" title="del.ico.us" height="11" width="11"> <a href="http://del.icio.us/post?url=#application.blog.makeLink(id)#&title=#URLEncodedFormat("#application.blog.getProperty('blogTitle')#:#title#")#">del.icio.us</a>
 		| <img src="#application.rooturl#/images/digg.gif" align="middle" title="Digg It!" height="14" width="16"> <a href="http://digg.com/submit?phase=2&url=#application.blog.makeLink(id)#&title=#URLEncodedFormat("#title#")#&topic=">Digg It!</a>
-	    | <img src="#application.rooturl#/images/technorati.gif" align="middle" title="#rb("linkingblogs")#" height="16" width="16"> <a href="http://www.technorati.com/cosmos/links.html?url=#application.blog.makeLink(id)#">#rb("linkingblogs")#</a> 
+	    | <img src="#application.rooturl#/images/technorati.gif" align="middle" title="#rb("linkingblogs")#" height="16" width="16"> <a href="http://www.technorati.com/search/#application.blog.makeLink(id)#">#rb("linkingblogs")#</a> 
 	    | #views# #rb("views")#   
 		</div>
 		</cfoutput>
