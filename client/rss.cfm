@@ -44,14 +44,18 @@
 		<cfset params.byMonth = val(url.month)>
 		<cfset params.byYear = val(url.year)>
 	<cfelseif url.mode2 is "cat" and isDefined("url.catid")>
-		<cfset params.byCat = url.catid>
 		<!--- can be a list --->
 		<cfset additionalTitle = "">
-		<cfloop index="cat" list="#url.catid#">
-		<cftry>
-			<cfset additionalTitle = additionalTitle & " - " & application.blog.getCategory(cat).categoryname>
-			<cfcatch></cfcatch>
-		</cftry>
+		<cfset params.byCat = "">
+		<cfloop index="x" from="1" to="#listLen(url.catid)#">
+			<cfset cat = listGetAt(url.catid, x)>
+			<!--- set to 35 --->
+			<cfset cat = left(cat, 35)>
+			<cfset params.byCat = listAppend(params.byCat, cat)>
+			<cftry>
+				<cfset additionalTitle = additionalTitle & " - " & application.blog.getCategory(cat).categoryname>
+				<cfcatch></cfcatch>
+			</cftry>
 		</cfloop>
 	<cfelseif url.mode2 is "entry">
 		<cfset params.byEntry = left(url.entry,35)>
