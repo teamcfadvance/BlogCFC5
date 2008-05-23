@@ -17,6 +17,14 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: May 22, 2008 (BlogCFC 5.9.003)
+/client/index.cfm - right link for technorati
+/client/rss.cfm - handle ensuring each cat in a list (if supplied) is 35 chars long
+/client/Application.cfm - load ColdFish
+/org/delmore/coldfish.cfc - New code formatting by ColdFish (coldfish.riaforge.org) by Jason Delmore
+/org/hastings/* - various var scope fixes
+/org/camden/blog.cfc, pods.cfc, render/renderer.cfc - var scope fixes, support for ColdFish
+
 Last Updated: January 14, 2008 (BlogCFC 5.9.002)
 /client/admin/entry.cfm - another date fix
 /org/camden/blog/blog.cfc - additional xmlformatting
