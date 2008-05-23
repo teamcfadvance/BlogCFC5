@@ -71,6 +71,11 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 		<cfset application.captcha.setup() />
 	</cfif>
 
+	<!--- load coldfish --->
+	<cfset coldfish = createObject("component", "org.delmore.coldfish").init()>
+	<!--- inject it --->
+	<cfset application.blog.setCodeRenderer(coldfish)>
+
 	<!--- clear scopecache --->
 	<cfmodule template="tags/scopecache.cfm" scope="application" clearall="true">
 
