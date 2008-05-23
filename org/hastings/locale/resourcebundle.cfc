@@ -45,6 +45,7 @@
 	    <cfset var thisDir=GetDirectoryFromPath(arguments.rbFile)>
 	    <cfset var thisFile=getFileFromPath(arguments.rbFile)&".properties">
 	    <cfset var thisRBfile=thisDir & listFirst(thisFile,".") & "_"& arguments.rbLocale & "." & listLast(thisFile,".")>
+	    <cfset var resourceBundleFile = "">
 	    
 	    <cfif NOT fileExists(thisRBfile)> <!--- try just the language --->
 	        <cfset thisRBfile=thisDir & listFirst(thisFile,".") & "_"& thisLang & "." & listLast(thisFile,".")>
