@@ -97,6 +97,8 @@
             var line = reader.readLine();
 			var i =0;
 			
+			variables.buffer=createObject("java","java.lang.StringBuilder").init();
+			
 			buffer.append("<span style='" & getStyle("TEXT") & "'>"); // start the default text color
 			while (isdefined("line")) {
                 formatLine(line);
@@ -133,7 +135,7 @@
 						endScript();
 					if (thisLine.regionMatches(1, i+1, "!--", 0, 3))
 					{
-						if (thisLine.length() gt i+4 and thisLine.charAt(i+4)=='-')
+						if (thisLine.regionMatches(1, i+4, "-", 0, 1))
 						{
 							startComment("CF");
 						} else {
