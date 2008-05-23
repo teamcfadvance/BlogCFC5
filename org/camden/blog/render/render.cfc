@@ -24,6 +24,7 @@ and I call your method. What you return I replace in the string.
 	<cfargument name="string" required="true">
 	<cfargument name="tag" required="true">
 	<cfargument name="method" required="true">
+	<cfset var result = "">
 	<cfset var tags = getTags(arguments.string, arguments.tag)>
 	<cfset var x = "">
 	<cfset var key = "">

@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.002">
+	<cfset version = "5.9.003">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1420,6 +1420,7 @@
 	</cffunction>
 	
 	<cffunction name="getNumberUnmoderated" access="public" returntype="numeric" output="false">
+		<cfset var getUnmoderated = "">
 		<cfquery name="getUnmoderated" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select count(c.moderated) as unmoderated 
 			from tblblogcomments c, tblblogentries e
@@ -2093,12 +2094,12 @@ To unsubscribe, please go to this URL:
 				<cfif arrayLen(codeblock.len) gte 6>
                     <cfset codeportion = mid(arguments.string, codeblock.pos[4], codeblock.len[4])>
                     <cfif len(trim(codeportion))>
+						<cfset result = variables.codeRenderer.formatString(codeportion)>
 						<cfif arguments.printformat>
-							<cfset style = "codePrint">
+							<cfset result = "<div class='codePrint'>#result#</div>">
 						<cfelse>
-							<cfset style = "code">
-						</cfif>	
-						<cfset result = variables.utils.coloredcode(codeportion, style)>
+							<cfset result = "<div class='code'>#result#</div>">
+						</cfif>
 					<cfelse>
 						<cfset result = "">
 					</cfif>
@@ -2358,6 +2359,11 @@ To unsubscribe, please go to this URL:
 		
 	</cffunction>
 
+	<cffunction name="setCodeRenderer" access="public" returnType="void" output="false" hint="Injector for coldfish">
+		<cfargument name="renderer" type="any" required="true">
+		<cfset variables.coderenderer = arguments.renderer>
+	</cffunction>
+	
 	<cffunction name="setProperty" access="public" returnType="void" output="false" roles="admin">
 		<cfargument name="property" type="string" required="true">
 		<cfargument name="value" type="string" required="true">

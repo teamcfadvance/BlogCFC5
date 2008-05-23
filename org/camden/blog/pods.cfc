@@ -55,6 +55,7 @@
 	<cfset var xmlFile = arguments.directory & "/pods.xml">
 	<cfset var packet = "">
 	<cfset var image = "">
+	<cfset var pod = "">
 	
 	<cfxml variable="packet">
 	<cfoutput>
