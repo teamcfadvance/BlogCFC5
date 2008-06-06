@@ -15,12 +15,12 @@
 --->
 
 
-<cfmodule template="../../tags/podlayout.cfm" title="Latest from MXNA">
+<cfmodule template="../../tags/podlayout.cfm" title="Latest from CFBloggers.org">
 
 <cfmodule template="../../tags/scopecache.cfm" scope="application" cachename="feed" timeout="#60*60#">
 
 	<cftry>
-		<cfset theURL = "http://weblogs.macromedia.com/mxna/xml/rss.cfm?query=byMostRecent&amp;languages=1">
+		<cfset theURL = "http://www.coldfusionbloggers.org/rss.cfm">
 		<cfhttp url="#theURL#" timeout="5">
 
 		<cfset xml = xmlParse(cfhttp.filecontent)>
