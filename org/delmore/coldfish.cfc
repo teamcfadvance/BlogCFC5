@@ -26,6 +26,9 @@
 	5/23/2008	1.0.7	Fixed bug with end-of-line directly after html comments
 	5/23/2008	1.0.8	Fixed bug when using multiple formatted strings in the same template
 	5/27/2008	1.0.9	Made it works with older version of CF... not very happy about implementing the old syntax... may rewrite to use native CF functions...
+	
+	6/4/2008	1.0.12	Fixed cfsetting coloring defect, also replaced use of CharAt function as it throws if there is no character at that reference
+	
 	--->
 <cfcomponent output="false">
 	<cffunction name="init" access="public" hint="This function initializes all of the variables needed for the component." output="false">
@@ -33,7 +36,7 @@
         <cfreturn this/>
     </cffunction>
     
-    <cffunction name="initializeColors" access="private" returntype="void" hint="This function initializes all of the variables needed for the component." output="false">
+    <cffunction name="initializeColors" access="private" returntype="void" hint="This function initializes all of the colors used for highlighting." output="false">
 		<cfscript>
 			variables.colors=structnew();
 			
@@ -107,26 +110,22 @@
             var IStream = createObject("java","java.io.InputStreamReader").init(BIstream);
             var reader = createObject("java","java.io.BufferedReader").init(IStream);
             var line = reader.readLine();
-			var i =0;
 			initializeVariables();
 			
-			buffer.append("<span style='" & getStyle("TEXT") & "'>"); // start the default text color
+			bufferAppend("<span style='" & getStyle("TEXT") & "'>"); // start the default text color
 			while (isdefined("line")) {
                 formatLine(line);
                 line = reader.readLine();
             }
-			buffer.append("</span>");
+			bufferAppend("</span>");
 			reader.close();
-			for (i=0;i LT 10;i=i+1) {
-				buffer.append("</span>");
-			} // end the span a bunch of times just in case...
 
             return buffer;
         </cfscript>
 	</cffunction>
     <cffunction name="formatFile" access="public" hint="This function accepts a file path, reads in the file and formats it into syntax highlighted HTML." output="false">
     	<cfargument name="filePath" type="string"/>
-		<cfset var fileRead = "">
+        <cfset var fileRead = "">
         <cffile action="read" file="#arguments.filepath#" variable="fileRead">
         <cfreturn formatString(fileRead)/>
 	</cffunction>
@@ -146,51 +145,64 @@
 				{
 					if (variables.isScript AND NOT variables.isValue)
 						endScript();
-					if (thisLine.regionMatches(1, javacast('int',i+1), "!--", 0, 3))
+					if (regionMatches(thisLine, 1, i+1, "!--", 0, 3))
 					{
-						if (thisLine.regionMatches(1, javacast('int',i+4), "-", 0, 1))
+						if (regionMatches(thisLine, 1, i+4, "-", 0, 1))
 						{
 							startComment("CF");
 						} else {
 							startComment("HTML");
 						}
 					} else {
-						if (thisLine.regionMatches(1, javacast('int',i+1), "CF", 0, 2) OR thisLine.regionMatches(1, javacast('int',i+1), "/CF", 0, 3))
+						if (regionMatches(thisLine, 1, i+1, "CF", 0, 2) OR regionMatches(thisLine, 1, i+1, "/CF", 0, 3))
 						{
 							startTag("CF");
-							if (thisLine.regionMatches(1, javacast('int',i+3), "SET", 0, 3)) // CFSET Tag
+							if (regionMatches(thisLine, 1, i+3, "SET", 0, 3) AND NOT regionMatches(thisLine, 1, i+6, "T", 0, 1)) // CFSET Tag
 							{
-								buffer.append(thisLine.substring(javacast('int',i+1),javacast('int',i+6)));
+								bufferAppend(substring(thisLine,i+1,i+6));
 								i=i+5;
 								startCFSET();
 							}
-							else if (thisLine.regionMatches(1, javacast('int',i+3), "SCRIPT>", 0, 6)) // SCRIPT TAG
+							else if (regionMatches(thisLine, 1, i+3, "SCRIPT>", 0, 6)) // SCRIPT TAG
 							{
-								buffer.append(thisLine.substring(javacast('int',i+1),javacast('int',i+9)) & "&gt;");
+								bufferAppend(substring(thisLine, i+1, i+9) & "&gt;");
 								i=i+9;
 								startScript();
 							}
 						}
-						else if	((thisLine.charAt(javacast('int',i+1))  EQ  "T" AND listfindnocase("A,B,D,F,H,R", thisLine.charAt(javacast('int',i+2)))) OR (thisLine.charAt(javacast('int',i+1))  EQ  "/" AND (thisLine.charAt(javacast('int',i+2))  EQ  "T" AND listfindnocase("A,B,D,F,H,R", thisLine.charAt(javacast('int',i+3)))))) // HTML TABLE
+						else if	(
+								 	regionMatches(thisLine, 1, i+1, "TA", 0, 2) OR
+									regionMatches(thisLine, 1, i+1, "/TA", 0, 3) OR
+									regionMatches(thisLine, 1, i+1, "TB", 0, 2) OR
+									regionMatches(thisLine, 1, i+1, "/TB", 0, 3) OR
+									regionMatches(thisLine, 1, i+1, "TD", 0, 2) OR
+									regionMatches(thisLine, 1, i+1, "/TD", 0, 3) OR
+									regionMatches(thisLine, 1, i+1, "TF", 0, 2) OR
+									regionMatches(thisLine, 1, i+1, "/TF", 0, 3) OR
+									regionMatches(thisLine, 1, i+1, "TH", 0, 2) OR
+									regionMatches(thisLine, 1, i+1, "/TH", 0, 3) OR
+									regionMatches(thisLine, 1, i+1, "TR", 0, 2) OR
+									regionMatches(thisLine, 1, i+1, "/TR", 0, 3)
+								) // HTML TABLE
 						{
 							startTag("HTMLTABLES");
 						}
-						else if (thisLine.regionMatches(1, javacast('int',i+1), "IMG", 0, 3) OR thisLine.regionMatches(1, javacast('int',i+1), "STY", 0, 3) OR thisLine.regionMatches(1, javacast('int',i+1), "/STY", 0, 4)) //IMG or STYLE Tag
+						else if (regionMatches(thisLine, 1, i+1, "IMG", 0, 3) OR regionMatches(thisLine, 1, i+1, "STY", 0, 3) OR regionMatches(thisLine, 1, i+1, "/STY", 0, 4)) //IMG or STYLE Tag
 						// TODO: Do separate syntax highlighting for stuff inside style
 						{
 							startTag("HTMLSTYLES");
 						}
 						else if (
-									thisLine.regionMatches(1, javacast('int',i+1), "FORM", 0, 4) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "/FORM", 0, 5) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "INPUT", 0, 5) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "/INPUT", 0, 5) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "TEXT", 0, 4) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "/TEXT", 0, 5) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "SELECT", 0, 6) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "/SELECT", 0, 7) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "OPT", 0, 3) OR
-									thisLine.regionMatches(1, javacast('int',i+1), "/OPT", 0, 3)
+									regionMatches(thisLine, 1, i+1, "FORM", 0, 4) OR
+									regionMatches(thisLine, 1, i+1, "/FORM", 0, 5) OR
+									regionMatches(thisLine, 1, i+1, "INPUT", 0, 5) OR
+									regionMatches(thisLine, 1, i+1, "/INPUT", 0, 5) OR
+									regionMatches(thisLine, 1, i+1, "TEXT", 0, 4) OR
+									regionMatches(thisLine, 1, i+1, "/TEXT", 0, 5) OR
+									regionMatches(thisLine, 1, i+1, "SELECT", 0, 6) OR
+									regionMatches(thisLine, 1, i+1, "/SELECT", 0, 7) OR
+									regionMatches(thisLine, 1, i+1, "OPT", 0, 3) OR
+									regionMatches(thisLine, 1, i+1, "/OPT", 0, 3)
 								)
 						{
 							startTag("HTMLFORMS");
@@ -201,9 +213,9 @@
 				}
 				else if (character EQ '>')
 				{
-					if (variables.isCommented AND thisLine.regionMatches(1, javacast('int',i-2), "--", 0, 2))
+					if (variables.isCommented AND regionMatches(thisLine, 1, i-2, "--", 0, 2))
 					{
-						if (thisLine.charAt(javacast('int',i-3)) EQ '-')
+						if (regionMatches(thisLine, 1, i-3, "-", 0, 1))
 						{
 							endComment("CF");
 						} else {
@@ -223,46 +235,47 @@
 					{
 						if (NOT variables.isValue) {
 							startValue();
-							buffer.append('"');
+							bufferAppend('"');
 						} else {
-							buffer.append('"');
+							bufferAppend('"');
 							endValue();
 						}
 					} else {
-						buffer.append('"');
+						bufferAppend('"');
 					}
 				}
 				else if (character EQ '{')
 				{
 					startBind();
-					buffer.append("{");
+					bufferAppend("{");
 					endBind();
 				}
 				else if (character EQ '}')
 				{
 					startBind();
-					buffer.append("}");
+					bufferAppend("}");
 					endBind();
 				}
 				else if (character EQ '/')
 				{
-					if (variables.isScript AND i NEQ thisLine.length()-1 AND thisLine.charAt(javacast('int',i+1)) EQ '/') 					{
+					if (variables.isScript AND regionMatches(thisLine, 1, i+1, "/", 0, 1))
+					{
 						startOneLineComment();
 					}
 					else if (variables.isCommented)
 					{
-						if (thisLine.charAt(javacast('int',i-1)) EQ '*')
+						if (regionMatches(thisLine, 1, i-1, "*", 0, 1))
 						{
 							endComment("SCRIPT");
 						} else {
-							buffer.append("/");
+							bufferAppend("/");
 						}
 					} else {
-						if (thisLine.charAt(javacast('int',i+1)) EQ '*')
+						if (regionMatches(thisLine, 1, i+1, "*", 0, 1))
 						{
 							startComment("SCRIPT");
 						} else {
-							buffer.append("/");
+							bufferAppend("/");
 						}
 					}
 				}
@@ -270,31 +283,50 @@
 				// straight up replacements
 				else if (character EQ '\t' OR character EQ '	')
 				{
-					buffer.append("&nbsp;&nbsp;&nbsp;&nbsp;");
+					bufferAppend("&nbsp;&nbsp;&nbsp;&nbsp;");
 				}
 				else if (character EQ ' ')
 				{
-					 buffer.append("&##32;");
+					 bufferAppend("&##32;");
 				} else {
-					buffer.append(character.toString());
+					bufferAppend(character.toString());
 				}
 			}
-			buffer.append("<br />");
+			bufferAppend("<br />");
 		</cfscript>
+    </cffunction>
+    <cffunction name="regionMatches" access="private" hint="This function checks if a regionMatches." output="false">
+		<cfargument name="string1" type="any"/>
+        <cfargument name="caseInsensitive" type="boolean" default="true"/>
+        <cfargument name="startPosition1" type="numeric"/>
+        <cfargument name="string2" type="any"/>
+        <cfargument name="startPosition2" type="numeric"/>
+        <cfargument name="endPosition2" type="numeric"/>
+		<cfreturn arguments.string1.regionMatches(arguments.caseInsensitive, javacast('int',arguments.startPosition1), arguments.string2, javacast('int',arguments.startPosition2), javacast('int',arguments.endPosition2))/>
+    </cffunction>
+    <cffunction name="substring" access="private" hint="This function gets a substring from a line." output="false">
+		<cfargument name="string" type="any"/>
+        <cfargument name="startPosition" type="numeric"/>
+        <cfargument name="endPosition" type="numeric"/>
+		<cfreturn arguments.string.substring(javacast('int',arguments.startPosition), javacast('int',arguments.endPosition))/>
+    </cffunction>
+    <cffunction name="bufferAppend" access="private" hint="This function appends the buffer." output="false">
+        <cfargument name="string" type="string"/>
+		<cfreturn variables.buffer.append(arguments.string)/>
     </cffunction>
     <cffunction name="startHighlight" access="private" hint="" output="false">
     	<cfargument name="element" type="string"/>
-		<cfset buffer.append("<span style='" & variables.colors[arguments.element]& "'>")/>
+		<cfset bufferAppend("<span style='" & variables.colors[arguments.element]& "'>")/>
     </cffunction>
     <cffunction name="endHighlight" access="private" hint="" output="false">
 		<cfargument name="line" type="any"/>
-		<cfset buffer.append("</span>")/>
+		<cfset bufferAppend("</span>")/>
     </cffunction>
     <cffunction name="startOneLineComment" access="private" output="false">
     	<cfargument name="line" type="any"/>
 		<cfscript>
 		startHighlight("HTMLCOMMENT");
-		buffer.append("/");
+		bufferAppend("/");
 		variables.isOneLineComment=true;
 		variables.isCommented=true;
 		</cfscript>	
@@ -312,13 +344,13 @@
         <cfscript>
 		if (type  EQ  "CF") {
 			startHighlight("CFCOMMENT");
-			buffer.append("&lt;");
+			bufferAppend("&lt;");
 		} else if (type  EQ  "HTML") {
 			startHighlight("HTMLCOMMENT");
-			buffer.append("&lt;");
+			bufferAppend("&lt;");
 		} else if (type  EQ  "SCRIPT") {
 			startHighlight("HTMLCOMMENT");
-			buffer.append("/");
+			bufferAppend("/");
 		}
 		variables.isCommented=true;
 		</cfscript>
@@ -327,9 +359,9 @@
     	<cfargument name="type" type="string"/>
         <cfscript>
 		if (type  EQ  "SCRIPT") {
-			buffer.append("/");
+			bufferAppend("/");
 		} else {
-			buffer.append("&gt;");
+			bufferAppend("&gt;");
 		}
 		endHighlight();
 		variables.isCommented=false;
@@ -352,12 +384,12 @@
 			}
 			variables.isTag=true;
 		}
-		buffer.append("&lt;");
+		bufferAppend("&lt;");
 		</cfscript>
     </cffunction>
 	<cffunction name="endTag" access="private" output="false">
     	<cfscript>
-		buffer.append("&gt;");
+		bufferAppend("&gt;");
 		if (NOT variables.isCommented AND NOT variables.isValue) {
 			endHighlight();
 			variables.isTag=false;
@@ -412,11 +444,11 @@
     	<cfscript>
 		if (NOT variables.isCommented) {
 			endHighlight();
-			buffer.append("&gt;");
+			bufferAppend("&gt;");
 			endHighlight();
 			variables.isCFSETTag=false;
 		} else {
-			buffer.append("&gt;");
+			bufferAppend("&gt;");
 		}
 		</cfscript>
     </cffunction>
