@@ -97,10 +97,15 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" name="cancel" value="Cancel"> <input type="submit" name="save" value="Save"></td>
+			<td><input type="submit" name="save" value="Save"> <input type="submit" name="cancel" value="Cancel"></td>
 		</tr>
 	</table>
 	</form>
+	<script language="javaScript" TYPE="text/javascript">
+	<!--
+	document.forms[0].name.focus();
+	//-->
+	</script>
 	</cfoutput>
 </cfmodule>
 
