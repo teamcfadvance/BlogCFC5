@@ -17,6 +17,12 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: June 6, 2008 (BlogCFC 5.9.004)
+/org/delmore/coldfish.cfc - ColdFish should work in MX and MX7 now.
+/org/camden/blog.cfc - just the version
+/client/admin/category.cfm - Mod by Adam Tuttle, small fixes to the forms
+/client/includes/pods/feed.cfm - use CFBloggers for default feed, not MXNA
+
 Last Updated: May 22, 2008 (BlogCFC 5.9.003)
 /client/index.cfm - right link for technorati
 /client/rss.cfm - handle ensuring each cat in a list (if supplied) is 35 chars long
