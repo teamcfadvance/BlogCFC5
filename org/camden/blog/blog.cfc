@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.004">
+	<cfset version = "5.9.1">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -170,10 +170,12 @@
 		<cfargument name="website" type="string" required="true">
 		<cfargument name="comments" type="string" required="true">
 		<cfargument name="subscribe" type="boolean" required="true">
+		<cfargument name="subscribeonly" type="boolean" required="false" default="false">
 		
 		<cfset var newID = createUUID()>
 		<cfset var entry = "">
 		<cfset var spam = "">
+		<cfset var kill = createUUID()>
 		
 		<cfset arguments.comments = htmleditformat(arguments.comments)>
 		<cfset arguments.name = left(htmlEditFormat(arguments.name),50)>
@@ -191,26 +193,29 @@
 			<cfset variables.utils.throw("#arguments.entryid# does not allow for comments.")>
 		</cfif>
 		
-		<!--- check spam and IPs --->
-		<cfloop index="spam" list="#instance.trackbackspamlist#">
-			<cfif findNoCase(spam, arguments.comments) or 
-				  findNoCase(spam, arguments.name) or
-				  findNoCase(spam, arguments.website) or
-				  findNoCase(spam, arguments.email)>
-				<cfset variables.utils.throw("Comment blocked for spam.")>
-			</cfif>
-		</cfloop>
-		<cfloop list="#instance.ipblocklist#" index="spam">
-			<cfif spam contains "*" and reFindNoCase(replaceNoCase(spam, '.', '\.','all'), cgi.REMOTE_ADDR)>
-				<cfset variables.utils.throw("Comment blocked for spam.")>
-			<cfelseif spam is cgi.REMOTE_ADDR>		
-				<cfset variables.utils.throw("Comment blocked for spam.")>
-			</cfif>
-      	</cfloop>
-			
+		<!--- only check spam if not a sub --->
+		<cfif not arguments.subscribeonly>
+			<!--- check spam and IPs --->
+			<cfloop index="spam" list="#instance.trackbackspamlist#">
+				<cfif findNoCase(spam, arguments.comments) or 
+					  findNoCase(spam, arguments.name) or
+					  findNoCase(spam, arguments.website) or
+					  findNoCase(spam, arguments.email)>
+					<cfset variables.utils.throw("Comment blocked for spam.")>
+				</cfif>
+			</cfloop>
+			<cfloop list="#instance.ipblocklist#" index="spam">
+				<cfif spam contains "*" and reFindNoCase(replaceNoCase(spam, '.', '\.','all'), cgi.REMOTE_ADDR)>
+					<cfset variables.utils.throw("Comment blocked for spam.")>
+				<cfelseif spam is cgi.REMOTE_ADDR>		
+					<cfset variables.utils.throw("Comment blocked for spam.")>
+				</cfif>
+	      	</cfloop>
+		</cfif>
+					
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		<!--- RBB 11/02/2005:  Added website element --->
-		insert into tblblogcomments(id,entryidfk,name,email,website,comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>,posted,subscribe,moderated)
+		insert into tblblogcomments(id,entryidfk,name,email,website,comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>,posted,subscribe,moderated,killcomment,subscribeonly)
 		values(<cfqueryparam value="#newID#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 			   <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 			   <cfqueryparam value="#arguments.name#" maxlength="50">,
@@ -234,7 +239,9 @@
 			   		</cfif>
 				   <cfqueryparam value="#arguments.subscribe#" cfsqltype="CF_SQL_TINYINT">
 			   </cfif>
-			   ,<cfif instance.moderate>0<cfelse>1</cfif>
+			   ,<cfif instance.moderate>0<cfelse>1</cfif>,
+			   <cfqueryparam value="#kill#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
+			   <cfqueryparam value="#arguments.subscribeonly#" cfsqltype="CF_SQL_TINYINT">
 			   )
 		</cfquery>
 		
@@ -1024,7 +1031,7 @@
 		<cfset var getC = "">
 		
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select		id, entryidfk, name, email, website, comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>, posted, subscribe, moderated
+			select		id, entryidfk, name, email, website, comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>, posted, subscribe, moderated, killcomment
 			from		tblblogcomments
 			where		id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
@@ -1044,7 +1051,8 @@
 				hint="Gets comments for an entry.">
 		<cfargument name="id" type="uuid" required="false">
 		<cfargument name="sortdir" type="string" required="false" default="asc">
-
+		<cfargument name="includesubscribers" type="boolean" required="false" default="false">
+		
 		<cfset var getC = "">
 		<cfset var getO = "">
 		
@@ -1069,6 +1077,9 @@
 			<!--- added 12/5/2006 by Trent Richardson --->
 			<cfif instance.moderate>
 				and tblblogcomments.moderated = 1 
+			</cfif>
+			<cfif not arguments.includesubscribers>
+			and (subscribeonly = 0 or subscribeonly is null)		
 			</cfif>
 			order by	tblblogcomments.posted #arguments.sortdir#
 		</cfquery>
@@ -1352,6 +1363,7 @@
 				<cfif instance.moderate>
 					and moderated = 1 
 				</cfif>
+				and (subscribeonly = 0 or subscribeonly is null)
 				group by entryidfk
 			</cfquery>
 			<cfif getComments.recordCount>
@@ -1761,6 +1773,18 @@
 		
 	</cffunction>
 
+	<cffunction name="killComment" access="public" returnType="void" output="false">
+		<cfargument name="kid" type="uuid" required="true">
+		<cfset var q = "">
+
+		<!--- delete comment based on kill --->
+		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+			delete from tblblogcomments
+			where killcomment = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.kid#" maxlength="35">		
+		</cfquery>
+
+	</cffunction>
+	
 	<cffunction name="logSearch" access="private" returnType="void" output="false"
 				hint="Logs the search.">
 		<cfargument name="searchterm" type="string" required="true">
@@ -1916,6 +1940,9 @@ To unsubscribe, please go to this URL:
 		<!--- Both of these are related to comment moderation. --->		
 		<cfargument name="adminonly" type="boolean" required="false">
 		<cfargument name="noadmin" type="boolean" required="false">
+
+		<!--- used so we can get the kill switch --->
+		<cfargument name="commentid" type="string" required="false">
 		
 		<cfset var emailAddresses = structNew()>
 		<cfset var folks = "">
@@ -1924,7 +1951,8 @@ To unsubscribe, please go to this URL:
 		<cfset var address = "">
 		<cfset var ulink = "">
 		<cfset var theMessage = "">
-		
+		<cfset var comment = getComment(arguments.commentid)>
+
 		<!--- is it a valid entry? --->
 		<cfif not entryExists(arguments.entryid)>
 			<cfset variables.utils.throw("#entryid# isn't a valid entry.")>
@@ -1934,8 +1962,11 @@ To unsubscribe, please go to this URL:
 		<cfif not structKeyExists(arguments, "adminonly") or not arguments.adminonly>
 				
 			<!--- First, get everyone in the thread --->
-			<cfset comments = getComments(arguments.entryid)>
-	
+			<cfinvoke method="getComments" returnVariable="comments">
+				<cfinvokeargument name="id" value="#arguments.entryid#">
+				<cfinvokeargument name="includesubscribers" value="true">
+			</cfinvoke>
+
 			<cfloop query="comments">
 				<cfif isBoolean(subscribe) and subscribe and not structKeyExists(emailAddresses, email)>
 					<!--- We store the id of the comment, this is used in unsub  notices --->
@@ -1975,6 +2006,8 @@ To unsubscribe, please go to this URL:
 						"?commentID=#emailAddresses[address]#&email=#address#">
 					<cfelse>
 						<cfset ulink = "Not available for owner.">
+						<!--- We get a bit fancier now as well as we will be allowing for kill switches --->
+						<cfset ulink = ulink & "#chr(10)#Delete this comment: #getRootURL()#index.cfm?killcomment=#comment.killcomment#">
 					</cfif>
 					<cfset theMessage = replaceNoCase(arguments.message, "%unsubscribe%", ulink, "all")>
 				<cfelse>
