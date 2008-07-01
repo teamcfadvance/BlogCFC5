@@ -122,12 +122,17 @@ Created by Raymond Camden (ray@camdenfamily.com)
 			</cfoutput>
 			</cfsavecontent>
 	
-			<cfif not application.commentmoderation>
-				<cfset application.blog.notifyEntry(entry.id, trim(email), subject, form.email)>
-			<cfelse>
-				<cfset application.blog.notifyEntry(entry.id, trim(email), subject, form.email, true)>
-			</cfif>
-					
+			<cfinvoke component="#application.blog#" method="notifyEntry">
+				<cfinvokeargument name="entryid" value="#entry.id#">
+				<cfinvokeargument name="message" value="#trim(email)#">
+				<cfinvokeargument name="subject" value="#subject#">
+				<cfinvokeargument name="from" value="#form.email#">
+				<cfif application.commentmoderation>
+					<cfinvokeargument name="adminonly" value="true">
+				</cfif>										
+				<cfinvokeargument name="commentid" value="#commentid#">
+			</cfinvoke>
+								
 			<cfcatch>
 				<cfif cfcatch.message is not "Comment blocked for spam.">
 					<cfrethrow>
