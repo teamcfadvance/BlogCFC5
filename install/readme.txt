@@ -17,6 +17,18 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: July 1, 2008 (BlogCFC 5.9.1)
+/admin/entries.cfm - When we link to front end, use the nice SES url.
+/admin/index.cfm - Removed Google AdSense referal. When you update settings, I use text now, not a JS alert.
+/includes/main.properties and main_en_US.properties - new strings
+/tags/datatable.cfm - small mod to support change to /admin/entries.cfm
+/tags/layout.cfm - changes for subscription
+/addcomment.cfm - Changes to support one click comment kills
+/addsub.cfm - Initial support for comment subscriptions
+/Application.cfm - support one click comment kills
+/index.cfm - support comment subs
+/org/camden/blog - Support for stuff above
+
 Last Updated: June 6, 2008 (BlogCFC 5.9.004)
 /org/delmore/coldfish.cfc - ColdFish should work in MX and MX7 now.
 /org/camden/blog.cfc - just the version
