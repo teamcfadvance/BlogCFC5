@@ -59,29 +59,18 @@ order by views desc
 	
 	<h3>Support</h3>
 	<p>
-	If you find this blog useful, please consider visiting my <a href="http://www.amazon.com/o/registry/2TCL1D08EZEYE">wishlist</a>. If you decide
-	to use Google AdSense for your blog, please consider signing up via my referral link below:
-	</p>
-	<script type="text/javascript"><!--
-google_ad_client = "pub-1736437642005360";
-google_ad_width = 120;
-google_ad_height = 60;
-google_ad_format = "120x60_as_rimg";
-google_cpa_choice = "CAAQ-dOWhAIaCDhxzMnYataRKIHD93M";
-google_ad_channel = "1231919307";
-//--></script>
-	<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-	</script>
+	If you find this blog useful, please consider visiting my <a href="http://www.amazon.com/o/registry/2TCL1D08EZEYE">wishlist</a>.
 	</cfoutput>
+
+	<cfif structKeyExists(url, "settingsupdated")>
+		<cfoutput>
+		<h3>Settings Updated!</h3>
+		<p>
+		Your settings have been updated and your cache refreshed.
+		</p>
+		</cfoutput>
+	</cfif>
 		
 </cfmodule>
-
-<cfif structKeyExists(url, "settingsupdated")>
-	<cfoutput>
-	<script>
-	alert('Your settings have been updated and your cache refreshed.\nHave a nice day.');
-	</script>
-	</cfoutput>
-</cfif>
 
 <cfsetting enablecfoutputonly=false>
