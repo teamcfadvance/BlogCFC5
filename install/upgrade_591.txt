@@ -1,0 +1,19 @@
+This document explains what is required to update to BlogCFC 5.9.1.
+
+First, two new columns were added to the comments table. You can run the script below, or simply
+add the columns described below. The script is for MySQL. 
+
+ALTER TABLE `tblblogcomments`
+	ADD COLUMN `killcomment` varchar(35) NULL
+	
+ALTER TABLE `tblblogcomments`
+	ADD COLUMN `subscribeonly` tinyint(1) NULL
+	
+The killcomment column is a new UUID column. It used to allow admins to have a 'one click' delete from their emails. You don't have to logon.
+You just click the link in the email and the comment is deleted. Note that I did not bother telling you to write a script to add UUIDs to old
+comments. Since this feature is for emails only, and only for new comments, it doesn't really need it.
+
+The subscribeonly column is my hackish way to support folks subscribing to comments w/o having to write a new comment. This flag then
+hides it from the comment count and from the display. Again, you can leave the old values null. The SQL should be able to handle it.
+
+Please copy all files over the from the zip. Or look at readme.txt for a precise list of files changed.

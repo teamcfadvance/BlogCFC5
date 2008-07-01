@@ -18,6 +18,7 @@ If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o
 Install directions may be found in BlogCFC.doc/pdf.
 
 Last Updated: July 1, 2008 (BlogCFC 5.9.1)
+Please see upgrade_591.txt.
 /admin/entries.cfm - When we link to front end, use the nice SES url.
 /admin/index.cfm - Removed Google AdSense referal. When you update settings, I use text now, not a JS alert.
 /includes/main.properties and main_en_US.properties - new strings
