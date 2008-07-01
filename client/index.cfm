@@ -188,6 +188,8 @@
 					<cfoutput>
 					<div class="trackbackBody addCommentLink">
 					[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
+					[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]
+
 					</div>
 					</cfoutput>
 				</cfif>
