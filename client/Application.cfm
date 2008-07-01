@@ -145,5 +145,10 @@ Also note I didn't use Variables. Again, I'm tired of the typing.
 	<cfset session.viewedpages = structNew()>
 </cfif>
 
+<!--- KillSwitch for comments. We don't authenticate because this kill uuid is something only the admin can get. --->
+<cfif structKeyExists(url, "killcomment")>
+	<cfset application.blog.killComment(url.killcomment)>
+</cfif>
+
 <cfsetting enablecfoutputonly="false">
 
