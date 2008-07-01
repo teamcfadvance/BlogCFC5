@@ -29,6 +29,14 @@
 </cfif>
 <cfset entries = application.blog.getEntries(params)>
 
+<!--- modify to add a proper view col --->
+<!--- todo: only do rows in current view --->
+<cfset queryAddColumn(entries,"viewurl",arrayNew(1))>
+<cfloop query="entries">
+	<cfset vu = application.blog.makeLink(id)>
+	<cfset querySetCell(entries, "viewurl", vu, currentRow)>
+</cfloop>
+
 <cfmodule template="../tags/adminlayout.cfm" title="Entries">
 
 	<cfoutput>
@@ -57,7 +65,10 @@
 		<cfmodule template="../tags/datacol.cfm" colname="released" label="Released" format="yesno"/>
 		<cfmodule template="../tags/datacol.cfm" colname="posted" label="Posted" format="datetime" />
 		<cfmodule template="../tags/datacol.cfm" colname="views" label="Views" format="number" />
+		<!---
 		<cfmodule template="../tags/datacol.cfm" label="View" data="<a href=""#application.rooturl#/index.cfm?mode=entry&entry=$id$"">View</a>" sort="false"/>
+		--->
+		<cfmodule template="../tags/datacol.cfm" label="View" data="<a href=""$viewurl$"">View</a>"  sort="false" />
 	</cfmodule>
 	
 </cfmodule>
