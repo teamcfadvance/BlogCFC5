@@ -43,12 +43,12 @@
 	<p>
 	Your blog currently has 
 		<cfif entries.recordCount>
-		#entries.recordcount# entries
+		#entries.recordcount# entries.
 		<cfelseif entries.recordCount is 1>
-		1 entry
+		1 entry.
 		<cfelse>
-		0 entries
-		</cfif>.
+		0 entries.
+		</cfif>
 	</p>
 	
 	<p>
