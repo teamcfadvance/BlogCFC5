@@ -29,6 +29,7 @@ Please see upgrade_591.txt.
 /Application.cfm - support one click comment kills
 /index.cfm - support comment subs
 /org/camden/blog - Support for stuff above
+/admin/entries.cfm - fixed a silly space after N entries.
 
 Last Updated: June 6, 2008 (BlogCFC 5.9.004)
 /org/delmore/coldfish.cfc - ColdFish should work in MX and MX7 now.
