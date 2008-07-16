@@ -61,15 +61,6 @@ order by views desc
 	<p>
 	If you find this blog useful, please consider visiting my <a href="http://www.amazon.com/o/registry/2TCL1D08EZEYE">wishlist</a>.
 	</cfoutput>
-
-	<cfif structKeyExists(url, "settingsupdated")>
-		<cfoutput>
-		<h3>Settings Updated!</h3>
-		<p>
-		Your settings have been updated and your cache refreshed.
-		</p>
-		</cfoutput>
-	</cfif>
 		
 </cfmodule>
 
