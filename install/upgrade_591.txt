@@ -16,4 +16,14 @@ comments. Since this feature is for emails only, and only for new comments, it d
 The subscribeonly column is my hackish way to support folks subscribing to comments w/o having to write a new comment. This flag then
 hides it from the comment count and from the display. Again, you can leave the old values null. The SQL should be able to handle it.
 
+PodCasting Support:
+
+First you have to add the following to the entries table:
+
+ALTER TABLE `tblblogentries`
+	ADD COLUMN `summary` varchar(255) NULL, 
+	ADD COLUMN `subtitle` varchar(100) NULL, 
+	ADD COLUMN `keywords` varchar(100) NULL, 
+	ADD COLUMN `duration` varchar(10) NULL
+
 Please copy all files over the from the zip. Or look at readme.txt for a precise list of files changed.

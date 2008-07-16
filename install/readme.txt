@@ -17,7 +17,19 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
-Last Updated: July 1, 2008 (BlogCFC 5.9.1)
+Last Updated: July 16, 2008 (BlogCFC 5.9.1 - Beta)
+Please see upgrade_591.txt.
+/admin/entry.cfm - New podcasting form fields, support for manually setting enclosures
+/admin/index.cfm - this file no longer is run after updating settings
+/admin/settings.cfm - podcasting support
+/includes/audio-player/* - podcasting
+/includes/swfobject_modified.js
+/index.cfm - podcasting support, use ", " for category list
+/org/camden/blog.cfc, blog.ini.cfm - podcasting
+
+Note - Podcasting support provided by Brian Meloche!
+
+Last Updated: July 1, 2008 (BlogCFC 5.9.1 - Alpha)
 Please see upgrade_591.txt.
 /admin/entries.cfm - When we link to front end, use the nice SES url.
 /admin/index.cfm - Removed Google AdSense referal. When you update settings, I use text now, not a JS alert.
