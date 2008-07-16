@@ -46,6 +46,11 @@
 <!--- Call layout custom tag. --->
 <cfmodule template="tags/layout.cfm">
 
+	<!-- load up swfobject --->
+	<cfoutput>
+	<script src="includes/swfobject_modified.js" type="text/javascript"></script>
+	</cfoutput>
+	
 	<cfset lastDate = "">
 	<cfloop query="articles" startrow="#url.startrow#" endRow="#url.startrow+application.maxentries-1#">
 	
@@ -77,7 +82,7 @@
 		</cfoutput>
 		<cfset lastid = listLast(structKeyList(categories))>
 		<cfloop item="catid" collection="#categories#">
-			<cfoutput><a href="#application.blog.makeCategoryLink(catid)#">#categories[currentRow][catid]#</a><cfif catid is not lastid>,</cfif></cfoutput>
+			<cfoutput><a href="#application.blog.makeCategoryLink(catid)#">#categories[currentRow][catid]#</a><cfif catid is not lastid>, </cfif></cfoutput>
 		</cfloop>
 		<cfoutput>
 		</div>
@@ -86,6 +91,37 @@
 		<cfoutput>		
 		<div class="body">
 		#application.blog.renderEntry(body,false,enclosure)#
+		
+		<!--- STICK IN THE MP3 PLAYER --->
+		<cfif enclosure contains "mp3">
+			<cfset alternative=replace(getFileFromPath(enclosure),".mp3","") />
+			<div class="audioPlayerParent">
+				<div id="#alternative#" class="audioPlayer">
+				</div>
+			</div>
+			<script type="text/javascript">
+			// <![CDATA[
+				var flashvars = {};
+				// unique ID
+				flashvars.playerID = "#alternative#";
+				// load the file
+				flashvars.soundFile= "/enclosures/#getFileFromPath(enclosure)#";
+				// Load width and Height again to fix IE bug
+				flashvars.width = "470";
+				flashvars.height = "24";
+				// Add custom variables
+				var params = {};
+				params.allowScriptAccess = "sameDomain";
+				params.quality = "high";
+				params.allowfullscreen = "true";
+				params.wmode = "transparent";
+				var attributes = false;
+				swfobject.embedSWF("/includes/audio-player/player.swf", "#alternative#", "470", "24", "8.0.0","/includes/audio-player/expressinstall.swf", flashvars, params, attributes);
+			// ]]>
+			</script>
+		</cfif>
+
+		
 		<cfif len(morebody) and url.mode is not "entry">
 		<p align="right">
 		<a href="#application.blog.makeLink(id)###more">[#rb("more")#]</a>
