@@ -88,18 +88,26 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset form.password = form.dsn_password>
 		
 		<!--- make a list of the keys we will send. --->
-		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,trackbackspamlist,mailserver,mailusername,mailpassword,users,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot">
+		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,trackbackspamlist,mailserver,mailusername,mailpassword,users,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit">
 		<cfloop index="key" list="#keylist#">
 			<cfif structKeyExists(form, key)>
 				<cfset application.blog.setProperty(key, trim(form[key]))>
 			</cfif>
 		</cfloop>
-		<cflocation url="index.cfm?reinit=1&settingsupdated=1" addToken="false">
+		<cflocation url="settings.cfm?reinit=1&settingsupdated=1" addToken="false">
 	</cfif>
 </cfif>
 
 <cfmodule template="../tags/adminlayout.cfm" title="Settings">
 
+	<cfif structKeyExists(url, "settingsupdated")>
+		<cfoutput>
+		<p>
+		<b>Your settings have been updated and your cache refreshed.</b>
+		</p>
+		</cfoutput>
+	</cfif>
+	
 	<cfoutput>
 	<p>
 	Please edit your settings below. <b>Be warned:</b> A mistake here can make both the blog and this
@@ -257,6 +265,38 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<tr>
 			<td align="right">users:</td>
 			<td><input type="text" name="users" value="#form.users#" class="txtField" maxlength="255"></td>
+		</tr>
+		<tr>
+			<td colspan="2">The following entries are specifically related to podcasting.</td>
+		</tr>
+		<tr>
+			<td align="right">itunes Subtitle:</td>
+			<td><input type="text" name="itunessubtitle" value="#form.itunessubtitle#" class="txtField" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td align="right">itunes Summary:</td>
+			<td><input type="text" name="itunessummary" value="#form.itunessummary#" class="txtField" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td align="right">itunes Keywords:</td>
+			<td><input type="text" name="ituneskeywords" value="#form.ituneskeywords#" class="txtField" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td align="right">itunes Author:</td>
+			<td><input type="text" name="itunesauthor" value="#form.itunesauthor#" class="txtField" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td align="right">itunes Image:</td>
+			<td><input type="text" name="itunesimage" value="#form.itunesimage#" class="txtField" maxlength="50"></td>
+		</tr>
+		<tr>
+			<td align="right">itunes Explicit:</td>
+			<td>
+			<select name="itunesexplicit">
+			<option value="yes" <cfif form.itunesexplicit>selected</cfif>>Yes</option>
+			<option value="no" <cfif not form.itunesexplicit>selected</cfif>>No</option>
+			</select>
+			</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
