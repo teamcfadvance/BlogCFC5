@@ -27,6 +27,10 @@
 		<cfparam name="form.oldfilesize" default="#entry.filesize#">
 		<cfparam name="form.oldmimetype" default="#entry.mimetype#">
 		<cfparam name="form.released" default="#entry.released#">
+		<cfparam name="form.duration" default="#entry.duration#">
+		<cfparam name="form.keywords" default="#entry.keywords#">
+		<cfparam name="form.subtitle" default="#entry.subtitle#">
+		<cfparam name="form.summary" default="#entry.summary#">
 		<cfif form.released>
 			<cfparam name="form.sendemail" default="false">
 		<cfelse>
@@ -64,11 +68,16 @@
 		<cfparam name="form.oldfilesize" default="0">
 		<cfparam name="form.oldmimetype" default="">
 		<cfparam name="form.released" default="true">
+		<cfparam name="form.duration" default="">
+		<cfparam name="form.keywords" default="">
+		<cfparam name="form.subtitle" default="">
+		<cfparam name="form.summary" default="">
 		<cfparam name="form.relatedEntries" default="">
 		<cfparam name="form.sendemail" default="true">
 	</cfif>
 	<cfcatch>
-		<cflocation url="entries.cfm" addToken="false">
+		<!--- <cflocation url="entries.cfm" addToken="false"> --->
+		<cfrethrow>
 	</cfcatch>
 </cftry>
 
@@ -211,9 +220,9 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<cfset form.posted = dateAdd("h", -1 * application.blog.getProperty("offset"), form.posted)>
 
 		<cfif isDefined("variables.entry")>
-			<cfset application.blog.saveEntry(url.id, form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail)>
+			<cfset application.blog.saveEntry(url.id, form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail, form.duration, form.subtitle, form.summary, form.keywords )>
 		<cfelse>
-			<cfset url.id = application.blog.addEntry(form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail)>
+			<cfset url.id = application.blog.addEntry(form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail, form.duration, form.subtitle, form.summary, form.keywords )>
 		</cfif>
 		<!--- remove all old cats that arent passed in --->
 		<cfif url.id is not "new">
@@ -394,15 +403,20 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				</cfloop>
 				</select><br></cfif>
 				<input type="text" name="newcategory" value="#htmlEditFormat(form.newcategory)#" class="txtField" maxlength="50"> New Category</td>
-			</tr>		
-			<tr>
+			</tr>
+			<tr><td colspan="2"><br /></td></tr>		
+			<tr valign="top">
 				<td align="right">enclosure:</td>
 				<td>
 				<input type="hidden" name="oldenclosure" value="#form.oldenclosure#">
 				<input type="hidden" name="oldfilesize" value="#form.oldfilesize#">
 				<input type="hidden" name="oldmimetype" value="#form.oldmimetype#">
-				<cfif len(form.oldenclosure)>#listLast(form.oldenclosure,"/\")# <input type="submit" name="delete_enclosure" value="#application.resourceBundle.getResource("deleteenclosure")#"></cfif>
-				<input type="file" name="enclosure" style="width:100%">
+				<input type="file" name="enclosure" style="width:100%"> 
+				or manually enter a file name (must exist under encloses folder) 
+				<input type="text" name="manualenclosure">
+				
+				<cfif len(form.oldenclosure)><br /><br />#listLast(form.oldenclosure,"/\")# <input type="submit" name="delete_enclosure" value="#application.resourceBundle.getResource("deleteenclosure")#"></cfif>
+
 				</td>
 			</tr>
 			<tr>
@@ -464,7 +478,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 						<option value="#id#">#title#</option>
 						</cfloop>
 						</cfif>
-						</select>			        	
+						</select>
 						<input type="button" value="Remove Selected" onClick="removeSelected()">
 			        	</td>
 			        </tr>
@@ -475,6 +489,22 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			<tr>
 				<td align="right">alias:</td>
 				<td><input type="text" name="alias" value="#form.alias#" class="txtField" maxlength="100"></td>
+			</tr>
+			<tr>
+				<td align="right">iTunes Subtitle:</td>
+				<td><input type="text" name="subtitle" value="#form.subtitle#" class="txtField" maxlength="100"></td>
+			</tr>
+			<tr>
+				<td align="right">iTunes Keywords:</td>
+				<td><input type="text" name="keywords" value="#form.keywords#" class="txtField" maxlength="100"></td>
+			</tr>
+			<tr>
+				<td align="right">iTunes Summary:</td>
+				<td></cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="summary" value="#htmlEditFormat(form.summary)#" class="txtArea"><cfoutput></td>
+			</tr>
+			<tr>
+				<td align="right">duration:</td>
+				<td><input type="text" name="duration" value="#form.duration#" class="txtField" maxlength="10"></td>
 			</tr>
 			<tr>
 				<td align="right">allow comments:</td>
