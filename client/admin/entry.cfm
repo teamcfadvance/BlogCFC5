@@ -120,6 +120,24 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<cfset form.oldfilesize = cffile.filesize>
 		<cfset form.oldmimetype = cffile.contenttype & "/" & cffile.contentsubtype>
 	</cfif>
+<cfelseif isDefined("form.manualenclosure") and len(trim(form.manualenclosure))>
+	<cfset destination = expandPath("../enclosures")>
+	<!--- first off, potentially make the folder --->
+	<cfif not directoryExists(destination)>
+		<cfdirectory action="create" directory="#destination#">
+	</cfif>
+	<cfif fileExists(destination & "/" & form.manualenclosure)>
+		<cfset form.oldenclosure = destination & "/" & form.manualenclosure>
+		<cfdirectory action="list" directory="#destination#" filter="#form.manualenclosure#" name="getfile">
+		<cfset form.oldfilesize = getfile.size>
+		<!---
+		Thanks: http://www.coldfusionmuse.com/index.cfm/2006/8/2/mime.types
+		--->
+		<cfset form.oldmimetype = getPageContext().getServletContext().getMimeType(form.oldenclosure)>
+		<cfif not isDefined("form.oldmimetype")>
+			<cfset form.oldmimetype = "application/unknown">
+		</cfif>
+	</cfif>
 </cfif>
 
 <cfif not isNumeric(form.oldfilesize)>
@@ -402,7 +420,11 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				<option value="#categoryID#" <cfif isDefined("form.categories") and listFind(form.categories,categoryID)>selected</cfif>>#categoryName#</option>
 				</cfloop>
 				</select><br></cfif>
-				<input type="text" name="newcategory" value="#htmlEditFormat(form.newcategory)#" class="txtField" maxlength="50"> New Category</td>
+				 </td>
+			</tr>
+			<tr valign="top">
+				<td align="right">new category:</td>
+				<td><input type="text" name="newcategory" value="#htmlEditFormat(form.newcategory)#" class="txtField" maxlength="50"></td>
 			</tr>
 			<tr><td colspan="2"><br /></td></tr>		
 			<tr valign="top">
