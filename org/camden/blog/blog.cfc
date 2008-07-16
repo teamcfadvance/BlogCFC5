@@ -737,7 +737,8 @@
 		<cfset var cat = "">
 		<cfset var lastid = "">
 		<cfset var catid = "">
-
+		<cfset var catlist = "">
+		
 		<!--- Right now, we force this in. Useful to limit throughput of RSS feed. I may remove this later. --->
 		<cfif (structKeyExists(arguments.params,"maxEntries") and arguments.params.maxEntries gt 15) or not structKeyExists(arguments.params,"maxEntries")>
 			<cfset arguments.params.maxEntries = 15>
@@ -796,7 +797,11 @@
 			<description><cfif arguments.mode is "short" and len(REReplaceNoCase(body,"<[^>]*>","","ALL")) gte arguments.excerpt>#xmlFormat(left(REReplaceNoCase(body,"<[^>]*>","","ALL"),arguments.excerpt))#...<cfelse>#xmlFormat(body)#</cfif><cfif len(morebody)> [More]</cfif></description>
 			<link>#xmlFormat(makeLink(id))#</link>
 			<dc:date>#dateStr#</dc:date>
-			<dc:subject>#xmlFormat(categoryNames)#</dc:subject>
+			<cfloop item="catid" collection="#categories#">
+				<cfset catlist = listAppend(catlist, xmlFormat(categories[currentRow][catid]))>
+			</cfloop>
+			<dc:subject>#xmlFormat(catlist)#</dc:subject>
+
 			</item>
 			</cfoutput>
 		 	</cfloop>

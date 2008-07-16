@@ -26,7 +26,7 @@ Please see upgrade_591.txt.
 /includes/swfobject_modified.js
 /index.cfm - podcasting support, use ", " for category list
 /org/camden/blog.cfc, blog.ini.cfm - podcasting
-
+/org/camden/blog.cfc - rss feeds, version 1, were borked - thanks Rob Brooks-Bilson
 Note - Podcasting support provided by Brian Meloche!
 
 Last Updated: July 1, 2008 (BlogCFC 5.9.1 - Alpha)
