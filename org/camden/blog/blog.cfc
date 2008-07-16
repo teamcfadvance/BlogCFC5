@@ -87,6 +87,12 @@
 			<cfset instance.filebrowse = variables.utils.configParam(variables.cfgFile, arguments.name, "filebrowse")>
 			<cfset instance.settings = variables.utils.configParam(variables.cfgFile, arguments.name, "settings")>
 			<cfset instance.imageroot = variables.utils.configParam(variables.cfgFile, arguments.name, "imageroot")>									
+			<cfset instance.itunesSubtitle = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesSubtitle")>
+			<cfset instance.itunesSummary = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesSummary")>
+			<cfset instance.itunesKeywords = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesKeywords")>
+			<cfset instance.itunesAuthor = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesAuthor")>
+			<cfset instance.itunesImage = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesImage")>
+			<cfset instance.itunesExplicit = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesExplicit")>
 		</cfif>
 				
 		<!--- Name the blog --->
@@ -274,7 +280,11 @@
 		<cfargument name="released" type="boolean" required="false" default="true">
 		<cfargument name="relatedEntries" type="string" required="false" default="">
 		<cfargument name="sendemail" type="boolean" required="false" default="true">
-
+		<cfargument name="duration" type="string" required="false" default="">
+		<cfargument name="subtitle" type="string" required="false" default="">
+		<cfargument name="summary" type="string" required="false" default="">
+		<cfargument name="keywords" type="string" required="false" default="">
+		
 		<cfset var id = createUUID()>
 		<cfset var theURL = "">
 				
@@ -282,7 +292,7 @@
 			insert into tblblogentries(id,title,body,posted
 				<cfif len(arguments.morebody)>,morebody</cfif>
 				<cfif len(arguments.alias)>,alias</cfif>
-				,username,blog,allowcomments,enclosure,filesize,mimetype,released,views,mailed)
+				,username,blog,allowcomments,enclosure,summary,subtitle,keywords,duration,filesize,mimetype,released,views,mailed)
 			values(
 				<cfqueryparam value="#id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 				<cfqueryparam value="#arguments.title#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">,
@@ -317,6 +327,10 @@
 					<cfqueryparam value="#arguments.allowcomments#" cfsqltype="CF_SQL_TINYINT">
 			   </cfif>		   
    				,<cfqueryparam value="#arguments.enclosure#" cfsqltype="CF_SQL_VARCHAR" maxlength="255">
+				,<cfqueryparam value="#arguments.summary#" cfsqltype="CF_SQL_VARCHAR" maxlength="255">
+				,<cfqueryparam value="#arguments.subtitle#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+				,<cfqueryparam value="#arguments.keywords#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+				,<cfqueryparam value="#arguments.duration#" cfsqltype="CF_SQL_VARCHAR" maxlength="10">	
    				,<cfqueryparam value="#arguments.filesize#" cfsqltype="CF_SQL_NUMERIC">
    				,<cfqueryparam value="#arguments.mimetype#" cfsqltype="CF_SQL_VARCHAR" maxlength="255">
    				,<cfif instance.blogDBType is not "MYSQL" and instance.blogDBType is not "ORACLE">
@@ -798,7 +812,8 @@
 			<cfoutput>
 			<?xml version="1.0" encoding="utf-8"?>
 			
-			<rss version="2.0">
+			<rss version="2.0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns##" xmlns:cc="http://web.resource.org/cc/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+
 			<channel>
 			<title>#xmlFormat(instance.blogTitle)##xmlFormat(arguments.additionalTitle)#</title>
 			<link>#xmlFormat(instance.blogURL)#</link>
@@ -810,6 +825,28 @@
 			<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 			<managingEditor>#xmlFormat(instance.owneremail)#</managingEditor>
 			<webMaster>#xmlFormat(instance.owneremail)#</webMaster>
+			<itunes:subtitle>#xmlFormat(instance.itunesSubtitle)#</itunes:subtitle>
+			<itunes:summary>#xmlFormat(instance.itunesSummary)#</itunes:summary>
+			<itunes:category text="Technology" />
+			<itunes:category text="Technology">
+				<itunes:category text="Podcasting" />
+			</itunes:category>
+			<itunes:category text="Technology">
+				<itunes:category text="Tech News" />
+			</itunes:category>
+			<itunes:keywords>#xmlFormat(instance.itunesKeywords)#</itunes:keywords>
+			<itunes:author>#xmlFormat(instance.itunesAuthor)#</itunes:author>
+			<itunes:owner>
+				<itunes:email>#xmlFormat(instance.owneremail)#</itunes:email>
+				<itunes:name>#xmlFormat(instance.itunesAuthor)#</itunes:name>
+			</itunes:owner>
+			<itunes:image href="#xmlFormat(instance.itunesImage)#" />
+			<image>
+				<url>#xmlFormat(instance.itunesImage)#</url>
+				<title>#xmlFormat(instance.blogTitle)#</title>
+				<link>#xmlFormat(instance.blogURL)#</link>
+			</image>
+			<itunes:explicit>#xmlFormat(instance.itunesExplicit)#</itunes:explicit>
 			</cfoutput>
 			</cfsavecontent>
 		
@@ -835,6 +872,15 @@
 				<guid>#xmlFormat(makeLink(id))#</guid>
 				<cfif len(enclosure)>
 				<enclosure url="#xmlFormat("#rootURL#/enclosures/#getFileFromPath(enclosure)#")#" length="#filesize#" type="#mimetype#"/>
+				<cfif mimetype IS "audio/mpeg">
+				<itunes:author>#xmlFormat(instance.itunesAuthor)#</itunes:author>
+				<itunes:explicit>#xmlFormat(instance.itunesExplicit)#</itunes:explicit>
+				<itunes:duration>#xmlFormat(duration)#</itunes:duration>
+				<itunes:keywords>#xmlFormat(keywords)#</itunes:keywords>
+				<itunes:subtitle>#xmlFormat(subtitle)#</itunes:subtitle>
+				<itunes:summary>#xmlFormat(summary)#</itunes:summary>
+				<itunes:image href="#xmlFormat(instance.itunesImage)#" />
+				</cfif>
 				</cfif>
 			</item>
 			</cfoutput>
@@ -1127,7 +1173,8 @@
 						</cfif>
 						tblblogentries.body, 
 						tblblogentries.morebody, tblblogentries.alias, tblusers.name, tblblogentries.allowcomments,
-						tblblogentries.enclosure, tblblogentries.filesize, tblblogentries.mimetype, tblblogentries.released, tblblogentries.mailed
+						tblblogentries.enclosure, tblblogentries.filesize, tblblogentries.mimetype, tblblogentries.released, tblblogentries.mailed,
+						tblblogentries.summary, tblblogentries.keywords, tblblogentries.subtitle, tblblogentries.duration
 			from		tblblogentries, tblusers
 			where		tblblogentries.id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and			tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
@@ -1262,7 +1309,8 @@
 					date_add(posted, interval #instance.offset# hour) as posted, 
 					</cfif>
 					tblusers.name, tblblogentries.allowcomments,
-					tblblogentries.enclosure, tblblogentries.filesize, tblblogentries.mimetype, tblblogentries.released, tblblogentries.views
+					tblblogentries.enclosure, tblblogentries.filesize, tblblogentries.mimetype, tblblogentries.released, tblblogentries.views,
+					tblblogentries.summary, tblblogentries.subtitle, tblblogentries.keywords, tblblogentries.duration
 				<cfif arguments.params.mode is "full">, tblblogentries.body, tblblogentries.morebody</cfif>
 			from	tblblogentries, tblusers
 			<cfif structKeyExists(arguments.params,"byCat")>,tblblogentriescategories</cfif>
@@ -2158,6 +2206,11 @@ To unsubscribe, please go to this URL:
 			<cfset rootURL = replace(instance.blogURL, "index.cfm", "")>
 			<cfset imgURL = "#rootURL#enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">
 			<cfset arguments.string = "<div class=""autoImage""><img src=""#imgURL#""></div>" & arguments.string>
+		<!--- bmeloche - 06/13/2008 - Adding podcast support. --->
+		<cfelseif len(arguments.enclosure) and listFindNoCase("mp3", listLast(arguments.enclosure, "."))>
+			<cfset rootURL = replace(instance.blogURL, "index.cfm", "")>
+			<cfset imgURL = "#rootURL#enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">
+			<cfset arguments.string = "<div id=""#urlEncodedFormat(getFileFromPath(enclosure))#""></div>" & arguments.string>
 		</cfif>
 		
 		<!--- textblock support --->
@@ -2272,6 +2325,12 @@ To unsubscribe, please go to this URL:
 		<cfargument name="released" type="boolean" required="false" default="true">
 		<cfargument name="relatedPPosts" type="string" required="true" default="">
 		<cfargument name="sendemail" type="boolean" required="false" default="true">
+		<cfargument name="duration" type="string" required="false" default="">
+		<cfargument name="subtitle" type="string" required="false" default="">
+		<cfargument name="summary" type="string" required="false" default="">
+		<cfargument name="keywords" type="string" required="false" default="">
+
+		
 		<cfset var theURL = "">
 		
 		<cfif not entryExists(arguments.id)>
@@ -2320,6 +2379,10 @@ To unsubscribe, please go to this URL:
 						,allowcomments = <cfqueryparam value="#arguments.allowcomments#" cfsqltype="CF_SQL_TINYINT">	
 			   		</cfif>		   
 			   		,enclosure = <cfqueryparam value="#arguments.enclosure#" cfsqltype="CF_SQL_CHAR" maxlength="255">
+					,summary = <cfqueryparam value="#arguments.summary#" cfsqltype="CF_SQL_VARCHAR" maxlength="255">
+					,subtitle = <cfqueryparam value="#arguments.subtitle#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+					,keywords = <cfqueryparam value="#arguments.keywords#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+					,duration = <cfqueryparam value="#arguments.duration#" cfsqltype="CF_SQL_VARCHAR" maxlength="10">			   		
 	  				,filesize = <cfqueryparam value="#arguments.filesize#" cfsqltype="CF_SQL_NUMERIC">
    					,mimetype = <cfqueryparam value="#arguments.mimetype#" cfsqltype="CF_SQL_VARCHAR" maxlength="255">
    					<cfif instance.blogDBType is not "MYSQL" AND instance.blogDBType is not "ORACLE">
