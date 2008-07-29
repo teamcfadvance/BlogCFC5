@@ -17,6 +17,9 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: July 29, 2008 (BlogCFC 5.9.1 - Beta)
+/client/includes/udf.cfm - isEmail updated for new TLDs and + emails (scott bennett)
+
 Last Updated: July 16, 2008 (BlogCFC 5.9.1 - Beta)
 Please see upgrade_591.txt.
 /admin/entry.cfm - New podcasting form fields, support for manually setting enclosures
