@@ -4,19 +4,23 @@ function titleCase(str) {
 }
 
 /**
- * Tests passed value to see if it is a valid e-mail address (supports subdomain nesting and new top-level domains).
- * Update by David Kearns to support '
- * SBrown@xacting.com pointing out regex still wasn't accepting ' correctly.
- * 
- * @param str 	 The string to check. (Required)
- * @return Returns a boolean. 
- * @author Jeff Guillaume (jeff@kazoomis.com) 
- * @version 2, August 15, 2002 
- */
-function IsEmail(str) {
-        //supports new top level tlds
-if (REFindNoCase("^['_a-z0-9-]+(\.['_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*\.(([a-z]{2,3})|(aero|coop|info|museum|name))$",str)) return TRUE;
-	else return FALSE;
+* Tests passed value to see if it is a valid e-mail address (supports subdomain nesting and new top-level domains).
+* Update by David Kearns to support '
+* SBrown@xacting.com pointing out regex still wasn't accepting ' correctly.
+* More TLDs
+* Version 4 by P Farrel, supports limits on u/h
+* Added mobi
+* v6 more tlds
+*
+* @param str      The string to check. (Required)
+* @return Returns a boolean.
+* @author Jeff Guillaume (SBrown@xacting.comjeff@kazoomis.com)
+* @version 6, July 29, 2008
+* Note this is different from CFLib as it has the "allow +" support
+*/
+function isEmail(str) {
+return (REFindNoCase("^['_a-z0-9-]+(\.['_a-z0-9-]+)*(\+['_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*\.(([a-z]{2,3})|(aero|asia|biz|cat|coop|info|museum|name|jobs|post|pro|tel|travel|mobi))$",arguments.str) AND len(listGetAt(arguments.str, 1, "@")) LTE 64 AND
+len(listGetAt(arguments.str, 2, "@")) LTE 255) IS 1;
 }
 
 function isLoggedIn() {
