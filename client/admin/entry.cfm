@@ -496,9 +496,13 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			        	<input type="hidden" name="relatedentries" value="#form.relatedentries#">
 						<select id="cbRelatedEntries" name="cbRelatedEntries" multiple="multiple" size="4" style="width: 70%;" >
 						<cfif structKeyExists(variables, "relatedEntries")>
-						<cfloop query="relatedEntries">
-						<option value="#id#">#title#</option>
-						</cfloop>
+							<cfloop query="relatedEntries">
+							<option value="#id#">#title#</option>
+							</cfloop>
+						<cfelse>
+							<cfloop list="#form.relatedentries#" index="i">
+							<option value="#i#">#application.blog.getEntry(i).title#</option>
+							</cfloop>
 						</cfif>
 						</select>
 						<input type="button" value="Remove Selected" onClick="removeSelected()">
