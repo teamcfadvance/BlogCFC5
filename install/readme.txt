@@ -19,6 +19,7 @@ Install directions may be found in BlogCFC.doc/pdf.
 
 Last Updated: July 29, 2008 (BlogCFC 5.9.1 - Beta)
 /client/includes/udf.cfm - isEmail updated for new TLDs and + emails (scott bennett)
+/client/admin/entry.cfm - If you pick related entries and have an error, your picks are lost. Fix by Spencer Strickland.
 
 Last Updated: July 16, 2008 (BlogCFC 5.9.1 - Beta)
 Please see upgrade_591.txt.
