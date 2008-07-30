@@ -41,7 +41,7 @@ Created by Raymond Camden (ray@camdenfamily.com)
 			</cfoutput>
 	</cfsavecontent>
 	
-	<cfset application.blog.notifyEntry(entryid=c.entryidfk, message=trim(email), subject=subject, from=c.email, noadmin=true)>
+	<cfset application.blog.notifyEntry(entryid=c.entryidfk, message=trim(email), subject=subject, from=c.email, noadmin=true, commentid=c.id)>
 
 </cfif>
 
