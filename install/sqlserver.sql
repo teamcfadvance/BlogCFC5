@@ -92,7 +92,12 @@ CREATE TABLE [dbo].[tblBlogEntries] (
 	[mimetype] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
 	[views] [int] NULL ,
 	[released] [bit] NULL ,
-	[mailed] [bit] NULL 
+	[mailed] [bit] NULL,
+	[summary] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[subtitle] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[keywords] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[duration] [nvarchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+	
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 

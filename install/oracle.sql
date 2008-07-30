@@ -38,7 +38,11 @@ CREATE TABLE TBLBLOGENTRIES
   MIMETYPE       VARCHAR2(255 BYTE),
   VIEWS          NUMBER(11)                     DEFAULT 0,
   RELEASED       NUMBER(1)                      DEFAULT 0,
-  MAILED         NUMBER(1)                      DEFAULT 0
+  MAILED         NUMBER(1)                      DEFAULT 0,
+  SUMMARY          VARCHAR2(255 BYTE),
+  SUBTITLE          VARCHAR2(100 BYTE),
+  KEYWORDS          VARCHAR2(100 BYTE),
+  DURATION          VARCHAR2(10 BYTE)
 );
 
 
