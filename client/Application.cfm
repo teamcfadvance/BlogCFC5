@@ -149,6 +149,11 @@ Also note I didn't use Variables. Again, I'm tired of the typing.
 <cfif structKeyExists(url, "killcomment")>
 	<cfset application.blog.killComment(url.killcomment)>
 </cfif>
+<!--- Quick approval for comments --->
+<cfif structKeyExists(url, "approvecomment")>
+	<cfset application.blog.approveComment(url.approvecomment)>
+</cfif>
+
 
 <cfsetting enablecfoutputonly="false">
 

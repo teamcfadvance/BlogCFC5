@@ -2061,6 +2061,10 @@ To unsubscribe, please go to this URL:
 						<cfset ulink = "Not available for owner.">
 						<!--- We get a bit fancier now as well as we will be allowing for kill switches --->
 						<cfset ulink = ulink & "#chr(10)#Delete this comment: #getRootURL()#index.cfm?killcomment=#comment.killcomment#">
+						<!--- also allow for approving --->
+						<cfif instance.moderate>
+							<cfset ulink = ulink & "#chr(10)#Approve this comment: #getRootURL()#index.cfm?approvecomment=#comment.id#">
+						</cfif>
 					</cfif>
 					<cfset theMessage = replaceNoCase(arguments.message, "%unsubscribe%", ulink, "all")>
 				<cfelse>
