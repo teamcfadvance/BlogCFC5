@@ -71,8 +71,9 @@ CREATE TABLE [dbo].[tblBlogComments] (
 	[posted] [datetime] NULL ,
 	[subscribe] [bit] NULL ,
 	[website] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	[moderated] [bit] NULL
-	 
+	[moderated] [bit] NULL,
+	[killcomment] [nvarchar] (35) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[subscribeonly] [bit] NULL 	
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
