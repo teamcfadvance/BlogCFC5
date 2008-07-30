@@ -17,11 +17,16 @@ Copyright 2006 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: July 30, 2008 (BlogCFC 5.9.1)
+Lots of changes. Please see update_591.txt for detailed instructions.
+
 Last Updated: July 29, 2008 (BlogCFC 5.9.1 - Beta)
 /client/includes/udf.cfm - isEmail updated for new TLDs and + emails (scott bennett)
 /client/admin/entry.cfm - If you pick related entries and have an error, your picks are lost. Fix by Spencer Strickland.
 /org/camden/blog/blog.cfc, /client/Application.cfm - You can approve comments via email (thanks Brian Kotek)
 /client/search.cfm - When you search and match X, don't change the case when you highlight
+/client/admin/moderate.cfm - fixes a bug identified here: http://blogcfc.riaforge.org/index.cfm?event=page.issueedit&issueid=51113EBD-C825-717F-5502AC1A0F6EAF79
+
 
 Last Updated: July 16, 2008 (BlogCFC 5.9.1 - Beta)
 Please see upgrade_591.txt.
