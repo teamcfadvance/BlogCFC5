@@ -89,8 +89,18 @@
 				<cfset excerpt = newbody>
 			</cfif>	
 
-			<cfset excerpt = replaceNoCase(excerpt,form.search,"<span class='highlight'>#form.search#</span>","all")>
-			<cfset newtitle = replaceNoCase(title,form.search,"<span class='highlight'>#form.search#</span>","all")>
+			<!---
+			We switched to regular expressions to highlight our search terms. However, it is possible for someone to search 
+			for a string that isn't a valid regex. So if we fail, we just don't bother highlighting.
+			--->
+			<cftry>
+				<cfset excerpt = reReplaceNoCase(excerpt, "(#form.search#)", "<span class='highlight'>\1</span>","all")>
+				<cfset newtitle = reReplaceNoCase(title, "(#form.search#)", "<span class='highlight'>\1</span>","all")>
+				<cfcatch>
+					<!--- only need to set newtitle, excerpt already exists. --->
+					<cfset newtitle = title>
+				</cfcatch>
+			</cftry>			
 			<p>
 			<b><a href="#application.blog.makeLink(id)#">#newtitle#</a></b> (#application.localeUtils.dateLocaleFormat(posted)# #application.localeUtils.timeLocaleFormat(posted)#)<br />
 			<br />
