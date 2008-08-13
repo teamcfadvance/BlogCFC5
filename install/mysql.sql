@@ -59,9 +59,9 @@ DROP TABLE IF EXISTS `tblblogentries`;
 CREATE TABLE `tblblogentries` (
   `id` varchar(35) character set latin1 NOT NULL default '',
   `title` varchar(100) character set latin1 NOT NULL default '',
-  `body` text character set latin1 NOT NULL,
+  `body` longtext character set latin1 NOT NULL,
   `posted` datetime NOT NULL default '0000-00-00 00:00:00',
-  `morebody` text character set latin1,
+  `morebody` longtext character set latin1,
   `alias` varchar(100) character set latin1 default NULL,
   `username` varchar(50) character set latin1 default NULL,
   `blog` varchar(50) character set latin1 NOT NULL default '',
