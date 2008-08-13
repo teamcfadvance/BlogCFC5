@@ -199,6 +199,8 @@
 		</cfif>
 		
 		<cfset type="response">
+
+		<cfmodule template="../tags/scopecache.cfm" scope="application" clearall="true">
 		
 	</cfcase>
 		
