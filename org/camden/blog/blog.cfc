@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.1">
+	<cfset version = "5.9.1.001">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1866,7 +1866,8 @@
 			<cfsavecontent variable="theMessage">
 			<cfoutput>
 <h2>#entry.title#</h2>
-<b>URL:</b> <a href="#makeLink(entry.id)#">#makeLink(entry.id)#</a><br />			
+<b>URL:</b> <a href="#makeLink(entry.id)#">#makeLink(entry.id)#</a><br />
+<b>Author:</b> #entry.name#<br />
 
 #renderEntry(entry.body,false,entry.enclosure)#<cfif len(entry.morebody)> 
 <a href="#makeLink(entry.id)#">[Continued at Blog]</a></cfif>
