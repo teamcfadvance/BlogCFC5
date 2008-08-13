@@ -93,7 +93,7 @@
 		</tr>
 		<tr valign="top">
 			<td align="right">body:</td>
-			<td><textarea name="body" class="txtArea">#form.body#</textarea></td>
+			<td></cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" class="txtArea" /><cfoutput></td>
 		</tr>
 		<cfif len(form.alias)>
 		<tr valign="top">
