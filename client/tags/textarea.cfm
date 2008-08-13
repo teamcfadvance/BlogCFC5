@@ -34,3 +34,4 @@
 </cfoutput>
 
 <cfsetting enablecfoutputonly=false>
+<cfexit method="exitTag" />
