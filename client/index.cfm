@@ -48,7 +48,7 @@
 
 	<!-- load up swfobject --->
 	<cfoutput>
-	<script src="includes/swfobject_modified.js" type="text/javascript"></script>
+	<script src="#application.rooturl#/includes/swfobject_modified.js" type="text/javascript"></script>
 	</cfoutput>
 	
 	<cfset lastDate = "">
@@ -105,7 +105,7 @@
 				// unique ID
 				flashvars.playerID = "#alternative#";
 				// load the file
-				flashvars.soundFile= "/enclosures/#getFileFromPath(enclosure)#";
+				flashvars.soundFile= "#application.rooturl#/enclosures/#getFileFromPath(enclosure)#";
 				// Load width and Height again to fix IE bug
 				flashvars.width = "470";
 				flashvars.height = "24";
@@ -116,7 +116,7 @@
 				params.allowfullscreen = "true";
 				params.wmode = "transparent";
 				var attributes = false;
-				swfobject.embedSWF("/includes/audio-player/player.swf", "#alternative#", "470", "24", "8.0.0","/includes/audio-player/expressinstall.swf", flashvars, params, attributes);
+				swfobject.embedSWF("#application.rooturl#/includes/audio-player/player.swf", "#alternative#", "470", "24", "8.0.0","/includes/audio-player/expressinstall.swf", flashvars, params, attributes);
 			// ]]>
 			</script>
 		</cfif>
