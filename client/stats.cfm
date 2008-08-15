@@ -46,9 +46,12 @@
 	</cfquery>
 
 	<cfquery name="getTopViews" datasource="#dsn#" username="#username#" password="#password#">
-		select		<cfif dbtype is not "mysql">top 10</cfif> id, title, views
+		select		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10</cfif> id, title, views
 		from		tblblogentries
 		where 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		<cfif dbtype is "oracle">
+		and		rownum <= 10
+		</cfif>
 		order by	views desc
 		<cfif dbtype is "mysql">limit 10</cfif>		
 	</cfquery>
