@@ -102,10 +102,13 @@
 	<!--- gets num of comments per entry, top 10 --->
 	<cfquery name="topCommentedEntries" datasource="#dsn#" username="#username#" password="#password#">
 		select 
-		<cfif dbtype is not "mysql">top 10</cfif>
+		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10</cfif>
 		tblblogentries.id, tblblogentries.title, count(tblblogcomments.id) as commentcount
 		from			tblblogentries, tblblogcomments
 		where			tblblogcomments.entryidfk = tblblogentries.id
+		<cfif dbtype is "oracle">
+		and		rownum <= 10
+		</cfif>		
 		and				tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif application.commentmoderation>
 		and				tblblogcomments.moderated = 1
@@ -123,12 +126,15 @@
 	<!--- gets num of comments per category, top 10 --->
 	<cfquery name="topCommentedCategories" datasource="#dsn#" username="#username#" password="#password#">
 		select 
-		<cfif dbtype is not "mysql">top 10</cfif>
+		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10</cfif>
 						tblblogcategories.categoryid, 
 						tblblogcategories.categoryname, 
 						count(tblblogcomments.id) as commentcount
 		from			tblblogcategories, tblblogcomments, tblblogentriescategories
 		where			tblblogcomments.entryidfk = tblblogentriescategories.entryidfk
+		<cfif dbtype is "oracle">
+		and		rownum <= 10
+		</cfif>		
 		and				tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
 		and				tblblogcategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif application.commentmoderation>
