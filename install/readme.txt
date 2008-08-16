@@ -1,5 +1,5 @@
 LICENSE 
-Copyright 2006 Raymond Camden
+Copyright 2008 Raymond Camden
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,6 +16,15 @@ Copyright 2006 Raymond Camden
    
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
+
+Last Updated: August 13, 2008 (BlogCFC 5.9.1.001)
+/client/stats.cfm - Oracle fixes (thanks to Steven Tomcavage)
+/client/index.cfm - Forgot to use #application.rooturl# in podcasting support - thanks to Marion Bass
+/org/camden/blog/blog.cfc - Include author name in emails
+/install/mysql.sql - Changed the text fields in entries (body, morebody) to longtext. It may be a good idea for you to manually update your table.
+/xmlrpc/xmlrpc.cfm - when deleting, clear cache
+/client/tags/textarea.cfm - make the custom tag correctly handle a closing tag
+/client/admin/page.cfm - Use the textarea custom tag. For those who modded textarea to use an RTE, it adds RTE to the page editor.
 
 Last Updated: July 30, 2008 (BlogCFC 5.9.1)
 Lots of changes. Please see update_591.txt for detailed instructions.
