@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.1.001">
+	<cfset version = "5.9.1.002">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1090,7 +1090,7 @@
 		<!--- DS 8/22/06: if this is oracle, do a q of q to return the data with column named "comment" --->
 		<cfif instance.blogDBType is "ORACLE">
 			<cfquery name="getC" dbtype="query">
-				select		id, entryidfk, name, email, website, comments AS comment, posted, subscribe, moderated
+				select		id, entryidfk, name, email, website, comments AS comment, posted, subscribe, moderated, killcomment
 				from		getC
 			</cfquery>
 		</cfif>
