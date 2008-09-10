@@ -296,18 +296,21 @@
 		
 		<!--- clean out startrow from query string --->
 		<cfset qs = cgi.query_string>
+		<!--- handle: http://www.coldfusionjedi.com/forums/messages.cfm?threadid=4DF1ED1F-19B9-E658-9D12DBFBCA680CC6 --->
+		<cfset qs = reReplace(qs, "<.*?>", "", "all")>
+		<cfset qs = reReplace(qs, "[\<\>]", "", "all")>
+
 		<cfset qs = reReplaceNoCase(qs, "&*startrow=[0-9]+", "")>
 		<cfset qs = qs & "&startRow=" & (url.startRow + application.maxEntries)>
 		<cfif isDefined("form.search") and len(trim(form.search)) and not structKeyExists(url, "search")>
 			<cfset qs = qs & "&search=#htmlEditFormat(form.search)#">
 		</cfif>
-		
+
 		<cfoutput>
 		<p align="right">
 		<a href="#application.rooturl#/index.cfm#path#?#qs#">#rb("moreentries")#</a>
 		</p>
 		</cfoutput>
-		
 	</cfif>
 
 </cfmodule>

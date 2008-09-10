@@ -67,10 +67,14 @@ I'm making it dynamic in case folks to want to change it quickly on their own bl
 
 <cfmodule template="../../tags/podlayout.cfm" title="#application.resourceBundle.getResource("subscribe")#">
 
+	<!--- handle: http://www.coldfusionjedi.com/forums/messages.cfm?threadid=4DF1ED1F-19B9-E658-9D12DBFBCA680CC6 --->
+	<cfset qs = reReplace(cgi.query_string, "<.*?>", "", "all")>
+	<cfset qs = reReplace(qs, "[\<\>]", "", "all")>
+
 	<cfoutput>
 	<div class="center">
 	#application.resourceBundle.getResource("subscribeblog")#
-	<form action="#application.blog.getProperty("blogurl")#?#cgi.query_string#" method="post" onsubmit="return(this.#formField#.value.length != 0)">
+	<form action="#application.blog.getProperty("blogurl")#?#qs#" method="post" onsubmit="return(this.#formField#.value.length != 0)">
 	<p><input type="text" name="#formField#" size="15"> <input type="submit" value="#application.resourceBundle.getResource("subscribe")#"></p>
 	</form>
 	<cfif len(successMessage)>
