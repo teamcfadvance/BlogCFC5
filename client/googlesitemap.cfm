@@ -2,7 +2,7 @@
 <cfprocessingdirective pageencoding="utf-8">
 <!---
 	Name         : Google Sitemap
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : Sometime in the past...
 	Last Updated : November 28, 2005
 	History      : November 30, 2006 (forgot to turn off enablecfoutput, thanks Hatem)
@@ -24,8 +24,14 @@
 	<cfset utcPrefix = "+">
 </cfif>
 
-<cfset dateStr = dateFormat(entries.posted[1],"yyyy-mm-dd")>
-<cfset dateStr = dateStr & "T" & timeFormat(entries.posted[1],"HH:mm:ss") & utcPrefix & numberFormat(z.utcHourOffset,"00") & ":00">
+<cfif entries.recordcount>
+		<cfset dateStr = dateFormat(entries.posted[1],"yyyy-mm-dd")>
+		<cfset dateStr = dateStr & "T" & timeFormat(entries.posted[1],"HH:mm:ss") & utcPrefix & numberFormat(z.utcHourOffset,"00") & ":00">
+	<cfelse>
+		<cfset dateStr = dateFormat(now(),"yyyy-mm-dd") & "T" & timeFormat(now(),"HH:mm:ss") & utcPrefix & numberFormat(z.utcHourOffset,"00") & ":00">
+</cfif>
+
+
 
 <cfcontent type="text/xml"><cfoutput><?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.google.com/schemas/sitemap/0.84"
@@ -37,8 +43,8 @@
     	<lastmod>#dateStr#</lastmod>
 		<changefreq>hourly</changefreq>
 		<priority>0.8</priority>
-	</url> 
-	</cfoutput> 
+	</url>
+	</cfoutput>
 	<cfoutput query="entries">
 		<cfset dateStr = dateFormat(posted,"yyyy-mm-dd")>
 		<cfset dateStr = dateStr & "T" & timeFormat(posted,"HH:mm:ss") & utcPrefix & numberFormat(z.utcHourOffset,"00") & ":00">
@@ -48,6 +54,6 @@
 		</url>
 	</cfoutput>
 <cfoutput>
-</urlset> 
+</urlset>
 </cfoutput>
 <cfsetting enablecfoutputonly=false showdebugoutput=false>
