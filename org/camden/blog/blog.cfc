@@ -2376,7 +2376,6 @@ To unsubscribe, please go to this URL:
 					<cfif len(arguments.posted) and isDate(arguments.posted)>
 						,posted = <cfqueryparam value="#arguments.posted#" cfsqltype="CF_SQL_TIMESTAMP">
 					</cfif>
-					,username = <cfqueryparam value="#getAuthUser()#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 				    <cfif instance.blogDBType is not "MYSQL" AND instance.blogDBType is not "ORACLE">
 					,allowcomments = <cfqueryparam value="#arguments.allowcomments#" cfsqltype="CF_SQL_BIT">
 			   		<cfelse>

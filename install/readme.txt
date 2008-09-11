@@ -17,6 +17,12 @@ Copyright 2008 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: September 10, 2008 (BlogCFC 5.9.1.002)
+/org/camden/blog/blog.cfc - Fix bug where if a user edits an entry written by another user, they steal ownership
+/org/camden/blog/blog.cfc - Oracle fix to getComment by Steven Tomcavage
+/client/index.cfm, /client/includes/pod/subscribe.cfm - XSS attack fix, http://www.coldfusionjedi.com/forums/messages.cfm?threadid=4DF1ED1F-19B9-E658-9D12DBFBCA680CC6
+/client/googlesitemap.cfm - fix by ScottP for blogs with no entries
+
 Last Updated: August 13, 2008 (BlogCFC 5.9.1.001)
 /client/stats.cfm - Oracle fixes (thanks to Steven Tomcavage)
 /client/index.cfm - Forgot to use #application.rooturl# in podcasting support - thanks to Marion Bass
