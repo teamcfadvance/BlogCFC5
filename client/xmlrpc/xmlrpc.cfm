@@ -4,14 +4,20 @@
 	Name         : C:\projects\blogcfc5\client\xmlrpc\xmlrpc.cfm
 	Author       : Raymond Camden 
 	Created      : 09/15/06
-	Last Updated : 7/20/07
+	Last Updated : 4/13/07
 	History      : Scott Pinkstonadded newMediaObject
 				 : fix for categories (rkc 10/12/06)
 				 : multiple udpates related to Captivate (rkc 10/31/06)
 				 : Another fix. Did someone say XML-RPC was a spec? Bull-pucky. (rkc 11/30/06)
 				 : Fix so remote clients can see unreleased/future entries
-				 : ScottP added metaWeblog.getUB to first cfcase (rkc 7/20/07)
 --->
+
+<cfif not isdefined("application.movabletype")>
+	<cfset application.movabletype=structNew()>
+</cfif>
+
+<!---// should we escape/unescape <code> blocks from/to Text and HTML //--->
+<cfparam name="url.parseMarkup" default="false" type="boolean" />
 
 <cffunction name="translateCategory" returnType="uuid">
 	<cfargument name="category" type="string" required="true">
@@ -45,11 +51,15 @@
 	</cfcase>
 
 	<cfcase value="metaWeblog.getCategories,mt.getCategoryList">
-
+		
+		<cfset isMovabletype = requestData.method is "mt.getCategoryList">
+		
 		<cfset appkey = requestData.params[1]>
 		<cfset username = requestData.params[2]>
 		<cfset password = requestData.params[3]>
-
+		
+		<cfset StructInsert(application.movabletype,username,isMovabletype,true)>
+		
 		<cfif application.blog.authenticate(username,password)>
 			<!--- This remote method isn't secured, so no need for 
 				  cflogin, but I still do the auth check above to 
@@ -110,12 +120,27 @@
 				<cfset item["dateCreated"] = posted>
 				<cfset item["userid"] = name>
 				<cfset item["postid"] = id>
-				<cfset item["description"] = body & morebody>
+				<cfset item["description"] = body>
 			
 				<cfset item["link"] = application.blog.makeLink(id)>
 				<cfset item["permaLink"] = application.blog.makeLink(id)>
 				<cfset item["mt_excerpt"] = "">
-				<cfset item["mt_text_more"] = "">
+				<cfset item["mt_text_more"]="">
+				
+				<!--- Handle morebody --->
+				<cfif len(morebody)>
+					<cfif structFind(application.movabletype, username) is "NO">
+						<cfset item["description"] = body & "<more/>" & morebody>
+					<cfelse>
+						<cfset item["mt_text_more"] = morebody>
+					</cfif>
+				</cfif>
+				
+				<cfif url.parseMarkup>
+					<cfset item["description"] = xmlrpc.escapeMarkup(item["description"]) />
+					<cfset item["mt_text_more"] = xmlrpc.escapeMarkup(item["mt_text_more"]) />
+				</cfif>
+
 				<cfif allowcomments>
 					<cfset item["mt_allow_comments"] = "$int1">
 				<cfelse>
@@ -140,12 +165,19 @@
 	</cfcase>
 
 	<cfcase value="metaWeblog.getPost">
-	
 		<cfset id = requestData.params[1]>
 		<cfset username = requestData.params[2]>
 		<cfset password = requestData.params[3]>
 
 		<cfif application.blog.authenticate(username,password)>
+			<!--- This remote method isn't secured, so no need for 
+				  cflogin, but I still do the auth check above to 
+				  ensure only proper remote clients call this.
+				  
+				  Actually I lie. Sim noted that you won't get unreleased entries w/o this.
+			--->
+			<cfloginuser name="#username#" password="#password#" roles="admin">
+			
 			<!--- This remote method isn't secured, so no need for 
 				  cflogin, but I still do the auth check above to 
 				  ensure only proper remote clients call this.
@@ -156,12 +188,26 @@
 			<cfset item["dateCreated"] = entry.posted>
 			<cfset item["userid"] = entry.name>
 			<cfset item["postid"] = entry.id>
-			<cfset item["description"] = entry.body & entry.morebody>
+			<cfset item["description"] = entry.body />
 			
 			<cfset item["link"] = application.blog.makeLink(id)>
 			<cfset item["permaLink"] = application.blog.makeLink(id)>
 			<cfset item["mt_excerpt"] = "">
 			<cfset item["mt_text_more"] = "">
+			
+			<cfif len(entry.morebody)>
+				<cfif structFind(application.movabletype, username) IS "NO">
+					<cfset item["description"] = entry.body & "<more/>" & entry.morebody>
+				<cfelse>
+					<cfset item["mt_text_more"]=entry.morebody>
+				</cfif>
+			</cfif>			
+			
+			<cfif url.parseMarkup>
+				<cfset item["description"] = xmlrpc.escapeMarkup(item["description"]) />
+				<cfset item["mt_text_more"] = xmlrpc.escapeMarkup(item["mt_text_more"]) />
+			</cfif>
+
 			<cfif entry.allowcomments>
 				<cfset item["mt_allow_comments"] = "$int1">
 			<cfelse>
@@ -170,15 +216,15 @@
 			<cfset item["mt_allow_pings"] = "$int1">
 			<cfset item["mt_convert_breaks"] = "__default__">
 			<cfset item["mt_keywords"] = "">
-			<cfset item["categories"] = "">
+			<cfset item["categories"] = ArrayNew(1)>
 			
 			<cfloop item="c" collection="#entry.categories#">	
-				<cfset item["categories"] = listAppend(item["categories"], entry.categories[c])>
+				<!--- <cfset item["categories"] = listAppend(item["categories"], entry.categories[c])> --->
+				<cfset ArrayAppend(item["categories"],entry.categories[c])>
 			</cfloop>
 			
 			<cfset result = item>
 			<cfset type="response">
-			
 		</cfif>
 		
 	</cfcase>
@@ -197,10 +243,11 @@
 		<cfelse>
 			<cfset result = "$boolean0">
 		</cfif>
-		
-		<cfset type="response">
 
+		<!--- clear cache --->			
 		<cfmodule template="../tags/scopecache.cfm" scope="application" clearall="true">
+					
+		<cfset type="response">
 		
 	</cfcase>
 		
@@ -216,28 +263,74 @@
 		<cfset bareentry = requestData.params[4]>
 		<cfset published = requestData.params[5]>
 		
+		<!---// get existing entry or create empty structure //--->
+		<cfif structKeyExists(variables, "currentId")>
+			<cfset currentEntry = application.blog.getEntry(currentID, true) />
+		<cfelse>
+			<!---// create default values for any of the fields we might need to reference //--->
+			<cfset currentEntry = structNew() />
+			<cfset currentEntry.enclosure = "" />
+			<cfset currentEntry.filesize = "0" />
+			<cfset currentEntry.mimetype = "" />
+		</cfif>
+
 		<!--- 
 		Convert the remote keys to keys blog understands.
 		--->
 		<cfset entry = structNew()>
 		<cfset entry.title = bareentry.title>
 		<cfset entry.body = bareentry.description>
+		<cfset application.body = htmleditformat(bareentry.description)>
 		<!--- TODO: Handle <more/> --->
-		<cfset entry.morebody = "">		
+		
+		<cfif url.parseMarkup>
+			<cfset entry.body = xmlrpc.unescapeMarkup(entry.body) />
+		</cfif>
+		
+		<cfif structFind(application.movabletype, username) IS "NO">
+			<!--- Handle potential <more/> --->
+			<!--- fix by Andrew --->
+			<cfset strMoreTag = "<more/>">
+			<cfset moreStart = findNoCase(strMoreTag,entry.body)>
+			<cfif moreStart gt 1>
+				<cfset moreText = trim(mid(entry.body,(moreStart+len(strMoreTag)),len(entry.body)))>
+				<cfset entry.body = trim(left(entry.body,moreStart-1))>
+			<cfelse>
+				<cfset moreText = "">
+			</cfif>
+				
+			<cfset entry.morebody = moretext>			
+		<cfelse>
+			<!--- Movabletype --->
+			<cfif structKeyExists(bareentry, "mt_text_more")>
+				<cfset entry.morebody=bareentry.mt_text_more>
+			</cfif>			
+		</cfif>
+
+				
 		<cfif structKeyExists(bareentry, "dateCreated")>
 			<cfset entry.posted = bareentry.dateCreated>
 		<cfelseif structKeyExists(bareentry, "pubDate") and isDate(bareentry.pubDate)>
 			<cfset entry.posted = bareentry.pubDate>
 		<cfelse>
-			<cfset entry.posted = now()>
+			<!---// only change the post date if the post date was requested to be changed //--->
+			<cfif requestData.method eq "metaWeblog.newPost">
+				<cfset entry.posted = now() />
+			</cfif>
 		</cfif>
 		
 		<!--- TODO: Fix allowcomments --->
-		<cfset entry.allowcomments = true>
-		<!--- TODO: Allow enclosures --->
-		<cfset entry.enclosure = "">
-		<cfset entry.filesize = 0>
-		<cfset entry.released = published>
+		<cfif  structKeyExists(bareentry,"mt_allow_comments")>
+			<cfset entry.allowcomments = bareentry.mt_allow_comments>
+		<cfelse>
+			<cfset entry.allowcomments = true>
+		</cfif>
+		
+		<!--- TODO: Allow enclosures -- currently keeps previous values --->
+		<cfset entry.enclosure = currentEntry.enclosure />
+		<cfset entry.filesize = currentEntry.filesize />
+		<cfset entry.mimetype = currentEntry.mimetype />
+		<cfset entry.released = published />
 		
 		<!---
 		Contribute sends a fake post to generate a design template.
@@ -250,7 +343,7 @@
 			<cfset entry.sendemail = true>
 		</cfif>
 
-		<cfif application.blog.authenticate(username,password)>
+		<cfif application.blog.authenticate(username, password)>
 
 			<cfloginuser name="#username#" password="#password#" roles="admin">
 	
@@ -333,28 +426,34 @@
 		
 	</cfcase>
 		
-	<cfcase value="mt.getPostCategories">
+  	<cfcase value="mt.getPostCategories">
 
 		<cfset postid = requestData.params[1]>		
 		<cfset username = requestData.params[2]>
 		<cfset password = requestData.params[3]>
 	
 		<cfif application.blog.authenticate(username,password)>
-			<cfset entry = application.blog.getEntry(postid,true)>
+			<!--- This remote method isn't secured, so no need for 
+				  cflogin, but I still do the auth check above to 
+				  ensure only proper remote clients call this.
+			--->
 
-			<cfset item = structNew()>
-			<cfset item["categories"] = "">
-			
-			<cfloop item="c" collection="#entry.categories#">	
-				<cfset item["categories"] = listAppend(item["categories"], entry.categories[c])>
-			</cfloop>
-			
-			<cfset result = item>
-			<cfset type="response">
-
-		</cfif>
+			<cfset result = arrayNew(1)>
 		
-	</cfcase>
+			<cfset categories = application.blog.getCategoriesForEntry(id=postid)>
+		
+			<cfloop query="categories">	
+				<cfset info = structNew()>
+					<cfset info["categoryName"] = categoryname>
+					<cfset info["categoryId"] = categoryid>				
+				<cfset arrayAppend(result, info)>
+			</cfloop>
+		
+			<cfset type="response">
+			
+		</cfif>
+
+	</cfcase> 
 
 	<cfcase value="mt.setPostCategories">
 

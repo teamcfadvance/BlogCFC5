@@ -57,8 +57,15 @@
 	<cffunction name="CFML2XMLRPC" access="public" returntype="string" output="false" hint="Takes a CFML array and converts it into an XML-RPC package">
 		<cfargument name="data" required="true" type="array" hint="A CFML array. If the 'type' argument is set to 'call', the first element of the array should be a string containing a method name, with subsequent elements containing data. If the 'type' argument is set to 'response', the array should only contain data. If the 'type' argument is set to 'responsefault', the first array element should be an integer representing a faultCode, and the second element should be a string containing the faultString" />
 		<cfargument name="type" required="false" default="call" type="string" hint="Can be set to one of three values: 'call', 'response', and 'responsefault'." />
+
 		<cfset var x = "" />
 		<cfset var myXml = "" />
+		<cfset var faultValue = "" />
+
+		<cfdump var="#arguments.data#">
+		<cfdump var="#arguments.type#">
+
+
 		<cfswitch expression="#LCase(arguments.type)#">
 			<cfcase value="call">
 				<cfset myXml = "<methodCall><methodName>#arguments.data[1]#</methodName><params>" />
@@ -75,7 +82,13 @@
 				<cfset myXml = myXml & "</params></methodResponse>" />
 			</cfcase>
 			<cfcase value="responsefault">
-				<cfset myXml = "<methodResponse><fault><value><struct><member><name>faultCode</name><value><int>#arguments.data[1]#</int></value></member><member><name>faultString</name><value><string>#XmlFormat(arguments.data[2])#</string></value></member></struct></value></fault></methodResponse>" />
+				<cfif arrayLen(arguments.data) gte 2>
+					<cfset faultValue = arguments.data[2] />
+				<cfelse>
+					<cfset faultValue = arguments.data[1] />
+				</cfif>
+				
+				<cfset myXml = "<methodResponse><fault><value><struct><member><name>faultCode</name><value><int>#arguments.data[1]#</int></value></member><member><name>faultString</name><value><string>#XmlFormat(faultValue)#</string></value></member></struct></value></fault></methodResponse>" />
 			</cfcase>
 		</cfswitch>
 		<cfreturn myXml />
@@ -225,5 +238,195 @@
 		</cfif>
 		<cfreturn myResult />
 	</cffunction>
+
+	<!---//
+		the following functions convert <code> blocks that were written
+		in rich text editor to be escaped as if they were typed as 
+		regular source code and also convert <more/> tags to markup
+	//--->
+	<cffunction name="unescapeMarkup" access="public" output="false" hint="This function finds <code> blocks written in html and converts the text.">
+		<cfargument name="string" type="string" required="true" />
+		
+		<cfset var counter = 0 />
+		<cfset var newbody = "" />
+		<cfset var codeportion = "" />
+		<cfset var codeblock = "" />
+		<cfset var result = "" />
 	
+		<cfif findNoCase("&lt;code&gt;", arguments.string) and findNoCase("&lt;/code&gt;", arguments.string)>
+			<cfset counter = findNoCase("&lt;code&gt;", arguments.string)>
+			<cfloop condition="counter gte 1">
+				<cfset codeblock = reFindNoCase("(?s)(.*)(&lt;code&gt;)(.*)(&lt;/code&gt;)(.*)", arguments.string, 1, true) /> 
+				<cfif arrayLen(codeblock.len) gte 6>
+					<cfset codeportion = mid(arguments.string, codeblock.pos[4], codeblock.len[4]) />
+					<cfif len(trim(codeportion))>
+						<cfset result = convertHtmlToText(codeportion) />
+					<cfelse>
+						<cfset result = "" />
+					</cfif>
+					<cfset newbody = mid(arguments.string, 1, codeblock.len[2]) & result & mid(arguments.string, codeblock.pos[6], codeblock.len[6]) />
+					
+					<cfset arguments.string = newbody />
+					<cfset counter = findNoCase("&lt;code&gt;",  arguments.string, counter) />
+				<cfelse>
+					<!--- bad crap, maybe <code> and no ender, or maybe </code><code> --->
+					<cfset counter = 0 />
+				</cfif>
+			</cfloop>
+		</cfif>
+		
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;more\s*\/&gt;", "<more/>", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;textblock((\s+[^\]]*)|(\s*\/))?&gt;", "<textblock\1>", "all") />
+
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;\[code((\s+[^\]]*)|(\s*\/))?\]&gt;", "&lt;code\1&gt;", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;\[more((\s+[^\]]*)|(\s*\/))?\]&gt;", "&lt;more\1&gt;", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;\[textblock((\s+[^\]]*)|(\s*\/))?\]&gt;", "&lt;textblock\1&gt;", "all") />
+
+		<cfset arguments.string = reMatchReplaceNoCase("<textblock((\s+[^>]*)|(\s*\/))?>", arguments.string, "&quot;", """") />
+
+		<cfreturn arguments.string />
+	
+	</cffunction>
+	
+	<cffunction name="convertHtmlToText" access="public" output="false" hint="Handles actual html-to-plain text conversion.">
+		<cfargument name="html" type="string" required="true" />
+		
+		<cfset var sHtml = arguments.html />
+		
+		<!---// remove line breaks, since we use HTML to determine them //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "#chr(13)#?#chr(10)#", "", "all") />
+		<!---// remove extra whitespace, so we treat like html (multiple whitespace is counted as a single space) //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "\s{2,}", " ", "all") />
+		<!---// remove paragraph tags //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "<p([^>]+)?>", chr(13) & chr(10), "all") />
+		<!---// remove line break tags //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "<br([^>]+)?>", chr(13) & chr(10), "all") />
+		<!---// remove erronous markup tags //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "<[^>]+>", "", "all") />
+		<!---// replace entity less than symbols //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "&lt;|&##60;", "<", "all") />
+		<!---// replace entity greater than symbols //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "&gt;|&##62;", ">", "all") />
+		<!---// replace entity quotes with regular quotes //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "&quot;|&##34;", """", "all") />
+		<!---// replace entity quotes with regular quotes //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "&apos;|&##34;", "''", "all") />
+		<!---// convert no break spaces to regular spaces //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "&nbsp;|&##xA0;|&##160;", " ", "all") />
+	
+		<!---// this must be done last to avoid premature excaping of other html entities //--->
+		<cfset sHtml = reReplace(sHtml, "&amp;|&##38;", "&", "all") />
+	
+		<!---// convert 4 spaces to a tab //--->
+		<cfset sHtml = reReplace(sHtml, "    ", "#chr(9)#", "all") />
+	
+		<cfreturn "<code>" & sHtml & "</code>" />
+	</cffunction>
+
+	<!---//
+		the follow functions covert markup back to escaped HTML
+	//--->
+	<cffunction name="escapeMarkup" access="public" output="false" hint="This function finds <code> blocks written in html and converts the text.">
+		<cfargument name="string" type="string" required="true" />
+		
+		<cfset var counter = 0 />
+		<cfset var newbody = "" />
+		<cfset var codeportion = "" />
+		<cfset var codeblock = "" />
+		<cfset var result = "" />
+		
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;code((\s+[^\s]*(?=&gt;))|(\s*\/))?&gt;", "&lt;[code\1]&gt;", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;more((\s+[^\s]*(?=&gt;))|(\s*\/))?&gt;", "&lt;[more\1]&gt;", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;textblock((\s+[^\s]*(?=&gt;))|(\s*\/))?&gt;", "&lt;[textblock\1]&gt;", "all") />
+	
+		<cfif findNoCase("<code>", arguments.string) and findNoCase("</code>", arguments.string)>
+			<cfset counter = findNoCase("<code>", arguments.string)>
+			<cfloop condition="counter gte 1">
+				<cfset codeblock = reFindNoCase("(?s)(.*)(<code>)(.*)(</code>)(.*)", arguments.string, 1, true) /> 
+				<cfif arrayLen(codeblock.len) gte 6>
+					<cfset codeportion = mid(arguments.string, codeblock.pos[4], codeblock.len[4]) />
+					<cfif len(trim(codeportion))>
+						<cfset result = convertTextToHtml(codeportion) />
+					<cfelse>
+						<cfset result = "" />
+					</cfif>
+					<cfset newbody = mid(arguments.string, 1, codeblock.len[2]) & result & mid(arguments.string,codeblock.pos[6],codeblock.len[6]) />
+					
+					<cfset arguments.string = newbody />
+					<cfset counter = findNoCase("<code>",  arguments.string, counter) />
+				<cfelse>
+					<!--- bad crap, maybe <code> and no ender, or maybe </code><code> --->
+					<cfset counter = 0 />
+				</cfif>
+			</cfloop>
+		</cfif>
+		
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "<more((\s+[^>]*)|(\s*\/))>", "&lt;more\1&gt;", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "<textblock((\s+[^>]*)|(\s*\/))?>", "&lt;textblock\1&gt;", "all") />
+
+		<cfreturn arguments.string />
+	</cffunction>
+	
+	<cffunction name="convertTextToHtml" access="public" output="false" hint="Handles actual html-to-plain text conversion.">
+		<cfargument name="html" type="string" required="true" />
+		
+		<cfset var sHtml = arguments.html />
+		
+		<!---// this must be done first to avoid excaping of other html entities //--->
+		<cfset sHtml = reReplace(sHtml, "&", "&amp;", "all") />
+		<!---// replace entity less than symbols //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "<", "&lt;", "all") />
+		<!---// replace entity greater than symbols //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, ">", "&gt;", "all") />
+		<!---// replace entity quotes with regular quotes //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, """", "&quot;", "all") />
+		<!---// replace entity quotes with regular quotes //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "&apos;|&##34;", "''", "all") />
+		<!---// ** DO LAST ** remove line breaks, since we use HTML to determine them //--->
+		<cfset sHtml = reReplaceNoCase(sHtml, "(#chr(13)#?#chr(10)#)", "<br/>\1", "all") />
+	
+		<!---// convert 4 spaces to a tab //--->
+		<cfset sHtml = reReplace(sHtml, "#chr(9)#", "&##160;&##160;&##160;&##160;", "all") />
+	
+		<cfreturn "&lt;code&gt;" & sHtml & "&lt;/code&gt;" />
+	</cffunction>
+	
+	<cffunction name="reMatchReplaceNoCase" access="private" returntype="string" output="false" hint="Emulates the reMatch function in ColdFusion 8.">
+		<cfargument name="regex" type="string" required="true" />
+		<cfargument name="str" type="string" required="true" />
+		<cfargument name="findstr" type="string" required="true" />
+		<cfargument name="replacestr" type="string" required="true" />
+		<cfargument name="matchContext" type="string" required="false" default="all" />
+
+		<cfscript>
+		var pos = 1;
+		var loop = 1;
+		var match = "";
+		var currentMatch = "";
+		var newstr = "";
+		var charsRemaining = 0;
+		var x = 1;
+		
+		while( reFindNoCase(arguments.regex, arguments.str, pos) ){ 
+			match = reFindNoCase(arguments.regex, arguments.str, pos, true);
+
+			if( (arrayLen(match.len)) gt 0 and match.len[1] ){
+				currentMatch = mid(arguments.str, match.pos[1], match.len[1]);
+				currentMatch = reReplaceNoCase(currentMatch, arguments.findstr, arguments.replacestr, arguments.matchContext);
+				newstr = left(arguments.str, match.pos[1]-1) & currentMatch;
+				charsRemaining = len(arguments.str) - (match.pos[1] + match.len[1]);
+				if( charsRemaining gt 0 ) newstr = newstr & right(arguments.str, charsRemaining);
+				
+				arguments.str = newstr;
+				
+			}
+
+			pos = match.pos[1] + len(currentMatch);
+			loop = loop + 1;
+		}
+		return arguments.str;
+		</cfscript>
+
+	</cffunction>
+
 </cfcomponent>
