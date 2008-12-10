@@ -46,7 +46,7 @@
 </cfif>
 
 <!--- is posted < now()? --->
-<cfif dateCompare(entry.posted, now()) is 1>
+<cfif dateCompare(entry.posted, application.blog.blognow()) is 1>
 	<cfoutput>This entry is in the future.</cfoutput>
 	<cfabort>
 </cfif>
