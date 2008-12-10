@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.1.002">
+	<cfset version = "5.9.2">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -83,6 +83,7 @@
 			<cfset instance.maxentries = variables.utils.configParam(variables.cfgFile, arguments.name, "maxentries")>
 			<cfset instance.moderate = variables.utils.configParam(variables.cfgFile, arguments.name, "moderate")>
 			<cfset instance.usecaptcha = variables.utils.configParam(variables.cfgFile, arguments.name, "usecaptcha")>
+			<cfset instance.usecfp = variables.utils.configParam(variables.cfgFile, arguments.name, "usecfp")>			
 			<cfset instance.allowgravatars = variables.utils.configParam(variables.cfgFile, arguments.name, "allowgravatars")>			
 			<cfset instance.filebrowse = variables.utils.configParam(variables.cfgFile, arguments.name, "filebrowse")>
 			<cfset instance.settings = variables.utils.configParam(variables.cfgFile, arguments.name, "settings")>
@@ -568,7 +569,7 @@
 	
 	</cffunction>
 
-	<cffunction name="blogNow" access="private" returntype="date" output="false"
+	<cffunction name="blogNow" access="public" returntype="date" output="false"
 				hint="Returns now() with the offset.">
 		<cfreturn dateAdd("h", instance.offset, now())>
 	</cffunction>
@@ -1103,6 +1104,7 @@
 		<cfargument name="id" type="uuid" required="false">
 		<cfargument name="sortdir" type="string" required="false" default="asc">
 		<cfargument name="includesubscribers" type="boolean" required="false" default="false">
+		<cfargument name="search" type="string" required="false">
 		
 		<cfset var getC = "">
 		<cfset var getO = "">
@@ -1121,6 +1123,18 @@
 						<cfif instance.blogDBTYPE is NOT "ORACLE">tblblogcomments.comment<cfelse>to_char(tblblogcomments.comments) as comments</cfif>, tblblogcomments.posted, tblblogcomments.subscribe, tblblogentries.title as entrytitle, tblblogcomments.entryidfk
 			from		tblblogcomments, tblblogentries
 			where		tblblogcomments.entryidfk = tblblogentries.id
+			<cfif structKeyExists(arguments, "search")>
+			and			
+						(
+						<cfif instance.blogDBTYpe is not "ORACLE">
+						tblblogcomments.comment
+						<cfelse>
+						comments
+						</cfif> like <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.search#%">
+						or
+						tblblogcomments.name like <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.search#%">
+						)
+			</cfif>
 			<cfif structKeyExists(arguments, "id")>
 			and			tblblogcomments.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfif>
@@ -1134,7 +1148,7 @@
 			</cfif>
 			order by	tblblogcomments.posted #arguments.sortdir#
 		</cfquery>
-		
+
 		<!--- DS 8/22/06: if this is oracle, do a q of q to return the data with column named "comment" --->
 		<cfif instance.blogDBType is "ORACLE">
 			<cfquery name="getO" dbtype="query">
