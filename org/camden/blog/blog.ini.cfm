@@ -21,6 +21,7 @@ blogkeywords=
 ipblocklist=67.180.242.3
 maxentries=10
 usecaptcha=yes
+usecfp=yes
 allowgravatars=yes
 moderate=no
 filebrowse=yes
