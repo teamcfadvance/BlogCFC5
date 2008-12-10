@@ -15,7 +15,8 @@
 <cfset params.mode = "short">
 
 <cfset entries = application.blog.getEntries(params)>
-
+<cfset pages = application.page.getPages()>
+	
 <cfset z = getTimeZoneInfo()>
 <cfif not find("-", z.utcHourOffset)>
 	<cfset utcPrefix = "-">
@@ -53,6 +54,14 @@
 		<lastmod>#dateStr#</lastmod>
 		</url>
 	</cfoutput>
+	<cfoutput query="pages">
+		<url>
+		<loc>#application.rootURL#/page.cfm/#alias#</loc>
+		<priority>0.5</priority>
+		<changefreq>weekly</changefreq>
+		<lastmod>#dateStr#</lastmod>
+	</url>
+	</cfoutput> 
 <cfoutput>
 </urlset>
 </cfoutput>
