@@ -259,6 +259,7 @@
 				<div class="trackbackBody addCommentLink">
 				<p style="text-align:left">#rb("nocomments")#</p>				
 				[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
+				[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]				
 				</div>
 				</cfoutput>
 			</cfif>
