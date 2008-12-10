@@ -66,6 +66,9 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- Use Captcha? --->
 	<cfset application.usecaptcha = application.blog.getProperty("usecaptcha")>
 
+	<!--- Use CFFORMProtect? --->
+	<cfset application.usecfp = application.blog.getProperty("usecfp")>
+
 	<cfif application.usecaptcha>
 		<cfset application.captcha = createObject("component","org.captcha.captchaService").init(configFile="#lylaFile#") />
 		<cfset application.captcha.setup() />
