@@ -17,6 +17,20 @@ Copyright 2008 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: December 10, 2008 (BlogCFC 5.9.2)
+/install/accessblog.mdb - typo fix by David Brown
+/org/camden/blog/blog.ini.cfm - property 'usecfp' - You must add this to your ini file. If true, uses CFFORMPROTECT (cfformprotect.riaforge.org)
+/org/camden/blog/blog.cfc - Version, getComments supports filtering, blogNow marked private
+/client/index.cfm - Did I somehow forget to check in the code that shows links for subscribing to a blog entry?
+/client/googlesitemap.cfm - Now includes pages. Thanks to Edward Beckett
+/client/Application.cfm - store useCFP in App scope
+/client/includes/style.css - mods as described by http://rickosborne.org/blog/index.php/2008/12/05/blogcfc-users-stop-or-youll-go-blind/
+/client/includes/layout.css - mods as described by http://rickosborne.org/blog/index.php/2008/12/05/blogcfc-users-stop-or-youll-go-blind/
+/client/cfformprotect - cfformprotect code
+/client/admin/comments.cfm - Simple filtering
+/client/admin/notify.cfm - Fixes a bug with entry notifications
+/client/addcomment.cfm - cfformprotect
+
 Last Updated: September 10, 2008 (BlogCFC 5.9.1.002)
 /org/camden/blog/blog.cfc - Fix bug where if a user edits an entry written by another user, they steal ownership
 /org/camden/blog/blog.cfc - Oracle fix to getComment by Steven Tomcavage
