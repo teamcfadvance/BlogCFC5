@@ -96,6 +96,14 @@
 		   <cfset errorStr = errorStr & "The captcha text you have entered is incorrect.<br>">
 		</cfif>
 	</cfif>
+	<!--- cfformprotect --->
+	<cfif application.usecfp>
+		<cfset cffp = createObject("component","cfformprotect.cffpVerify").init() />
+		<!--- now we can test the form submission --->
+		<cfif not cffp.testSubmission(form)>
+			<cfset errorStr = errorStr & "Your comment has been flagged as spam.<br>">
+		</cfif> 
+	</cfif>
 		
 	<cfif not len(errorStr)>
 	  <!--- RBB 11/02/2005: added website to commentID --->
@@ -118,7 +126,7 @@ URL: #application.blog.makeLink(url.id)###c#commentID#
 ------------------------------------------------------------
 #rb("unsubscribe")#: %unsubscribe%
 This blog powered by BlogCFC #application.blog.getVersion()#
-Created by Raymond Camden (ray@camdenfamily.com)
+Created by Raymond Camden (http://www.coldfusionjedi.com)
 			</cfoutput>
 			</cfsavecontent>
 	
@@ -136,38 +144,41 @@ Created by Raymond Camden (ray@camdenfamily.com)
 			<cfcatch>
 				<cfif cfcatch.message is not "Comment blocked for spam.">
 					<cfrethrow>
+				<cfelse>
+					<cfset errorStr = errorStr & "Your comment has been flagged as spam.<br>">		
 				</cfif>
 			</cfcatch>
 			
 		</cftry>
-				
-		<cfmodule template="tags/scopecache.cfm" scope="application" clearall="true">
-		<cfset comments = application.blog.getComments(url.id)>
-		<!--- clear form data --->
-		<cfif form.rememberMe>
-			<cfcookie name="blog_name" value="#trim(htmlEditFormat(form.name))#" expires="never">
-			<cfcookie name="blog_email" value="#trim(htmlEditFormat(form.email))#" expires="never">
-      		<!--- RBB 11/02/2005: Added new website cookie --->
-			<cfcookie name="blog_website" value="#trim(htmlEditFormat(form.website))#" expires="never">
-		<cfelse>
-			<cfcookie name="blog_name" expires="now">
-			<cfcookie name="blog_email" expires="now">
-			<!--- RBB 11/02/2005: Added new website form var --->
-			<cfset form.name = "">
-			<cfset form.email = "">
-			<cfset form.website = "">
+		
+		<cfif not len(errorStr)>		
+			<cfmodule template="tags/scopecache.cfm" scope="application" clearall="true">
+			<cfset comments = application.blog.getComments(url.id)>
+			<!--- clear form data --->
+			<cfif form.rememberMe>
+				<cfcookie name="blog_name" value="#trim(htmlEditFormat(form.name))#" expires="never">
+				<cfcookie name="blog_email" value="#trim(htmlEditFormat(form.email))#" expires="never">
+	      		<!--- RBB 11/02/2005: Added new website cookie --->
+				<cfcookie name="blog_website" value="#trim(htmlEditFormat(form.website))#" expires="never">
+			<cfelse>
+				<cfcookie name="blog_name" expires="now">
+				<cfcookie name="blog_email" expires="now">
+				<!--- RBB 11/02/2005: Added new website form var --->
+				<cfset form.name = "">
+				<cfset form.email = "">
+				<cfset form.website = "">
+			</cfif>
+			<cfset form.comments = "">
+			
+			<!--- reload page and close this up --->
+			<cfoutput>
+			<script>
+			window.opener.location.reload();
+			window.close();
+			</script>
+			</cfoutput>
+			<cfabort>
 		</cfif>
-		<cfset form.comments = "">
-		
-		<!--- reload page and close this up --->
-		<cfoutput>
-		<script>
-		window.opener.location.reload();
-		window.close();
-		</script>
-		</cfoutput>
-		<cfabort>
-		
 	</cfif>	
 </cfif>
 
@@ -195,7 +206,9 @@ Created by Raymond Camden (ray@camdenfamily.com)
 	</cfif>
 	<cfoutput>
 	<form action="#application.rootURL#/addcomment.cfm?#cgi.query_string#" method="post">
-
+	<cfif application.usecfp>
+		<cfinclude template="cfformprotect/cffp.cfm">
+	</cfif>
   <fieldset id="commentForm">
     	<legend>#rb("postyourcomments")#</legend>
   <div>
