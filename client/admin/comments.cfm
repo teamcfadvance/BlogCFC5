@@ -9,6 +9,8 @@
 				 : Show link (rkc 7/13/06)
 --->
 
+<cfparam name="form.search" default="">
+
 <!--- handle deletes --->
 <cfif structKeyExists(form, "mark")>
 	<cfloop index="u" list="#form.mark#">
@@ -16,7 +18,11 @@
 	</cfloop>
 </cfif>
 
-<cfset comments = application.blog.getComments(sortdir="desc")>
+<cfif len(trim(form.search))>
+	<cfset comments = application.blog.getComments(sortdir="desc",search=form.search)>
+<cfelse>
+	<cfset comments = application.blog.getComments(sortdir="desc")>
+</cfif>
 
 <cfmodule template="../tags/adminlayout.cfm" title="Comments">
 
@@ -26,13 +32,19 @@
 		<cfif comments.recordCount gt 1>
 		#comments.recordcount# comments
 		<cfelseif comments.recordCount is 1>
-		1 comment
+		1 comment.
 		<cfelse>
-		0 comments
-		</cfif>.
+		0 comments.
+		</cfif>
+	</p>
+
+	<p>
+	<form action="comments.cfm" method="post">
+	<input type="text" name="search" value="#form.search#"> <input type="submit" value="Filter by Keyword">
+	</form>
 	</p>
 	</cfoutput>
-
+		
 	<cfmodule template="../tags/datatable.cfm" data="#comments#" editlink="comment.cfm" label="Comments"
 			  linkcol="comment" defaultsort="posted" defaultdir="desc" showAdd="false">
 		<cfmodule template="../tags/datacol.cfm" colname="name" label="Name" width="150" />
