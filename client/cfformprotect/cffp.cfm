@@ -1,9 +1,9 @@
 <!--- This path should start from the web root and work forward from
 			there, if you don't have it in the web root --->
-<cfset cffpPath = "/cfformprotect">
+<cfset cffpPath = "cfformprotect">
 
 <!--- load the file that grabs all values from the ini file --->
-<cfinclude template="#cffpPath#/cffpConfig.cfm">
+<cfinclude template="cffpConfig.cfm">
 
 <!--- check the config (from the ini file)to see if each test is turned on --->
 <cfif cffpConfig.mouseMovement>

@@ -36,7 +36,7 @@ NOTES       : Dave Shuck - created
 ">
 
 	<cffunction name="init" access="public" output="false" returntype="cffpVerify">
-		<cfargument name="ConfigPath" required="false" default="#ExpandPath("/cfformprotect")#" type="string" />
+		<cfargument name="ConfigPath" required="false" default="#ExpandPath("./cfformprotect")#" type="string" />
 		<cfscript>
 		setConfig(arguments.ConfigPath);
 		return this;
