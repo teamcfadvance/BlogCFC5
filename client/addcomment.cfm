@@ -104,6 +104,14 @@
 			<cfset errorStr = errorStr & "Your comment has been flagged as spam.<br>">
 		</cfif> 
 	</cfif>
+	
+	<!--- validate boolean --->
+	<cfif not isBoolean(form.subscribe)>
+		<cfset form.subscribe = false>
+	</cfif>
+	<cfif not isBoolean(form.rememberme)>
+		<cfset form.rememberme = false>
+	</cfif>
 		
 	<cfif not len(errorStr)>
 	  <!--- RBB 11/02/2005: added website to commentID --->

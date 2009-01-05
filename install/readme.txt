@@ -17,6 +17,10 @@ Copyright 2008 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: January 5, 2009 (BlogCFC 5.9.2.002)
+/client/addcomment.cfm - fix non-boolean issue
+/org/camden/blog/blog.cfc - just the version
+
 Last Updated: December 10, 2008 (BlogCFC 5.9.2.001)
 /client/cfformprotect/cffp.cfm and cffpVerify.cfc - fixed two issues for folks who install BlogCFC in a non-root folder.
 
