@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.2.002">
+	<cfset version = "5.9.2.003">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -802,7 +802,6 @@
 				<cfset catlist = listAppend(catlist, xmlFormat(categories[currentRow][catid]))>
 			</cfloop>
 			<dc:subject>#xmlFormat(catlist)#</dc:subject>
-
 			</item>
 			</cfoutput>
 		 	</cfloop>
@@ -876,6 +875,9 @@
 				</cfloop>
 				<pubDate>#dateStr#</pubDate>
 				<guid>#xmlFormat(makeLink(id))#</guid>
+				<author>
+				<name>#xmlFormat(name)#</name>
+				</author>
 				<cfif len(enclosure)>
 				<enclosure url="#xmlFormat("#rootURL#/enclosures/#getFileFromPath(enclosure)#")#" length="#filesize#" type="#mimetype#"/>
 				<cfif mimetype IS "audio/mpeg">
@@ -1229,7 +1231,7 @@
 		
 	</cffunction>
 	
-	<cffunction name="getEntries" access="remote" returnType="query" output="false"
+	<cffunction name="getEntriesOld" access="remote" returnType="query" output="false"
 				hint="Returns entries. Allows for a params structure to configure what entries are returned.">
 		<cfargument name="params" type="struct" required="false" default="#structNew()#">
 		<cfset var getEm = "">
@@ -1242,7 +1244,7 @@
 		<cfset var pos = "">
 		<cfset var id = "">
 		<cfset var catdata = "">
-		
+
 		<!--- By default, order the results by posted col --->
 		<cfif not structKeyExists(arguments.params,"orderBy") or not listFindNoCase(validOrderBy,arguments.params.orderBy)>
 			<cfset arguments.params.orderBy = "posted">
@@ -1480,11 +1482,287 @@
 			
 		</cfif>
 		
-		
 		<cfreturn getEm>
 		
 	</cffunction>
-	
+
+	<cffunction name="getEntries" access="remote" returnType="struct" output="false"
+				hint="Returns entries. Allows for a params structure to configure what entries are returned.">
+		<cfargument name="params" type="struct" required="false" default="#structNew()#">
+		<cfset var getEm = "">
+		<cfset var getComments = "">
+		<cfset var getCategories = "">
+		<cfset var getTrackbacks = "">
+		<cfset var validOrderBy = "posted,title">
+		<cfset var validOrderByDir = "asc,desc">
+		<cfset var validMode = "short,full">
+		<cfset var pos = "">
+		<cfset var id = "">
+		<cfset var catdata = "">
+		<cfset var getIds = "">
+		<cfset var idList = "">
+		<cfset var pageIdList = "">
+		<cfset var x = "">
+		<cfset var r = structNew()>
+			
+		<!--- By default, order the results by posted col --->
+		<cfif not structKeyExists(arguments.params,"orderBy") or not listFindNoCase(validOrderBy,arguments.params.orderBy)>
+			<cfset arguments.params.orderBy = "posted">
+		</cfif>
+		<!--- By default, order the results direction desc --->
+		<cfif not structKeyExists(arguments.params,"orderByDir") or not listFindNoCase(validOrderByDir,arguments.params.orderByDir)>
+			<cfset arguments.params.orderByDir = "desc">
+		</cfif>
+		<!--- If lastXDays is passed, verify X is int between 1 and 365 --->
+		<cfif structKeyExists(arguments.params,"lastXDays")>
+			<cfif not val(arguments.params.lastXDays) or val(arguments.params.lastXDays) lt 1 or val(arguments.params.lastXDays) gt 365>
+				<cfset structDelete(arguments.params,"lastXDays")>
+			<cfelse>
+				<cfset arguments.params.lastXDays = val(arguments.params.lastXDays)>
+			</cfif>
+		</cfif>
+		<!--- If byDay is passed, verify X is int between 1 and 31 --->
+		<cfif structKeyExists(arguments.params,"byDay")>
+			<cfif not val(arguments.params.byDay) or val(arguments.params.byDay) lt 1 or val(arguments.params.byDay) gt 31>
+				<cfset structDelete(arguments.params,"byDay")>
+			<cfelse>
+				<cfset arguments.params.byDay = val(arguments.params.byDay)>
+			</cfif>
+		</cfif>
+		<!--- If byMonth is passed, verify X is int between 1 and 12 --->
+		<cfif structKeyExists(arguments.params,"byMonth")>
+			<cfif not val(arguments.params.byMonth) or val(arguments.params.byMonth) lt 1 or val(arguments.params.byMonth) gt 12>
+				<cfset structDelete(arguments.params,"byMonth")>
+			<cfelse>
+				<cfset arguments.params.byMonth = val(arguments.params.byMonth)>
+			</cfif>
+		</cfif>
+		<!--- If byYear is passed, verify X is int  --->
+		<cfif structKeyExists(arguments.params,"byYear")>
+			<cfif not val(arguments.params.byYear)>
+				<cfset structDelete(arguments.params,"byYear")>
+			<cfelse>
+				<cfset arguments.params.byYear = val(arguments.params.byYear)>
+			</cfif>
+		</cfif>
+		<!--- If byTitle is passed, verify we have a length  --->
+		<cfif structKeyExists(arguments.params,"byTitle")>
+			<cfif not len(trim(arguments.params.byTitle))>
+				<cfset structDelete(arguments.params,"byTitle")>
+			<cfelse>
+				<cfset arguments.params.byTitle = trim(arguments.params.byTitle)>
+			</cfif>
+		</cfif>
+
+		<!--- By default, get body, commentCount and categories as well, requires additional lookup --->
+		<cfif not structKeyExists(arguments.params,"mode") or not listFindNoCase(validMode,arguments.params.mode)>
+			<cfset arguments.params.mode = "full">
+		</cfif>
+		<!--- handle searching --->
+		<cfif structKeyExists(arguments.params,"searchTerms") and not len(trim(arguments.params.searchTerms))>
+			<cfset structDelete(arguments.params,"searchTerms")>
+		</cfif>
+		<!--- Limit number returned. Thanks to Rob Brooks-Bilson --->
+		<cfif not structKeyExists(arguments.params,"maxEntries") or (structKeyExists(arguments.params,"maxEntries") and not val(arguments.params.maxEntries))>
+			<cfset arguments.params.maxEntries = 10>
+		</cfif>
+		
+		<cfif not structKeyExists(arguments.params,"startRow") or (structKeyExists(arguments.params,"startRow") and not val(arguments.params.startRow))>
+			<cfset arguments.params.startRow = 1>
+		</cfif>
+
+		<!--- I get JUST the ids --->
+		<cfquery name="getIds" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		select	tblblogentries.id
+		from	tblblogentries, tblusers
+			<cfif structKeyExists(arguments.params,"byCat")>,tblblogentriescategories</cfif>
+			where		1=1
+						and blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+						and tblblogentries.username = tblusers.username
+			<cfif structKeyExists(arguments.params,"lastXDays")>
+				and tblblogentries.posted >= <cfqueryparam value="#dateAdd("d",-1*arguments.params.lastXDays,blogNow())#" cfsqltype="CF_SQL_DATE">
+			</cfif>
+			<cfif structKeyExists(arguments.params,"byDay")>
+				<cfif instance.blogDBType is "MSSQL">
+					and day(dateAdd(hh, #instance.offset#, tblblogentries.posted)) 
+				<cfelseif  instance.blogDBType is "MSACCESS">
+					and day(dateAdd('h', #instance.offset#, tblblogentries.posted)) 
+				<cfelseif instance.blogDBType is "MYSQL">
+					and dayOfMonth(date_add(posted, interval #instance.offset# hour))
+				<cfelseif instance.blogDBType is "ORACLE">
+					and to_number(to_char(tblblogentries.posted + (#instance.offset#/24), 'dd'))	
+				</cfif>
+					<cfif instance.blogDBType is not "ORACLE">
+					= <cfqueryparam value="#arguments.params.byDay#" cfsqltype="CF_SQL_NUMERIC">
+					<cfelse>
+					= <cfqueryparam value="#arguments.params.byDay#" cfsqltype="CF_SQL_integer">
+					</cfif>
+				
+			</cfif>
+			<cfif structKeyExists(arguments.params,"byMonth")>
+				<cfif instance.blogDBType is "MSSQL">
+					and month(dateAdd(hh, #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
+				<cfelseif instance.blogDBType is "MSACCESS">
+					and month(dateAdd('h', #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
+				<cfelseif instance.blogDBType is "MYSQL">
+					and month(date_add(posted, interval #instance.offset# hour)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
+				<cfelseif instance.blogDBType is "ORACLE">
+					and to_number(to_char(tblblogentries.posted + (#instance.offset#/24), 'MM')) = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.params.byMonth#">	
+				</cfif>
+			</cfif>
+			<cfif structKeyExists(arguments.params,"byYear")>
+				<cfif instance.blogDBType is "MSSQL">
+					and year(dateAdd(hh, #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
+				<cfelseif instance.blogDBType is "MSACCESS">
+					and year(dateAdd('h', #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
+				<cfelseif instance.blogDBType is "MYSQL">
+					and year(date_add(posted, interval #instance.offset# hour)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
+				<cfelseif instance.blogDBType is "ORACLE">
+					and to_number(to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY')) = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.params.byYear#">	
+				</cfif>					
+			</cfif>
+			<cfif structKeyExists(arguments.params,"byTitle")>
+				and tblblogentries.title = <cfqueryparam value="#arguments.params.byTitle#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+			</cfif>
+			<cfif structKeyExists(arguments.params,"byCat")>
+				and tblblogentriescategories.entryidfk = tblblogentries.id
+				and tblblogentriescategories.categoryidfk in (<cfqueryparam value="#arguments.params.byCat#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" list=true>)
+			</cfif>
+			<cfif structKeyExists(arguments.params,"searchTerms")>
+				<cfif not structKeyExists(arguments.params, "dontlogsearch")>
+					<cfset logSearch(arguments.params.searchTerms)>
+				</cfif>
+				<cfif instance.blogDBType is not "ORACLE">
+					and (tblblogentries.title like '%#arguments.params.searchTerms#%' OR tblblogentries.body like '%#arguments.params.searchTerms#%' or tblblogentries.morebody like '%#arguments.params.searchTerms#%')
+				<cfelse>
+				and (lower(tblblogentries.title) like '%#lcase(arguments.params.searchTerms)#%' OR lower(tblblogentries.body) like '%#lcase(arguments.params.searchTerms)#%' or lower(tblblogentries.morebody) like '%#lcase(arguments.params.searchTerms)#%')
+				</cfif>
+			</cfif>
+			<cfif structKeyExists(arguments.params,"byEntry")>
+				and tblblogentries.id = <cfqueryparam value="#arguments.params.byEntry#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			</cfif>
+			<cfif structKeyExists(arguments.params,"byAlias")>
+				and tblblogentries.alias = <cfqueryparam value="#arguments.params.byAlias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+			</cfif>
+			<!--- Don't allow future posts unless logged in. --->
+			<cfif not isUserInRole("admin") or structKeyExists(arguments.params,"releasedonly")>
+				<cfif instance.blogDBType IS "ORACLE">
+					 and			to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#"> 
+				<cfelse>
+					and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
+				</cfif>
+			</cfif>
+			<cfif not isUserInRole("admin") or structKeyExists(arguments.params,"releasedonly")>
+			and			released = 1
+			</cfif>
+			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#		
+		</cfquery>
+		
+		<!--- we now have a query from row 1 to our max, we need to get a 'page' of IDs --->
+		<cfset idList = valueList(getIds.id)>
+		<cfif idList eq "">
+			<cfset r.entries = queryNew("id")>
+			<cfset r.totalEntries = 0>
+		</cfif>
+		
+		<cfloop index="x" from="#arguments.params.startRow#" to="#min(arguments.params.startRow+arguments.params.maxEntries-1,getIds.recordCount)#">
+			<cfset pageIdList = listAppend(pageIdList, listGetAt(idlist,x))>
+		</cfloop>
+
+		<!--- I now get the full info --->
+		<cfquery name="getEm" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#" maxrows="#arguments.params.maxEntries+arguments.params.startRow-1#">
+		<!--- DS 8/22/06: added Oracle pseudo top n code --->
+			select		
+					tblblogentries.id, tblblogentries.title, 
+					tblblogentries.alias, 
+					<!--- Handle offset --->
+					<cfif instance.blogDBType is "MSACCESS">
+						dateAdd('h', #instance.offset#, tblblogentries.posted) as posted, 
+					<cfelseif instance.blogDBType is "MSSQL">
+						dateAdd(hh, #instance.offset#, tblblogentries.posted) as posted, 
+					<cfelseif instance.blogDBType is "ORACLE">
+						tblblogentries.posted + (#instance.offset#/24) as posted,	
+					<cfelse>
+					date_add(posted, interval #instance.offset# hour) as posted, 
+					</cfif>
+					tblusers.name, tblblogentries.allowcomments,
+					tblblogentries.enclosure, tblblogentries.filesize, tblblogentries.mimetype, tblblogentries.released, tblblogentries.views,
+					tblblogentries.summary, tblblogentries.subtitle, tblblogentries.keywords, tblblogentries.duration
+				<cfif arguments.params.mode is "full">, tblblogentries.body, tblblogentries.morebody</cfif>
+			from	tblblogentries, tblusers
+			where		
+				tblblogentries.id in (<cfqueryparam cfsqltype="cf_sql_varchar" list="true" value="#pageIdList#">)
+						and blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+						and tblblogentries.username = tblusers.username
+			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
+		</cfquery>
+
+		<cfif arguments.params.mode is "full" and getEm.recordCount>
+			<cfset queryAddColumn(getEm,"commentCount",arrayNew(1))>
+			<cfquery name="getComments" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+				select count(id) as commentCount, entryidfk
+				from 	tblblogcomments
+				where	entryidfk in (<cfqueryparam value="#valueList(getEm.id)#" cfsqltype="CF_SQL_VARCHAR" list="Yes">)	
+				<!--- added 12/5/2006 by Trent Richardson --->
+				<cfif instance.moderate>
+					and moderated = 1 
+				</cfif>
+				and (subscribeonly = 0 or subscribeonly is null)
+				group by entryidfk
+			</cfquery>
+			<cfif getComments.recordCount>
+				<!--- for each row, need to find in getEm --->
+				<cfloop query="getComments">
+					<cfset pos = listFindNoCase(valueList(getEm.id),entryidfk)>
+					<cfif pos>
+						<cfset querySetCell(getEm,"commentCount",commentCount,pos)>
+					</cfif>
+				</cfloop>
+			</cfif>
+			<cfset queryAddColumn(getEm,"categories",arrayNew(1))>
+			<cfloop query="getEm">
+				<cfquery name="getCategories" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+					select	categoryid,categoryname
+					from	tblblogcategories, tblblogentriescategories
+					where	tblblogentriescategories.entryidfk = <cfqueryparam value="#getEm.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+					and		tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
+				</cfquery>
+				<!---
+				<cfset querySetCell(getEm,"categoryids",valueList(getCategories.categoryID),currentRow)>
+				<cfset querySetCell(getEm,"categorynames",valueList(getCategories.categoryname),currentRow)>
+				--->
+				<cfset catData = structNew()>
+				<cfloop query="getCategories">
+					<cfset catData[categoryID] = categoryName>
+				</cfloop>
+				<cfset querySetCell(getEm,"categories",catData,currentRow)>
+			</cfloop>
+			
+			<cfset queryAddColumn(getEm,"trackbackCount",arrayNew(1))>
+			<cfquery name="getTrackbacks" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+				select count(id) as trackbackCount, entryid
+				from 	tblblogtrackbacks
+				where	entryid in (<cfqueryparam value="#valueList(getEm.id)#" cfsqltype="CF_SQL_VARCHAR" list="Yes">)
+				group by entryid
+			</cfquery>
+			<cfif getTrackbacks.recordCount>
+				<!--- for each row, need to find in getEm --->
+				<cfloop query="getTrackbacks">
+					<cfset pos = listFindNoCase(valueList(getEm.id),entryid)>
+					<cfif pos>
+						<cfset querySetCell(getEm,"trackbackCount",trackbackCount,pos)>
+					</cfif>
+				</cfloop>
+			</cfif>
+			
+		</cfif>
+		<cfset r.entries = getEm>
+		<cfset r.totalEntries = getIds.recordCount>
+
+		<cfreturn r>
+		
+	</cffunction>	
+
 	<cffunction name="getNameForUser" access="public" returnType="string" output="false">
 		<cfargument name="username" type="string" required="true">
 		<cfset var q = "">
