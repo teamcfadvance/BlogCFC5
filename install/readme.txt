@@ -17,6 +17,18 @@ Copyright 2008 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: February 23, 2009 (BlogCFC 5.9.2.003)
+/client/trackbacks.cfm - extra protection from spammers (thx Ben Forta)
+/client/search.cfm - support for new way we return entries
+/client/index.cfm - ditto above
+/client/tags/datacolnew.cfm and datatablenew.cfm - Kind of a hack, but new table/customtags for the new way we return entry data. Will refactor later.
+/client/tags/getmode.cfm - support maxrows now that we support it in backend, and start
+/client/pods/recent.cfm - support new way of returning entries
+/client/admin/entries.cfm - ditto above
+/client/admin/spryproxy.cfm - ditto above
+/client/statsbyyear.cfm - initial draft of yearly stats
+/org/camden/blog/blog.cfc - include author in rss feed for entries, and getEntries massively updated
+
 Last Updated: January 5, 2009 (BlogCFC 5.9.2.002)
 /client/addcomment.cfm - fix non-boolean issue
 /org/camden/blog/blog.cfc - just the version
