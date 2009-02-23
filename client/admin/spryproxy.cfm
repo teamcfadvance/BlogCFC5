@@ -68,13 +68,13 @@
 			<cfset params = structNew()>
 			<cfset params.byCat = url.category>
 			<cfset params.mode = "short">
-
-			<cfset entries = application.blog.getEntries(params)>
+			<cfset params.maxEntries = 9999999>
+			<cfset entryData = application.blog.getEntries(params)>
+			<cfset entries = entryData.entries>
 			<cfquery name="entries" dbtype="query">
 			select	id, title, posted
 			from	entries
 			</cfquery>
-
 	        <cfcontent type="text/xml; charset=utf-8"><cfoutput>#queryToXML(entries, "entries", "entry")#</cfoutput>
 	
 		</cfif>
