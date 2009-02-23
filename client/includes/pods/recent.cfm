@@ -19,7 +19,8 @@
 	<cfset params.maxEntries = 5>
 	<cfset params.lastXDays = 20>
 	<cfset params.releasedonly = true>
-	<cfset entries = application.blog.getEntries(duplicate(params))>
+	<cfset entryData = application.blog.getEntries(duplicate(params))>
+	<cfset entries = entryData.entries>
 	<cfloop query="entries">
 		<cfoutput><a href="#application.blog.makeLink(id)#">#title#</a><br></cfoutput>
 	</cfloop>
