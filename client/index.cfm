@@ -32,7 +32,8 @@
 
 <!--- Try to get the articles. --->
 <cftry>
-	<cfset articles = application.blog.getEntries(params)>
+	<cfset articleData = application.blog.getEntries(params)>
+	<cfset articles = articleData.entries>
 	<!--- if using alias, switch mode to entry --->
 	<cfif url.mode is "alias">
 		<cfset url.mode = "entry">
@@ -52,7 +53,7 @@
 	</cfoutput>
 	
 	<cfset lastDate = "">
-	<cfloop query="articles" startrow="#url.startrow#" endRow="#url.startrow+application.maxentries-1#">
+	<cfloop query="articles">
 	
 		<cfoutput><div class="entry<cfif articles.currentRow EQ articles.recordCount>Last</cfif>"></cfoutput>
 		
@@ -290,7 +291,7 @@
 		</div>
 		</cfoutput>
 		
-	<cfelseif articles.recordCount gte url.startRow + application.maxEntries>
+	<cfelseif articleData.totalEntries gte url.startRow + application.maxEntries>
 		
 		<!--- get path if not /index.cfm --->
 		<cfset path = rereplace(cgi.path_info, "(.*?)/index.cfm", "")>
