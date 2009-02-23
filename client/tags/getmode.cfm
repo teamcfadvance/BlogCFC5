@@ -29,6 +29,8 @@
 <cfif application.isColdFusionMX7 and not isValid("integer", url.startrow)>
 	<cfset url.startrow = 1>
 </cfif>
+<cfset params.startrow = url.startrow>
+<cfset params.maxEntries = application.maxEntries>
 
 <!--- Handle cleaning of day, month, year --->
 <cfif isDefined("url.day") and (not isNumeric(url.day) or val(url.day) is not url.day)>
