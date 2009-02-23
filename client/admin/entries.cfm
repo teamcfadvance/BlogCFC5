@@ -20,6 +20,7 @@
 
 <cfparam name="url.keywords" default="">
 <cfparam name="form.keywords" default="#url.keywords#">
+<cfparam name="url.start" default="1">
 
 <cfset params = structNew()>
 <cfset params.mode = "short">
@@ -27,7 +28,11 @@
 	<cfset params.searchTerms = form.keywords>
 	<cfset params.dontlogsearch = true>
 </cfif>
-<cfset entries = application.blog.getEntries(params)>
+<cfset params.maxEntries = application.maxEntries>
+<cfset params.startRow = url.start>
+
+<cfset entryData = application.blog.getEntries(params)>
+<cfset entries = entryData.entries>
 
 <!--- modify to add a proper view col --->
 <!--- todo: only do rows in current view --->
@@ -41,14 +46,18 @@
 
 	<cfoutput>
 	<p>
+	<cfif len(trim(form.keywords))>
+	Your filtered search returned
+	<cfelse>
 	Your blog currently has 
-		<cfif entries.recordCount>
-		#entries.recordcount# entries.
-		<cfelseif entries.recordCount is 1>
-		1 entry.
-		<cfelse>
-		0 entries.
-		</cfif>
+	</cfif>
+	<cfif entryData.totalEntries>
+	#entryData.totalEntries# entries.
+	<cfelseif entryData.totalEntries is 1>
+	1 entry.
+	<cfelse>
+	0 entries.
+	</cfif>
 	</p>
 	
 	<p>
@@ -56,19 +65,15 @@
 	<input type="text" name="keywords" value="#form.keywords#"> <input type="submit" value="Filter by Keyword">
 	</form>
 	</p>
-	
 	</cfoutput>
 
-	<cfmodule template="../tags/datatable.cfm" data="#entries#" editlink="entry.cfm" label="Entries"
-			  linkcol="title" defaultsort="posted" defaultdir="desc" queryString="keywords=#urlencodedformat(form.keywords)#">
-		<cfmodule template="../tags/datacol.cfm" colname="title" label="Title" />
-		<cfmodule template="../tags/datacol.cfm" colname="released" label="Released" format="yesno"/>
-		<cfmodule template="../tags/datacol.cfm" colname="posted" label="Posted" format="datetime" />
-		<cfmodule template="../tags/datacol.cfm" colname="views" label="Views" format="number" />
-		<!---
-		<cfmodule template="../tags/datacol.cfm" label="View" data="<a href=""#application.rooturl#/index.cfm?mode=entry&entry=$id$"">View</a>" sort="false"/>
-		--->
-		<cfmodule template="../tags/datacol.cfm" label="View" data="<a href=""$viewurl$"">View</a>"  sort="false" />
+	<cfmodule template="../tags/datatablenew.cfm" data="#entries#" editlink="entry.cfm" label="Entries"
+			  linkcol="title" defaultsort="posted" defaultdir="desc" queryString="keywords=#urlencodedformat(form.keywords)#" totalRows="#entryData.totalEntries#">
+		<cfmodule template="../tags/datacolnew.cfm" colname="title" label="Title" />
+		<cfmodule template="../tags/datacolnew.cfm" colname="released" label="Released" format="yesno"/>
+		<cfmodule template="../tags/datacolnew.cfm" colname="posted" label="Posted" format="datetime" />
+		<cfmodule template="../tags/datacolnew.cfm" colname="views" label="Views" format="number" />
+		<cfmodule template="../tags/datacolnew.cfm" label="View" data="<a href=""$viewurl$"">View</a>"  sort="false" />
 	</cfmodule>
 	
 </cfmodule>
