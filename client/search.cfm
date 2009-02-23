@@ -54,15 +54,15 @@
 	</cfloop>
 	</select>
 	There  
-		<cfif results.recordCount is 1>was one result<cfelse>were #results.recordCount# results</a></cfif>.
+		<cfif results.totalEntries is 1>was one result<cfelse>were #results.totalEntries# results</a></cfif>.
 	<input type="submit" value="Search Again"> 	
 	</p>
 	</form>
 	<style>
 	.highlight { background-color: yellow; }
 	</style>
-	<cfif results.recordCount>
-		<cfloop query="results">
+	<cfif results.entries.recordCount>
+		<cfloop query="results.entries">
 			<!--- remove html from result. --->
 			<cfset newbody = rereplace(body, "<.*?>", "", "all")>
 			<!--- highlight search terms --->
