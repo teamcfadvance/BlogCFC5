@@ -21,7 +21,7 @@
 
 	<!--- Require 6.1 or higher --->
 	<cfset majorVersion = listFirst(server.coldfusion.productversion)>
-	<cfset minorVersion = listGetAt(server.coldfusion.productversion,2)>
+	<cfset minorVersion = listGetAt(server.coldfusion.productversion,2,".,")>
 	<cfset cfversion = majorVersion & "." & minorVersion>
 	<cfif (server.coldfusion.productname is "ColdFusion Server" and cfversion lte 6)
 		  or 
@@ -746,7 +746,9 @@
 		</cfif>
 		
 		<cfset articles = getEntries(arguments.params)>
-
+		<!--- copy over just the actual query --->
+		<cfset articles = articles.entries>
+		
 		<cfif not find("-", z.utcHourOffset)>
 			<cfset utcPrefix = " -">
 		<cfelse>
