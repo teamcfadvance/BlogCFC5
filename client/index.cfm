@@ -235,7 +235,7 @@
 				<cfoutput query="comments">
 				<div id="c#id#" class="comment<cfif currentRow mod 2>Alt</cfif>">
 					<div class="commentBody">
-					<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar.php?gravatar_id=#lcase(hash(email))#&amp;rating=PG&amp;size=40&amp;default=#application.rooturl#/images/gravatar.gif" alt="#name#'s Gravatar" border="0"></cfif>
+					<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=40&r=pg&d=#application.rooturl#/images/gravatar.gif" alt="#name#'s Gravatar" border="0"></cfif>
 					#paragraphFormat2(replaceLinks(comment))#
 					</div>
 					<div class="commentByLine">
