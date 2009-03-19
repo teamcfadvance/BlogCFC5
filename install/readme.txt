@@ -23,11 +23,17 @@ Last Updated: February 23, 2009 (BlogCFC 5.9.2.003)
 /client/index.cfm - ditto above
 /client/tags/datacolnew.cfm and datatablenew.cfm - Kind of a hack, but new table/customtags for the new way we return entry data. Will refactor later.
 /client/tags/getmode.cfm - support maxrows now that we support it in backend, and start
-/client/pods/recent.cfm - support new way of returning entries
+/client/pods/recent.cfm - support new way of returning entries, and always show last 5 (so if you haven't blogged for a while, it will still show content)
 /client/admin/entries.cfm - ditto above
 /client/admin/spryproxy.cfm - ditto above
 /client/statsbyyear.cfm - initial draft of yearly stats
 /org/camden/blog/blog.cfc - include author in rss feed for entries, and getEntries massively updated
+/client/admin/entry.cfm - BlueDragon fix
+/client/Application.cfm - ditto above
+/client/index.cfm - Support for new Gravatar URLs
+/org/camden/blog/blog.cfc - OpenBlueDragon fix
+/org/hastings/locale/utils.cfc - ditto
+/install/doc+pdf - mentions BD fixes
 
 Last Updated: January 5, 2009 (BlogCFC 5.9.2.002)
 /client/addcomment.cfm - fix non-boolean issue
