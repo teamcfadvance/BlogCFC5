@@ -17,7 +17,6 @@
 
 	<cfset params = structNew()>
 	<cfset params.maxEntries = 5>
-	<cfset params.lastXDays = 20>
 	<cfset params.releasedonly = true>
 	<cfset entryData = application.blog.getEntries(duplicate(params))>
 	<cfset entries = entryData.entries>
