@@ -83,7 +83,7 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<cfmodule template="tags/scopecache.cfm" scope="application" clearall="true">
 
 	<cfset majorVersion = listFirst(server.coldfusion.productversion)>
-	<cfset minorVersion = listGetAt(server.coldfusion.productversion,2)>
+	<cfset minorVersion = listGetAt(server.coldfusion.productversion,2,",.")>
 	<cfset cfversion = majorVersion & "." & minorVersion>
 	
 	<cfset application.isColdFusionMX7 = server.coldfusion.productname is "ColdFusion Server" and cfversion gte 7>
