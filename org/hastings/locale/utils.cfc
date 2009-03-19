@@ -43,8 +43,16 @@
 				hint="Returns an array of locales.">
 		<cfscript>
 		var i=0;
-		var orgLocales=createObject("java","java.util.Locale").getAvailableLocales();
-		var theseLocales=arrayNew(1);
+       	var theseLocales=arrayNew(1);
+		var orgLocales = "";
+		
+		if ( server.coldfusion.productname eq "bluedragon" ) {
+			// this is only needed for BD.NET, but works for BD Java editions also
+			orgLocales=createObject("java","com.nary.util.Locales").getAvailableLocales();
+		} else {
+			orgLocales=createObject("java","java.util.Locale").getAvailableLocales();
+		}
+
 		// we skip plain languages, en, fr, ar, etc.
 		for (i=1; i LTE arrayLen(orgLocales); i=i+1) {
 			if (listLen(orgLocales[i].toString(),"_") GT 1) {
