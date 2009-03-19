@@ -133,7 +133,12 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<!---
 		Thanks: http://www.coldfusionmuse.com/index.cfm/2006/8/2/mime.types
 		--->
-		<cfset form.oldmimetype = getPageContext().getServletContext().getMimeType(form.oldenclosure)>
+		<cftry>
+			<cfset form.oldmimetype = getPageContext().getServletContext().getMimeType(form.oldenclosure)>
+			<cfcatch>
+				<!--- silently fail for BD.Net --->
+			</cfcatch>
+		</cftry>
 		<cfif not isDefined("form.oldmimetype")>
 			<cfset form.oldmimetype = "application/unknown">
 		</cfif>
