@@ -17,6 +17,10 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: March 29, 2009 (BlogCFC 5.9.2.004)
+/org/camden/blog/blog.cfc - Simple fix for OpenBD when no blog entries existed. If you don't use OpenBD, it is probably a good fix
+to get anyway, although I doubt most folks _stay_ at having no entries.
+
 Last Updated: February 23, 2009 (BlogCFC 5.9.2.003)
 /client/trackbacks.cfm - extra protection from spammers (thx Ben Forta)
 /client/search.cfm - support for new way we return entries

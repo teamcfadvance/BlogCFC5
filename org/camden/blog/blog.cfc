@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.2.003">
+	<cfset version = "5.9.2.004">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1665,6 +1665,7 @@
 		<cfif idList eq "">
 			<cfset r.entries = queryNew("id")>
 			<cfset r.totalEntries = 0>
+			<cfreturn r>
 		</cfif>
 		
 		<cfloop index="x" from="#arguments.params.startRow#" to="#min(arguments.params.startRow+arguments.params.maxEntries-1,getIds.recordCount)#">
