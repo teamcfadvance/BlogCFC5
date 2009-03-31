@@ -46,7 +46,7 @@ h1 {
 	margin-bottom: 40px;
 }
 
-.commentByLine {
+.commentByLine, .tweetbackByLine {
 	font-weight: bold;
 	clear: left;
 }
@@ -131,7 +131,7 @@ input, select, textarea {
 	font-weight:normal;
 }
 
-.blogHeader, .trackbackHeader, .commentHeader, .relatedentriesHeader {
+.blogHeader, .trackbackHeader, .commentHeader, .relatedentriesHeader, .tweetbackHeader {
 	font-family: "Trebuchet MS", verdana, arial, sans-serif; 
 	font-size: .7em; 
 	color: #666; 
@@ -190,18 +190,18 @@ a img{
 	border: 0px;
 }
 
-.comment, .trackback, .commentAlt, .trackbackAlt{
+.comment, .trackback, .tweetback, .commentAlt, .trackbackAlt, .tweetbackAlt {
 	border: 1px solid #999;
 	padding: 10px;
 	margin:10px 0;
 	position:relative;
 
 }
-.commentAlt, .trackbackAlt{
+.commentAlt, .trackbackAlt , .tweetbackAlt{
 background-color:#efefef;
 
 }
-.comment img, .commentAlt img{
+.comment img, .commentAlt img, .tweetback img, .tweetbackAlt img {
 	float:left;
 	position:relative;
 	margin: 0 5px 5px 0;
@@ -209,7 +209,7 @@ background-color:#efefef;
 
 
 
-.commentBody, .trackbackBody{
+.commentBody, .trackbackBody, .tweetbackBody {
 	font-family: "Trebuchet MS", verdana, arial, sans-serif; 
 	font-size: .7em; 
 	color: #000000; 
@@ -224,7 +224,7 @@ background-color:#efefef;
 
 
 
-.commentByLine, .trackbackByLine {
+.commentByLine, .trackbackByLine, .tweetbackByLine {
 	font-style: italic;
 	font-size: .7em;
 }
@@ -232,12 +232,15 @@ background-color:#efefef;
 .addCommentLink,.addTrackbackLink{
 	text-align:right;
 	}
-#trackbacks,#comments{
+	
+#trackbacks,#comments, #tweetbacks {
 	margin-top:8px;
-	}
+}
+
 #calendar th{
 	font-weight: normal;
 }
+
 .tbLink{
 	font-size:1.1em;
 }
