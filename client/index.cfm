@@ -153,6 +153,7 @@
 
 		<!--- Things to do if showing one entry --->						
 		<cfif articles.recordCount is 1>
+		
 			<cfset qRelatedBlogEntries = application.blog.getRelatedBlogEntries(entryId=id,bDislayFutureLinks=true) />	
 
 			<cfif qRelatedBlogEntries.recordCount>
@@ -211,6 +212,42 @@
 				</div>
 				</div>
 				</cfoutput>				
+			</cfif>
+
+			<cfif application.usetweetbacks>
+				<cfset tweetbacks = application.sweetTweets.getTweetbacks(application.blog.makeLink(id), 10)/>
+
+				<cfoutput>	
+				<div id="tweetbacks">
+				<div class="tweetbackHeader">TweetBacks</div>
+				</cfoutput>
+
+				<cfif arrayLen(tweetbacks)>
+					
+					<cfloop index="x" from="1" to="#arrayLen(tweetbacks)#">
+						<cfset tb = tweetbacks[x]>
+						<cfoutput>
+						<div class="tweetback<cfif x mod 2>Alt</cfif>">
+						<div class="tweetbackBody">
+						<img src="#tb.profile_image_url#" alt="#tb.from_user#'s Profile" border="0">
+						#paragraphFormat2(tb.text)#
+						</div>
+						<div class="tweetbackByLine">
+						#rb("postedby")# <a href="http://www.twitter.com/#tb.from_user#">#tb.from_user#</a> 
+						| #application.localeUtils.dateLocaleFormat(tb.created_at,"short")# #application.localeUtils.timeLocaleFormat(tb.created_at)#
+						</div>
+						</div>
+						</cfoutput>
+					</cfloop>	
+
+				<cfelse>
+					<cfoutput><div class="tweetbackBody">#application.resourceBundle.getResource("notweetbacks")#</div></cfoutput>
+				</cfif>
+
+				<cfoutput>
+				</div>
+				</cfoutput>				
+
 			</cfif>
 
 			<cfoutput>
