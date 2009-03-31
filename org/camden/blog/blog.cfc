@@ -34,13 +34,16 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.2.004">
+	<cfset version = "5.9.2.005">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
 	
 	<!--- used for rendering --->
 	<cfset variables.renderMethods = structNew()>
+	
+	<!--- used for settings --->
+	<cfset variables.instance = "">
 	
 	<cffunction name="init" access="public" returnType="blog" output="false"
 				hint="Initialize the blog engine">
@@ -94,6 +97,8 @@
 			<cfset instance.itunesAuthor = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesAuthor")>
 			<cfset instance.itunesImage = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesImage")>
 			<cfset instance.itunesExplicit = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesExplicit")>
+			<cfset instance.usetweetbacks = variables.utils.configParam(variables.cfgFile, arguments.name, "usetweetbacks")>
+
 		</cfif>
 				
 		<!--- Name the blog --->
@@ -2776,7 +2781,7 @@ To unsubscribe, please go to this URL:
 	<cffunction name="setModeratedComment" access="public" returnType="void" output="false" roles="admin" hint="Sets a comment to approved">
 		<cfargument name="id" type="string" required="true">
 		
-		<cfquery name="approve" datasource="#instance.dsn#">
+		<cfquery datasource="#instance.dsn#">
 			update tblblogcomments set moderated=1 where id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 		

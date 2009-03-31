@@ -33,3 +33,4 @@ itunesKeywords=
 itunesAuthor=
 itunesImage=
 itunesExplicit=no
+usetweetbacks=yes
