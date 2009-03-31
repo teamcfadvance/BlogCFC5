@@ -17,6 +17,15 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: March 30, 2009 (BlogCFC 5.9.2.005)
+/org/camden/blog/blog.cfc - Var scope fix, and version. Support tweetbacks settings.
+/org/camden/blog/blog.ini.cfm - Added the usetweetbacks settings.
+/client/admin/settings.cfm - Added usetweetbacks setting support.
+/client/Application.cfm - same as above.
+/client/includes/main.properties and main_en_US.properties - support for tweetbacks
+/client/includes/style.css - ditto
+/client/index.cfm - ditto ditto
+
 Last Updated: March 29, 2009 (BlogCFC 5.9.2.004)
 /org/camden/blog/blog.cfc - Simple fix for OpenBD when no blog entries existed. If you don't use OpenBD, it is probably a good fix
 to get anyway, although I doubt most folks _stay_ at having no entries.
