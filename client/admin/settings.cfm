@@ -88,7 +88,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset form.password = form.dsn_password>
 		
 		<!--- make a list of the keys we will send. --->
-		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,trackbackspamlist,mailserver,mailusername,mailpassword,users,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit">
+		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,users,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit">
 		<cfloop index="key" list="#keylist#">
 			<cfif structKeyExists(form, key)>
 				<cfset application.blog.setProperty(key, trim(form[key]))>
@@ -212,6 +212,15 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 			<select name="usecaptcha">
 			<option value="yes" <cfif form.usecaptcha>selected</cfif>>Yes</option>
 			<option value="no" <cfif not form.usecaptcha>selected</cfif>>No</option>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">use tweetbacks:</td>
+			<td>
+			<select name="usetweetbacks">
+			<option value="yes" <cfif form.usetweetbacks>selected</cfif>>Yes</option>
+			<option value="no" <cfif not form.usetweetbacks>selected</cfif>>No</option>
 			</select>
 			</td>
 		</tr>
