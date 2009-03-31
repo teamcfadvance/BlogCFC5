@@ -79,6 +79,15 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- inject it --->
 	<cfset application.blog.setCodeRenderer(coldfish)>
 
+	<!--- use tweetbacks? --->
+	<cfset application.usetweetbacks = application.blog.getProperty("usetweetbacks")>
+	<cfif not isBoolean(application.usetweetbacks)>
+		<cfset application.usetweetbacks = false>
+	</cfif>
+	<cfif application.usetweetbacks>
+		<cfset application.sweetTweets = createObject("component","org.sweettweets.SweetTweets").init()/>
+	</cfif>
+	
 	<!--- clear scopecache --->
 	<cfmodule template="tags/scopecache.cfm" scope="application" clearall="true">
 
