@@ -61,6 +61,8 @@ Last Updated: April 1, 2009 (BlogCFC 5.9.2.006) | Dan G. Switzer, II
  * Added trim() statement to code being passed to the codeRenderer.formatString() render--this prevents the formatter from adding <br /> before and after the code
  * The saveEntry() method now grabs a copy of the entry after updating and these values are used--we do this to make sure we have the correct "posted" value since the value in the arguments isn't always saved to the database (especially in XML-RPC calls)
  * Fixed title column to getEntries() query when returning an empty query--which is need for spryproxy.cfm to not throw errors when getting the related entries
+ * Added cacheLink() function
+ * Added code so that the saveEntry() updates the entry's link cache
 
 /org/camden/blog/utils.cfc
  * Added htmlToPlainText() method which is a utility helper for removing HTML from plain text e-mails--this is used to clean up the title of a blog entry be replacing entities so the subject in e-mails appears cleaner

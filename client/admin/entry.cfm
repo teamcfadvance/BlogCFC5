@@ -244,7 +244,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 
 		<cfif isDefined("variables.entry")>
 			<!--- Begin: Shane Zehnder | released posts should have the post date of when they're released --->
-			<cfif (form.released eq "true") and (entry.released eq "false")>
+			<cfif (form.released eq "true") and (entry.released eq "false") and (dateCompare(dateAdd("h", application.blog.getProperty("offset"), form.posted), now()) lt 0)>
 				<cfset form.posted = dateAdd("h", application.blog.getProperty("offset"), now()) />
 			</cfif>
 			<!--- End: Shane Zehnder --->

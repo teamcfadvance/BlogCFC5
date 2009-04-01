@@ -281,6 +281,7 @@
 			<cfset currentEntry.enclosure = "" />
 			<cfset currentEntry.filesize = "0" />
 			<cfset currentEntry.mimetype = "" />
+			<cfset currentEntry.released = true />
 		</cfif>
 		
 		<!--- 
@@ -330,6 +331,13 @@
 		<cfelse>
 			<!---// only change the post date if the post date was requested to be changed //--->
 			<cfif requestData.method eq "metaWeblog.newPost">
+				<cfset entry.posted = now() />
+			</cfif>
+		</cfif>
+		
+		<!---// if posted date is in the past, but we've just published the article, update posted date //--->
+		<cfif not currentEntry.released and published>
+			<cfif not structKeyExists(entry, "posted") or (dateCompare(entry.posted, now()) lt 0)>
 				<cfset entry.posted = now() />
 			</cfif>
 		</cfif>

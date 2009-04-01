@@ -2227,14 +2227,38 @@ To unsubscribe, please go to this URL:
 
 	</cffunction>
 	
+	<cffunction name="cacheLink" access="public" returnType="struct" output="false"
+				hint="Caches a link.">
+		<cfargument name="entryid" type="uuid" required="true" />
+		<cfargument name="alias" type="string" required="true" />
+		<cfargument name="posted" type="date" required="true" />
+		
+		<!---// make sure the cache exists //--->
+		<cfif not structKeyExists(variables, "lCache")>
+			<cfset variables.lCache = structNew() />
+		</cfif>
+
+		<cfset variables.lCache[arguments.entryid] = structNew() />
+		<cfset variables.lCache[arguments.entryid].alias = arguments.alias />
+		<cfset variables.lCache[arguments.entryid].posted = arguments.posted />
+		
+		<cfreturn arguments />
+	</cffunction>
+
 	<cffunction name="makeLink" access="public" returnType="string" output="false"
 				hint="Generates links for an entry.">
-		<cfargument name="entryid" type="uuid" required="true">
+		<cfargument name="entryid" type="uuid" required="true" />
+		<cfargument name="updateCache" type="boolean" required="false" default="false" />
 		<cfset var q = "">
 		<cfset var realdate = "">
 		
 		<cfif not structKeyExists(variables, "lCache")>
 			<cfset variables.lCache = structNew()>
+		</cfif>
+		
+		<!---// if forcing the cache to be updated, remove the key //--->
+		<cfif arguments.updateCache>
+			<cfset structDelete(variables.lCache, arguments.entryid, true) />
 		</cfif>
 		
 		<cfif not structKeyExists(variables.lCache, arguments.entryid)>
@@ -2245,9 +2269,8 @@ To unsubscribe, please go to this URL:
 					from	tblblogentries
 					where	id = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.entryid#" maxlength="35">
 					</cfquery>
-					<cfset variables.lCache[arguments.entryid] = structNew()>
-					<cfset variables.lCache[arguments.entryid].alias = q.alias>
-					<cfset variables.lCache[arguments.entryid].posted = q.posted>
+					<!---// cache the link //--->
+					<cfset cacheLink(entryid=arguments.entryid, alias=q.alias, posted=q.posted) />
 				<cfelse>
 					<cfset q = structNew()>
 					<cfset q.alias = variables.lCache[arguments.entryid].alias>
@@ -2651,7 +2674,6 @@ To unsubscribe, please go to this URL:
 		<cfif not entryExists(arguments.id)>
 			<cfset variables.utils.throw("#arguments.id# does not exist as an entry.")>
 		</cfif>
-
 		
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			update tblblogentries
@@ -2678,7 +2700,7 @@ To unsubscribe, please go to this URL:
 					<cfif len(arguments.alias)>
 						,alias = <cfqueryparam value="#arguments.alias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 					</cfif>
-					<cfif len(trim(arguments.posted)) eq 0 and isDate(arguments.posted)>
+					<cfif (len(trim(arguments.posted)) gt 0) and isDate(arguments.posted)>
 						,posted = <cfqueryparam value="#arguments.posted#" cfsqltype="CF_SQL_TIMESTAMP">
 					</cfif>
 				    <cfif instance.blogDBType is not "MYSQL" AND instance.blogDBType is not "ORACLE">
@@ -2714,11 +2736,14 @@ To unsubscribe, please go to this URL:
 			where	id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
-
+		
 		<cfset saveRelatedEntries(arguments.ID, arguments.relatedpposts) />
 		
 		<!---// get the entry //--->
 		<cfset entry = getEntry(arguments.id, true) />
+
+		<!---// update the link cache //--->
+		<cfset cacheLink(entryid=arguments.id, alias=entry.alias, posted=entry.posted) />
 
 		<cfif arguments.released>
 		
