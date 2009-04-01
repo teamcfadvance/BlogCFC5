@@ -1411,15 +1411,13 @@
 				and tblblogentries.alias = <cfqueryparam value="#arguments.params.byAlias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 			</cfif>
 			<!--- Don't allow future posts unless logged in. --->
-			<cfif not isUserInRole("admin") or structKeyExists(arguments.params,"releasedonly")>
+			<cfif not isUserInRole("admin") or (structKeyExists(arguments.params, "releasedonly") and arguments.params.releasedonly)>
 				<cfif instance.blogDBType IS "ORACLE">
 					 and			to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#"> 
 				<cfelse>
 					and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
 				</cfif>
-			</cfif>
-			<cfif not isUserInRole("admin") or structKeyExists(arguments.params,"releasedonly")>
-			and			released = 1
+				and			released = 1
 			</cfif>
 			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
 			<cfif structKeyExists(arguments.params,"maxEntries") and instance.blogDBType is "MYSQL">limit #arguments.params.maxEntries#</cfif>
@@ -1652,15 +1650,13 @@
 				and tblblogentries.alias = <cfqueryparam value="#arguments.params.byAlias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 			</cfif>
 			<!--- Don't allow future posts unless logged in. --->
-			<cfif not isUserInRole("admin") or structKeyExists(arguments.params,"releasedonly")>
+			<cfif not isUserInRole("admin") or (structKeyExists(arguments.params, "releasedonly") and arguments.params.releasedonly)>
 				<cfif instance.blogDBType IS "ORACLE">
 					 and			to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#"> 
 				<cfelse>
 					and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
 				</cfif>
-			</cfif>
-			<cfif not isUserInRole("admin") or structKeyExists(arguments.params,"releasedonly")>
-			and			released = 1
+				and			released = 1
 			</cfif>
 			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#		
 		</cfquery>

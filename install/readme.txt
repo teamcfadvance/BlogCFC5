@@ -50,10 +50,16 @@ Last Updated: April 1, 2009 (BlogCFC 5.9.2.006) | Dan G. Switzer, II
 /client/admin/entry_comments.cfm
  * New template for handling comments on entry page
 
+/client/admin/entries.cfm
+ * Added url.adminview to "View" links, which allow viewing of draft entries in Admin mode
+
 /client/admin/entry.cfm
  * When changing a draft entry to being released, the posted date is updated with the current date/time
  * Added "Comments" tab for viewing entry-related comments
  * Added fix to handle some pathing issues with images directory
+
+/client/tags/getmode.cfm
+ * Added check for url.adminview, which sets params.releasedonly to false so draft messages can be viewed
 
 /org/camden/blog/blog.cfc
  * Added htmlToPlainText() to variables being output in cfmail subject attributes--this replace entities such as an em-dash or ellipse with their plain text representation
@@ -63,6 +69,7 @@ Last Updated: April 1, 2009 (BlogCFC 5.9.2.006) | Dan G. Switzer, II
  * Fixed title column to getEntries() query when returning an empty query--which is need for spryproxy.cfm to not throw errors when getting the related entries
  * Added cacheLink() function
  * Added code so that the saveEntry() updates the entry's link cache
+ * Fixed issue in retrieving of entries where the value of params.releasedonly is assumed true if it exists
 
 /org/camden/blog/utils.cfc
  * Added htmlToPlainText() method which is a utility helper for removing HTML from plain text e-mails--this is used to clean up the title of a blog entry be replacing entities so the subject in e-mails appears cleaner

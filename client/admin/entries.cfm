@@ -39,7 +39,7 @@
 <cfset queryAddColumn(entries,"viewurl",arrayNew(1))>
 <cfloop query="entries">
 	<cfset vu = application.blog.makeLink(id)>
-	<cfset querySetCell(entries, "viewurl", vu, currentRow)>
+	<cfset querySetCell(entries, "viewurl", vu & "?adminview=true", currentRow)>
 </cfloop>
 
 <cfmodule template="../tags/adminlayout.cfm" title="Entries">

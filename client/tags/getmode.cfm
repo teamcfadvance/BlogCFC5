@@ -73,10 +73,13 @@
 	<cfset url.mode = "">
 </cfif>
 
-<!--- 
-	Released only. Ensures admins wont see unreleased on main page.
---->
-<cfset params.releasedonly = true>
+<!---// if user is logged in an has an admin role, then show all entries //--->
+<cfif IsUserInRole("admin") and structKeyExists(url, "adminview") and url.adminview>
+	<cfset params.releasedonly = false />
+<!---// Ensures admins wont see unreleased on main page. //--->
+<cfelse>
+	<cfset params.releasedonly = true />
+</cfif>
 
 <cfset caller[attributes.r_params] = params>
 
