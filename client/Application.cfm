@@ -1,7 +1,7 @@
 <cfsetting enablecfoutputonly="true" showdebugoutput="false">
 <!---
 	Name         : Application.cfm
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : Some time ago
 	Last Updated : April 13, 2007
 	History      : Reset history for version 5.7
@@ -15,11 +15,11 @@
 <!--- Edit this line if you are not using a default blog --->
 <cfset blogname = "Default">
 
-<!--- 
+<!---
 The prefix is now dynamic in case 2 people want to run blog.cfc on the same machine. Normally they
 	  would run both blogs with the same org, and use different names, but on an ISP that may not be possible.
 	  So I base part of the application name on the file path.
-	  
+
 	Name can only be 64 max. So we will take right most part.
 --->
 <cfset prefix = hash(getCurrentTemplatePath())>
@@ -37,24 +37,20 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 
 	<!--- load and init blog --->
 	<cfset application.blog = createObject("component","org.camden.blog.blog").init(blogname)>
-	
+
 	<!--- Root folder for uploaded images, used under images folder --->
 	<cfset application.imageroot = application.blog.getProperty("imageroot")>
-	
+
 	<!--- locale related --->
 	<cfset application.resourceBundle = createObject("component","org.hastings.locale.resourcebundle")>
 
 	<!--- Path may be different if admin. --->
-	<cfif findNoCase("admin/", cgi.script_name) or findNoCase("xmlrpc/", cgi.script_name)>
-		<cfset theFile = expandPath("../includes/main")>
-		<cfset lylaFile = "../includes/captcha.xml">
-		<cfset slideshowdir = expandPath("../images/slideshows/" & application.imageroot)>
-	<cfelse>
-		<cfset theFile = expandPath("./includes/main")>
-		<cfset lylaFile = "./includes/captcha.xml">
-		<cfset slideshowdir = expandPath("./images/slideshows/" & application.imageroot)>
-	</cfif>
-		
+
+	<cfset currentPath = getDirectoryFromPath(getCurrentTemplatePath()) />
+	<cfset theFile = currentPath & "includes\main" />
+	<cfset lylaFile = getRelativePath(currentPath & "includes\captcha.xml") />
+	<cfset slideshowdir = currentPath & "images\slideshows\" & application.imageroot />
+
 	<cfset application.resourceBundle.loadResourceBundle(theFile, application.blog.getProperty("locale"))>
 	<cfset application.resourceBundleData = application.resourceBundle.getResourceBundleData()>
 	<cfset application.localeutils = createObject("component","org.hastings.locale.utils")>
@@ -62,7 +58,7 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 
 	<!--- load slideshow --->
 	<cfset application.slideshow = createObject("component", "org.camden.blog.slideshow").init(slideshowdir)>
-	
+
 	<!--- Use Captcha? --->
 	<cfset application.usecaptcha = application.blog.getProperty("usecaptcha")>
 
@@ -94,20 +90,20 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<cfset majorVersion = listFirst(server.coldfusion.productversion)>
 	<cfset minorVersion = listGetAt(server.coldfusion.productversion,2,",.")>
 	<cfset cfversion = majorVersion & "." & minorVersion>
-	
+
 	<cfset application.isColdFusionMX7 = server.coldfusion.productname is "ColdFusion Server" and cfversion gte 7>
-	
+
 	<!--- Used in various places --->
 	<cfset application.rootURL = application.blog.getProperty("blogURL")>
 	<!--- per documentation - rooturl should be http://www.foo.com/something/something/index.cfm --->
 	<cfset application.rootURL = reReplace(application.rootURL, "(.*)/index.cfm", "\1")>
-	
+
 	<!--- used for cache purposes is 60 minutes --->
 	<cfset application.timeout = 60*60>
-	
+
 	<!--- how many entries? --->
 	<cfset application.maxEntries = application.blog.getProperty("maxentries")>
-	
+
 	<!--- TBs allowed? --->
 	<cfset application.trackbacksAllowed = application.blog.getProperty("allowtrackbacks")>
 
@@ -119,10 +115,10 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 
 	<!--- Load the Page CFC --->
 	<cfset application.page = createObject("component", "org.camden.blog.page").init(dsn=application.blog.getProperty("dsn"), username=application.blog.getProperty("username"), password=application.blog.getProperty("password"),blog=blogname)>
-	
+
 	<!--- Load the TB CFC --->
 	<cfset application.textblock = createObject("component", "org.camden.blog.textblock").init(dsn=application.blog.getProperty("dsn"), username=application.blog.getProperty("username"), password=application.blog.getProperty("password"),blog=blogname)>
-	
+
 	<!--- Do we have comment moderation? --->
 	<cfset application.commentmoderation = application.blog.getProperty("moderate")>
 
@@ -134,10 +130,10 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 
 	<!--- load pod --->
 	<cfset application.pod = createObject("component", "org.camden.blog.pods")>
-	
+
 	<!--- We are initialized --->
 	<cfset application.init = true>
-	
+
 </cfif>
 
 <!--- Let's make a pointer to our RB --->

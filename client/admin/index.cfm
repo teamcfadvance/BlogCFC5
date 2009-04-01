@@ -2,7 +2,7 @@
 <cfprocessingdirective pageencoding="utf-8">
 <!---
 	Name         : /client/admin/index.cfm
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : 04/06/06
 	Last Updated : 8/1/07
 	History      : Added blog name (rkc 5/17/06)
@@ -30,6 +30,15 @@ order by views desc
 
 <cfmodule template="../tags/adminlayout.cfm" title="Welcome">
 
+	<cfif structKeyExists(url, "reinit")>
+		<cfoutput>
+			<div style="margin: 15px 0; padding: 15px; border: 5px solid ##cd6f6f; background-color: ##f79992; color: ##c54043; font-weight: bold; text-align: center;">
+				Your blog cache has been refreshed.
+			</div>
+		</cfoutput>
+	</cfif>
+
+
 	<cfoutput>
 	<h3>About</h3>
 	<p>
@@ -38,7 +47,7 @@ order by views desc
 	BlogCFC was created by <a href="http://www.coldfusionjedi.com">Raymond Camden</a>. For support, please visit the <a href="http://www.coldfusionjedi.com/forums/forums.cfm?conferenceid=CBD210FD-AB88-8875-EBDE545BF7B67269">forums</a>
 	or send me an <a href="mailto:ray@camdenfamily.com">email</a>.
 	</p>
-	
+
 	<cfif topByViews.recordCount>
 	<h3>Top Entries</h3>
 	<p>
@@ -50,18 +59,18 @@ order by views desc
 	</cfloop>
 	</p>
 	</cfif>
-	
+
 	<h3>Credits</h3>
 	<p>
 	BlogCFC has had the support and active help of <i>many</i> people. I'd like to especially thank Scott Stroz, Jeff Coughlin, Charlie Griefer, and Paul Hastings. BlogCFC
 	also makes use of Lyla Captcha from Peter Farrell. The administrator makes use of the Spry framework from Adobe.
 	</p>
-	
+
 	<h3>Support</h3>
 	<p>
 	If you find this blog useful, please consider visiting my <a href="http://www.amazon.com/o/registry/2TCL1D08EZEYE">wishlist</a>.
 	</cfoutput>
-		
+
 </cfmodule>
 
 <cfsetting enablecfoutputonly=false>

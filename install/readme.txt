@@ -17,6 +17,60 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: April 1, 2009 (BlogCFC 5.9.2.006) | Dan G. Switzer, II 
+/client/addcomment.cfm
+/client/contact.cfm
+ * Errors are now stored in an array instead of a string
+
+/client/Application.cfm
+ * Simplified detection of currentPath, theFile, lylaFile and slideshowDir variables
+
+/client/xmlrpc/xmlrpc.cfm
+ * Fixed bug metaWeblog.getRecentPosts not retrieving entries do to change in return type of the new blog.getEntries() method
+ * Fixed bug in metaWeblog.editPost when trying to edit a draft-based entry (which failed because you were not logged in as an admin)
+ * Enhanced metaWeblog.editPost to convert some UTF & ASCII characters to their HTML entity (em-dashes and ellipses)
+ * Added additional code to prevent errors in metaWeblog.editPost if username does not exist
+
+/client/includes/udf.cfm
+ * Added getRelativePath() function
+
+/client/tags/getpods.cfm
+ * Fixed pathing issue with podDir if "includes" folder has CF mapping
+
+/client/admin/settings.cfm
+ * Added red message box to top of page to inform user when the settings have changed and the blog cache cleared
+
+/client/admin/index.cfm
+ * Added red message box to top of page to inform user when the blog cache has been refreshed
+
+/client/admin/imgwin.cfm
+/client/admin/imgbrowse.cfm
+ * Added fix to handle some pathing issues with images directory
+
+/client/admin/entry_comments.cfm
+ * New template for handling comments on entry page
+
+/client/admin/entry.cfm
+ * When changing a draft entry to being released, the posted date is updated with the current date/time
+ * Added "Comments" tab for viewing entry-related comments
+ * Added fix to handle some pathing issues with images directory
+
+/org/camden/blog/blog.cfc
+ * Added htmlToPlainText() to variables being output in cfmail subject attributes--this replace entities such as an em-dash or ellipse with their plain text representation
+ * The makeTitle() function now removes HTML entities from the title and replaces &amp; entity with the word "and"
+ * Added trim() statement to code being passed to the codeRenderer.formatString() render--this prevents the formatter from adding <br /> before and after the code
+ * The saveEntry() method now grabs a copy of the entry after updating and these values are used--we do this to make sure we have the correct "posted" value since the value in the arguments isn't always saved to the database (especially in XML-RPC calls)
+ * Fixed title column to getEntries() query when returning an empty query--which is need for spryproxy.cfm to not throw errors when getting the related entries
+
+/org/camden/blog/utils.cfc
+ * Added htmlToPlainText() method which is a utility helper for removing HTML from plain text e-mails--this is used to clean up the title of a blog entry be replacing entities so the subject in e-mails appears cleaner
+ * Added fixUrl() which cleans up URLs and is used in the admin section
+
+/org/delmore/coldfish.cfc
+ * Updated HTML comment color to green from grey
+ * Updated HTML tag color from blue to blue-green (which better differentiates between tag and attributes--since both were a very close blue)
+
+
 Last Updated: March 30, 2009 (BlogCFC 5.9.2.005)
 /org/camden/blog/blog.cfc - Var scope fix, and version. Support tweetbacks settings.
 /org/camden/blog/blog.ini.cfm - Added the usetweetbacks settings.

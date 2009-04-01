@@ -16,27 +16,27 @@
 <cfparam name="form.captchaText" default="">
 
 <cfif structKeyExists(form, "send")>
-	<cfset errorStr = "">
+	<cfset aErrors = arrayNew(1) />
 	<cfif not len(trim(form.name))>
-		<cfset errorStr = errorStr & rb("mustincludename") & "<br />">
+		<cfset arrayAppend(aErrors, rb("mustincludename")) />
 	</cfif>
 	<cfif not len(trim(form.email)) or not isEmail(form.email)>
-		<cfset errorStr = errorStr & rb("mustincludeemail") & "<br />">
+		<cfset arrayAppend(aErrors, rb("mustincludeemail")) />
 	</cfif>
 	<cfif not len(trim(form.comments))>
-		<cfset errorStr = errorStr & rb("mustincludecomments") & "<br />">
+		<cfset arrayAppend(aErrors, rb("mustincludecomments")) />
 	</cfif>
 
 	<!--- captcha validation --->
 	<cfif application.useCaptcha>
 		<cfif not len(form.captchaText)>
-		   <cfset errorStr = errorStr & "Please enter the Captcha text.<br>">
+			<cfset arrayAppend(aErrors, "Please enter the Captcha text.") />
 		<cfelseif NOT application.captcha.validateCaptcha(form.captchaHash,form.captchaText)>
-		   <cfset errorStr = errorStr & "The captcha text you have entered is incorrect.<br>">
+			<cfset arrayAppend(aErrors, "The captcha text you have entered is incorrect.") />
 		</cfif>
 	</cfif>
 	
-	<cfif not len(errorStr)>
+	<cfif not arrayLen(aErrors)>
 		<cfset commentTime = dateAdd("h", application.blog.getProperty("offset"), now())>
 		<cfsavecontent variable="body">
 			<cfoutput>
@@ -82,8 +82,8 @@ Created by Raymond Camden (ray@camdenfamily.com)
 	#rb("contactownerform")#
 	</p>
 
-	<cfif isDefined("errorStr") and len(errorStr)>
-		<cfoutput><b>#rb("correctissues")#:</b><ul>#errorStr#</ul></cfoutput>
+	<cfif isDefined("aErrors") and arrayLen(aErrors)>
+		<cfoutput><b>#rb("correctissues")#:</b><ul class="error"><li>#arrayToList(aErrors, "</li><li>")#</li></ul></cfoutput>
 	</cfif>
 	
 		<form action="#cgi.script_name#?#cgi.query_string#" method="post">

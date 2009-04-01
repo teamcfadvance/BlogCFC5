@@ -2,7 +2,7 @@
 <cfprocessingdirective pageencoding="utf-8">
 <!---
 	Name         : /client/admin/index.cfm
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : 04/12/06
 	Last Updated : 4/13/06
 	History      : Various changes, forgotten keys, new keys (rkc 9/5/06)
@@ -18,7 +18,7 @@
 <!--- quick utility func to change foo,moo to foo<newline>moo and reverse --->
 <cfscript>
 function toLines(str) { return replace(str, ",", chr(10), "all"); }
-function toList(str) { 
+function toList(str) {
 	str = replace(str, chr(10), "", "all");
 	str = replace(str, chr(13), ",", "all");
 	return str;
@@ -32,7 +32,7 @@ function toList(str) {
 <cfloop item="setting" collection="#settings#">
 	<cfparam name="form.#setting#" default="#settings[setting]#">
 </cfloop>
-<!--- 
+<!---
 we can use all the settings, but username and password may get overwritten
 by a login attempt, see this bug report:
 http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1E-17FD790A1A7DE997
@@ -46,7 +46,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 
 <cfif structKeyExists(form, "save")>
 	<cfset errors = arrayNew(1)>
-	
+
 	<cfif not len(trim(form.blogtitle))>
 		<cfset arrayAppend(errors, "Your blog must have a title.")>
 	</cfif>
@@ -64,7 +64,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 	<cfif len(trim(form.maxentries)) and not isNumeric(form.maxentries)>
 		<cfset arrayAppend(errors, "Max entries must be numeric.")>
 	</cfif>
-	
+
 	<cfif len(trim(form.offset)) and not isNumeric(form.offset)>
 		<cfset arrayAppend(errors, "Offset must be numeric.")>
 	</cfif>
@@ -86,7 +86,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<!--- copy dsn_* --->
 		<cfset form.username = form.dsn_username>
 		<cfset form.password = form.dsn_password>
-		
+
 		<!--- make a list of the keys we will send. --->
 		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,users,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit">
 		<cfloop index="key" list="#keylist#">
@@ -102,12 +102,12 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 
 	<cfif structKeyExists(url, "settingsupdated")>
 		<cfoutput>
-		<p>
-		<b>Your settings have been updated and your cache refreshed.</b>
-		</p>
+			<div style="margin: 15px 0; padding: 15px; border: 5px solid ##cd6f6f; background-color: ##f79992; color: ##c54043; font-weight: bold; text-align: center;">
+				Your settings have been updated and your cache refreshed.
+			</div>
 		</cfoutput>
 	</cfif>
-	
+
 	<cfoutput>
 	<p>
 	Please edit your settings below. <b>Be warned:</b> A mistake here can make both the blog and this
@@ -127,7 +127,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		</div>
 		</cfoutput>
 	</cfif>
-	
+
 	<cfoutput>
 	<form action="settings.cfm" method="post">
 	<table>
@@ -166,11 +166,11 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<tr valign="top">
 			<td align="right">ping urls:</td>
 			<td><textarea name="pingurls" class="txtAreaShort">#toLines(form.pingurls)#</textarea></td>
-		</tr>		
+		</tr>
 		<tr>
 			<td align="right">dsn:</td>
 			<td><input type="text" name="dsn" value="#form.dsn#" class="txtField" maxlength="50"></td>
-		</tr>		
+		</tr>
 		<tr>
 			<td align="right">blog database type:</td>
 			<td>
@@ -179,7 +179,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 			<option value="#dbtype#" <cfif form.blogdbtype is dbtype>selected</cfif>>#dbtype#</option>
 			</cfloop>
 			</select>
-			</td>		
+			</td>
 		</tr>
 		<tr valign="top">
 			<td align="right">dsn username:</td>
@@ -192,7 +192,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<tr>
 			<td align="right">locale:</td>
 			<td><input type="text" name="locale" value="#form.locale#" class="txtField" maxlength="50"></td>
-		</tr>		
+		</tr>
 		<tr valign="top">
 			<td align="right">ip block list:</td>
 			<td><textarea name="ipblocklist" class="txtAreaShort">#toLines(form.ipblocklist)#</textarea></td>
@@ -205,7 +205,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 			<option value="no" <cfif not form.moderate>selected</cfif>>No</option>
 			</select>
 			</td>
-		</tr>		
+		</tr>
 		<tr>
 			<td align="right">use captcha:</td>
 			<td>
@@ -254,7 +254,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 			<option value="no" <cfif not form.filebrowse>selected</cfif>>No</option>
 			</select>
 			</td>
-		</tr>								
+		</tr>
 		<tr>
 			<td align="right">image root for dynamic images:</td>
 			<td><input type="text" name="imageroot" value="#form.imageroot#" class="txtField" maxlength="50"></td>
@@ -315,7 +315,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 	</form>
 	</cfoutput>
 
-		
+
 </cfmodule>
 
 <cfsetting enablecfoutputonly=false>

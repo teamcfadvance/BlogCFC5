@@ -8,7 +8,14 @@
 	History      : support imageroot (rkc 12/14/06)
 --->
 
-<cfset imageDirectory = expandPath("../images/") & application.imageroot>
+<cfif len(application.imageroot)>
+	<cfset sImgRoot = "../" & application.imageroot />
+<cfelse>
+	<cfset sImgRoot = "../images/" />
+</cfif>
+
+<cfset sImgRoot = application.utils.fixUrl(sImgRoot) />
+<cfset imageDirectory = expandPath(sImgRoot) />
 
 <cfif not directoryExists(imageDirectory)>
 	<cfdirectory action="create" directory="#imageDirectory#">
@@ -72,12 +79,12 @@ function insertIt(url) {
 		</cfif>
 		</td>
 		<td><cfif type is not "Dir">#kbytes(size)#<cfelse>&nbsp;</cfif></td>
-		<td><cfif type is not "Dir"><a href="javaScript:showImage('#urlEncodedFormat("../images/#application.imageroot#/#url.dir#/#name#")#')"><img src="../images/#application.imageroot#/#url.dir#/#name#" width="50" height"50" align="absmiddle" border="0"></a><cfelse>&nbsp;</cfif></td>
+		<td><cfif type is not "Dir"><a href="javascript:showImage('#urlEncodedFormat(application.utils.fixUrl("#sImgRoot#/#url.dir#/#name#"))#')"><img src="#sImgRoot#/#url.dir#/#name#" width="50" height"50" align="absmiddle" border="0"></a><cfelse>&nbsp;</cfif></td>
 		<td width="50" align="center">
 		<cfif type is not "Dir">
 			<!--- quick mod - this apps uses / by default while imgwin isnt, so remove a solo / --->
 			<cfset theurl = right(url.dir & name, len(url.dir & name) - 1)>			
-			<a href="javaScript:insertIt('#theurl#')">Insert</a>
+			<a href="javascript:insertIt('#theurl#')">Insert</a>
 		<cfelse>
 			&nbsp;
 		</cfif>

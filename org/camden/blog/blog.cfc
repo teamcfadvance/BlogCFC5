@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.2.005">
+	<cfset version = "5.9.2.006">
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1668,7 +1668,8 @@
 		<!--- we now have a query from row 1 to our max, we need to get a 'page' of IDs --->
 		<cfset idList = valueList(getIds.id)>
 		<cfif idList eq "">
-			<cfset r.entries = queryNew("id")>
+			<!---// the we need the "title" column for the spryproxy.cfm //--->
+			<cfset r.entries = queryNew("id, title, posted")>
 			<cfset r.totalEntries = 0>
 			<cfreturn r>
 		</cfif>
@@ -2181,9 +2182,9 @@ To unsubscribe, please go to this URL:
 			</cfsavecontent>
 			
 			<cfif instance.mailserver is "">
-				<cfmail to="#email#" from="#instance.owneremail#" subject="#htmlEditFormat(instance.blogtitle)# / #entry.title#" type="html">#theMessage#</cfmail>
+				<cfmail to="#email#" from="#instance.owneremail#" subject="#variables.utils.htmlToPlainText(htmlEditFormat(instance.blogtitle))# / #variables.utils.htmlToPlainText(entry.title)#" type="html">#theMessage#</cfmail>
 			<cfelse>
-				<cfmail to="#email#" from="#instance.owneremail#" subject="#htmlEditFormat(instance.blogtitle)# / #entry.title#"
+				<cfmail to="#email#" from="#instance.owneremail#" subject="#variables.utils.htmlToPlainText(htmlEditFormat(instance.blogtitle))# / #variables.utils.htmlToPlainText(entry.title)#"
 						server="#instance.mailserver#" username="#instance.mailusername#" password="#instance.mailpassword#" type="html">#theMessage#</cfmail>
 			</cfif>
 		</cfloop>
@@ -2277,6 +2278,10 @@ To unsubscribe, please go to this URL:
 		<!---
 		<cfset arguments.title = reReplace(arguments.title,"[^[:alnum:] ]","","all")>
 		--->
+		<!---// replace the & symbol with the word "and" //--->
+		<cfset arguments.title = replace(arguments.title, "&amp;", "and", "all") />
+		<!---// remove html entities //--->
+		<cfset arguments.title = reReplace(arguments.title, "&[^;]+;", "", "all") />
 		<cfset arguments.title = reReplace(arguments.title,"[^0-9a-zA-Z ]","","all")>
 		<!--- change spaces to - --->
 		<cfset arguments.title = replace(arguments.title," ","-","all")>
@@ -2374,9 +2379,9 @@ To unsubscribe, please go to this URL:
 								
 				<!--- switch depending on server --->
 				<cfif instance.mailserver is "">
-					<cfmail to="#address#" from="#arguments.from#" subject="#arguments.subject#">#theMessage#</cfmail>
+					<cfmail to="#address#" from="#arguments.from#" subject="#variables.utils.htmlToPlainText(arguments.subject)#">#theMessage#</cfmail>
 				<cfelse>
-					<cfmail to="#address#" from="#arguments.from#" subject="#arguments.subject#"
+					<cfmail to="#address#" from="#arguments.from#" subject="#variables.utils.htmlToPlainText(arguments.subject)#"
 							server="#instance.mailserver#" username="#instance.mailusername#" password="#instance.mailpassword#">#theMessage#</cfmail>
 				</cfif>
 			</cfloop>
@@ -2485,7 +2490,7 @@ To unsubscribe, please go to this URL:
 				<cfif arrayLen(codeblock.len) gte 6>
                     <cfset codeportion = mid(arguments.string, codeblock.pos[4], codeblock.len[4])>
                     <cfif len(trim(codeportion))>
-						<cfset result = variables.codeRenderer.formatString(codeportion)>
+						<cfset result = variables.codeRenderer.formatString(trim(codeportion))>
 						<cfif arguments.printformat>
 							<cfset result = "<div class='codePrint'>#result#</div>">
 						<cfelse>
@@ -2640,8 +2645,8 @@ To unsubscribe, please go to this URL:
 		<cfargument name="summary" type="string" required="false" default="">
 		<cfargument name="keywords" type="string" required="false" default="">
 
-		
-		<cfset var theURL = "">
+		<cfset var theURL = "" />
+		<cfset var entry = "" />
 		
 		<cfif not entryExists(arguments.id)>
 			<cfset variables.utils.throw("#arguments.id# does not exist as an entry.")>
@@ -2673,7 +2678,7 @@ To unsubscribe, please go to this URL:
 					<cfif len(arguments.alias)>
 						,alias = <cfqueryparam value="#arguments.alias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 					</cfif>
-					<cfif len(arguments.posted) and isDate(arguments.posted)>
+					<cfif len(trim(arguments.posted)) eq 0 and isDate(arguments.posted)>
 						,posted = <cfqueryparam value="#arguments.posted#" cfsqltype="CF_SQL_TIMESTAMP">
 					</cfif>
 				    <cfif instance.blogDBType is not "MYSQL" AND instance.blogDBType is not "ORACLE">
@@ -2712,22 +2717,24 @@ To unsubscribe, please go to this URL:
 
 		<cfset saveRelatedEntries(arguments.ID, arguments.relatedpposts) />
 		
+		<!---// get the entry //--->
+		<cfset entry = getEntry(arguments.id, true) />
 
 		<cfif arguments.released>
 		
 			<cfif arguments.sendEmail>			
-				<cfif dateCompare(dateAdd("h", instance.offset,arguments.posted), blogNow()) is 1>
+				<cfif dateCompare(dateAdd("h", instance.offset, entry.posted), blogNow()) is 1>
 					<!--- Handle delayed posting --->
 					<cfset theURL = getRootURL()>
 					<cfset theURL = theURL & "admin/notify.cfm?id=#id#">
 					<cfschedule action="update" task="BlogCFC Notifier #id#" operation="HTTPRequest" 
-								startDate="#arguments.posted#" startTime="#arguments.posted#" url="#theURL#" interval="once">	
+								startDate="#entry.posted#" startTime="#entry.posted#" url="#theURL#" interval="once">	
 				<cfelse>
 					<cfset mailEntry(arguments.id)>		
 				</cfif>
 			</cfif>
 				
-			<cfif dateCompare(dateAdd("h", instance.offset,arguments.posted), blogNow()) is not 1>
+			<cfif dateCompare(dateAdd("h", instance.offset, entry.posted), blogNow()) is not 1>
 				<cfset variables.ping.pingAggregators(instance.pingurls, instance.blogtitle, instance.blogurl)>
 			</cfif>
 

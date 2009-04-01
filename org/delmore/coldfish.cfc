@@ -47,7 +47,7 @@
 			
 			// Comments
 			// Greyed out
-			setStyle("HTMLCOMMENT","color:##AAAAAA");
+			setStyle("HTMLCOMMENT","color:##008000");
 			// Yellow highlight with black text
 			setStyle("CFCOMMENT","color:##333333;background-color:##FFFF00");
 			
@@ -57,7 +57,7 @@
 			setStyle("SCRIPT","color:##000000");
 			
 			// HTML Tags
-			setStyle("HTML","color:##000099");
+			setStyle("HTML","color:##008080");
 			setStyle("HTMLSTYLES","color:##990099");
 			setStyle("HTMLTABLES","color:##009999");
 			setStyle("HTMLFORMS","color:##FF9900");

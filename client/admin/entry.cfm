@@ -243,6 +243,12 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<cfset form.posted = dateAdd("h", -1 * application.blog.getProperty("offset"), form.posted)>
 
 		<cfif isDefined("variables.entry")>
+			<!--- Begin: Shane Zehnder | released posts should have the post date of when they're released --->
+			<cfif (form.released eq "true") and (entry.released eq "false")>
+				<cfset form.posted = dateAdd("h", application.blog.getProperty("offset"), now()) />
+			</cfif>
+			<!--- End: Shane Zehnder --->
+
 			<cfset application.blog.saveEntry(url.id, form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail, form.duration, form.subtitle, form.summary, form.keywords )>
 		<cfelse>
 			<cfset url.id = application.blog.addEntry(form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail, form.duration, form.subtitle, form.summary, form.keywords )>
@@ -273,11 +279,21 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 
 	<cfoutput>
 	<link rel="stylesheet" type="text/css" href="#application.rooturl#/includes/tab.css">
-	<script type="text/javascript" src="#application.rooturl#/includes/tabber.js"></script>
 	<script type="text/javascript">
-	//Used to hide tabber flash
-	document.write('<style type="text/css">.tabber{display:none;}<\/style>');
+		var tabberOptions = {'onClick':function(args){
+			// if we call the comments tab, we need to resize the iframe
+			if( args.tabber.tabs[args.index].headingText == "Comments" ){
+				var el = top.commentsFrame;
+				// we need to delay the call so the tab can be shown
+				setTimeout( function (){
+					el.adjustIframeSize();
+				}, 100);
+			}
+		}};
+		// Used to hide tabber flash
+		document.write('<style type="text/css">.tabber{display:none;}<\/style>');
 	</script>
+	<script type="text/javascript" src="#application.rooturl#/includes/tabber.js"></script>
 	</cfoutput>
 
 	<cfif not structKeyExists(form, "preview")>
@@ -373,9 +389,15 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		function imgUpload() {
 			var imgWin = window.open('#application.rooturl#/admin/imgwin.cfm','imgWin','width=400,height=100,toolbar=0,resizeable=1,menubar=0');	
 		}
-		
+
+		<cfif len(application.imageroot)>
+			<cfset sImgRoot = application.imageroot />
+		<cfelse>
+			<cfset sImgRoot = "/images/" />
+		</cfif>
+
 		function newImage(str) {
-			var imgstr = '<img src="#application.rooturl#/images/#application.imageroot#/' + str + '">';
+			var imgstr = '<img src="#application.utils.fixUrl("./#sImgRoot#/")#' + str + '" />';
 			var textbox = document.getElementById('body');
 			textbox.value = textbox.value + '\n' + imgstr;
 		}
@@ -571,6 +593,23 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			</table>
 		</div>
 		</cfoutput>
+
+		<!--- tab 3 --->
+		<cfif url.id neq 0>
+			<cfoutput>
+			<div class="tabbertab" title="Comments">	
+				<iframe
+					src="entry_comments.cfm?id=#url.id#" 
+					id="commentsFrame"
+					name="commentsFrame"
+					style="width: 100%; min-height: 500px; overflow-y: hidden;"
+					scrolling="false"
+					frameborder="0" 
+					marginheight="0" 
+					marginwidth="0"></iframe>
+			</div>
+			</cfoutput>
+		</cfif>
 		
 		<!--- end all tabs --->
 		<cfoutput>

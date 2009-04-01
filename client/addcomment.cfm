@@ -40,6 +40,14 @@
 <cfparam name="form.subscribe" default="false">
 <cfparam name="form.captchaText" default="">
 
+<!--- validate boolean --->
+<cfif not isBoolean(form.subscribe)>
+	<cfset form.subscribe = false />
+</cfif>
+<cfif not isBoolean(form.rememberme)>
+	<cfset form.rememberme = false />
+</cfif>
+		
 <cfset closeMe = false>
 <cfif not isDefined("url.id")>
 	<cfset closeMe = true>
@@ -71,29 +79,29 @@
 	<cfif form.website is "http://">
 		<cfset form.website = "">
 	</cfif>
+	<!---// track the errors //--->
+	<cfset aErrors = arrayNew(1) />
 	
-	<cfset errorStr = "">
-
 	<cfif not len(form.name)>
-		<cfset errorStr = errorStr & rb("mustincludename") & "<br>">
+		<cfset arrayAppend(aErrors, rb("mustincludename")) />
 	</cfif>
 	<cfif not len(form.email) or not isEmail(form.email)>
-		<cfset errorStr = errorStr & rb("mustincludeemail") & "<br>">
+		<cfset arrayAppend(aErrors, rb("mustincludeemail")) />
 	</cfif>
 	<cfif len(form.website) and not isURL(form.website)>
-		<cfset errorStr = errorStr & rb("invalidurl") & "<br>">
+		<cfset arrayAppend(aErrors, rb("invalidurl")) />
 	</cfif>
-	
+		
 	<cfif not len(form.comments)>
-		<cfset errorStr = errorStr & rb("mustincludecomments") & "<br>">
+		<cfset arrayAppend(aErrors, rb("mustincludecomments")) />
 	</cfif>
-	
+		
 	<!--- captcha validation --->
 	<cfif application.useCaptcha>
 		<cfif not len(form.captchaText)>
-		   <cfset errorStr = errorStr & "Please enter the Captcha text.<br>">
+			<cfset arrayAppend(aErrors, "Please enter the Captcha text.") />
 		<cfelseif NOT application.captcha.validateCaptcha(form.captchaHash,form.captchaText)>
-		   <cfset errorStr = errorStr & "The captcha text you have entered is incorrect.<br>">
+			<cfset arrayAppend(aErrors, "The captcha text you have entered is incorrect.") />
 		</cfif>
 	</cfif>
 	<!--- cfformprotect --->
@@ -101,19 +109,11 @@
 		<cfset cffp = createObject("component","cfformprotect.cffpVerify").init() />
 		<!--- now we can test the form submission --->
 		<cfif not cffp.testSubmission(form)>
-			<cfset errorStr = errorStr & "Your comment has been flagged as spam.<br>">
+			<cfset arrayAppend(aErrors, "Your comment has been flagged as spam.") />
 		</cfif> 
 	</cfif>
-	
-	<!--- validate boolean --->
-	<cfif not isBoolean(form.subscribe)>
-		<cfset form.subscribe = false>
-	</cfif>
-	<cfif not isBoolean(form.rememberme)>
-		<cfset form.rememberme = false>
-	</cfif>
-		
-	<cfif not len(errorStr)>
+			
+	<cfif not arrayLen(aErrors)>
 	  <!--- RBB 11/02/2005: added website to commentID --->
 	  	<cftry>
 			<cfset commentID = application.blog.addComment(url.id,left(form.name,50), left(form.email,50), left(form.website,255), form.comments, form.subscribe)>
@@ -122,22 +122,22 @@
 			<cfset commentTime = dateAdd("h", application.blog.getProperty("offset"), now())>
 			<cfsavecontent variable="email">
 			<cfoutput>
-#rb("commentaddedtoblogentry")#:	#entry.title#
+#rb("commentaddedtoblogentry")#:	#application.utils.htmlToPlainText(entry.title)#
 #rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(commentTime)# / #application.localeUtils.timeLocaleFormat(commentTime)#
 #rb("commentmadeby")#:	 	#form.name# <cfif len(form.website)>(#form.website#)</cfif>
 #rb("ipofposter")#:			#cgi.REMOTE_ADDR#
 URL: #application.blog.makeLink(url.id)###c#commentID#
 
-	
+
 #form.comments#
-	
+
 ------------------------------------------------------------
 #rb("unsubscribe")#: %unsubscribe%
 This blog powered by BlogCFC #application.blog.getVersion()#
 Created by Raymond Camden (http://www.coldfusionjedi.com)
 			</cfoutput>
 			</cfsavecontent>
-	
+
 			<cfinvoke component="#application.blog#" method="notifyEntry">
 				<cfinvokeargument name="entryid" value="#entry.id#">
 				<cfinvokeargument name="message" value="#trim(email)#">
@@ -153,13 +153,13 @@ Created by Raymond Camden (http://www.coldfusionjedi.com)
 				<cfif cfcatch.message is not "Comment blocked for spam.">
 					<cfrethrow>
 				<cfelse>
-					<cfset errorStr = errorStr & "Your comment has been flagged as spam.<br>">		
+					<cfset arrayAppend(aErrors, "Your comment has been flagged as spam.") />		
 				</cfif>
 			</cfcatch>
-			
-		</cftry>
-		
-		<cfif not len(errorStr)>		
+				
+			</cftry>
+					
+		<cfif not arrayLen(aErrors)>		
 			<cfmodule template="tags/scopecache.cfm" scope="application" clearall="true">
 			<cfset comments = application.blog.getComments(url.id)>
 			<!--- clear form data --->
@@ -209,9 +209,14 @@ Created by Raymond Camden (http://www.coldfusionjedi.com)
 <cfif entry.allowcomments>
 	
 	
-	<cfif isDefined("errorStr") and len(errorStr)>
-		<cfoutput><b>#rb("correctissues")#:</b><ul>#errorStr#</ul></cfoutput>
-	</cfif>
+		<cfif isDefined("aErrors") and arrayLen(aErrors)>
+			<cfoutput>
+				<div id="CommentError">
+					<b>#rb("correctissues")#:</b>
+					<ul class="error"><li>#arrayToList(aErrors, "</li><li>")#</li></ul>
+				</div>
+			</cfoutput>
+		</cfif>
 	<cfoutput>
 	<form action="#application.rootURL#/addcomment.cfm?#cgi.query_string#" method="post">
 	<cfif application.usecfp>

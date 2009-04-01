@@ -1,4 +1,5 @@
-<cfprocessingdirective pageencoding="utf-8">
+<cfprocessingdirective pageencoding="utf-8" />
+
 <cfsetting enablecfoutputonly=true>
 <!---
 	Name         : C:\projects\blogcfc5\client\xmlrpc\xmlrpc.cfm
@@ -113,6 +114,7 @@
 			<cfset params = structNew()>
 			<cfset params.maxEntries = requestData.params[4]>
 			<cfset entries = application.blog.getEntries(params)>
+			<cfset entries = entries.entries />
 			<cfset result = arrayNew(1)>
 			<cfloop query="entries">
 				<cfset item = structNew()>
@@ -252,7 +254,6 @@
 	</cfcase>
 		
 	<cfcase value="metaWeblog.newPost,metaWeblog.editPost">
-
 		<cfif requestData.method is "metaWeblog.editPost">
 			<cfset currentID = requestData.params[1]>
 		<cfelse>
@@ -262,6 +263,14 @@
 		<cfset password = requestData.params[3]>
 		<cfset bareentry = requestData.params[4]>
 		<cfset published = requestData.params[5]>
+
+		<!--- This remote method isn't secured, so no need for 
+			  cflogin, but I still do the auth check above to 
+			  ensure only proper remote clients call this.
+			  
+			  Actually I lie. Sim noted that you won't get unreleased entries w/o this.
+		--->
+		<cfloginuser name="#username#" password="#password#" roles="admin">
 		
 		<!---// get existing entry or create empty structure //--->
 		<cfif structKeyExists(variables, "currentId")>
@@ -273,7 +282,7 @@
 			<cfset currentEntry.filesize = "0" />
 			<cfset currentEntry.mimetype = "" />
 		</cfif>
-
+		
 		<!--- 
 		Convert the remote keys to keys blog understands.
 		--->
@@ -282,12 +291,19 @@
 		<cfset entry.body = bareentry.description>
 		<cfset application.body = htmleditformat(bareentry.description)>
 		<!--- TODO: Handle <more/> --->
-		
+
+		<!---// replace the ellipse character with the HTML entity //--->
+		<cfset entry.body = replace(entry.body, chr(8230), "&##8230;", "all") />
+		<!---// replace the em dash character with the HTML entity //--->
+		<cfset entry.body = replace(entry.body, chr(8212), "&##8212;", "all") />
+		<cfset entry.body = replace(entry.body, chr(151), "&##8212;", "all") />
+		<cfset entry.body = replace(entry.body, "—", "&##8212;", "all") />
+
 		<cfif url.parseMarkup>
 			<cfset entry.body = xmlrpc.unescapeMarkup(entry.body) />
 		</cfif>
 		
-		<cfif structFind(application.movabletype, username) IS "NO">
+		<cfif structKeyExists(application.movabletype, username) and structFind(application.movabletype, username) IS "NO">
 			<!--- Handle potential <more/> --->
 			<!--- fix by Andrew --->
 			<cfset strMoreTag = "<more/>">
@@ -306,7 +322,6 @@
 				<cfset entry.morebody=bareentry.mt_text_more>
 			</cfif>			
 		</cfif>
-
 				
 		<cfif structKeyExists(bareentry, "dateCreated")>
 			<cfset entry.posted = bareentry.dateCreated>

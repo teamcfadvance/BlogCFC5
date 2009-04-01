@@ -59,13 +59,6 @@ Copyright for coloredCode function. Also note that Jeff Coughlin made some mods 
 		/* Convert all ColdFusion, SCRIPT and WDDX tags to maroon */
 		data = REReplaceNoCase(data, "<(/?)((cf[^>]*)|(sc[^>]*)|(wddx[^>]*))>", "«span style='color: ##800000'»<\1\2>«/span»", "ALL");
 	
-		/* Convert all inline "//" comments to gray (revised) */
-		//data = REReplaceNoCase(data, "([^:/]\/{2,2})([^[:cntrl:]]+)($|[[:cntrl:]])", "«span style='color: ##808080'»«em»\1\2«/em»«/span»", "ALL");
-		data = REReplaceNoCase(data, "([^:/]\/{2,2})([^\n]+)($|[\n])", "Çspan style='color: ##808080'ÈÇemÈ\1\2Ç/emÈÇ/spanÈ", "ALL");
-		
-		/* Convert all multi-line script comments to gray */
-		data = REReplaceNoCase(data, "(\/\*[^\*]*\*\/)", "«span style='color: ##808080'»«em»\1«/em»«/span»", "ALL");
-	
 		/* Convert all HTML and ColdFusion comments to gray */	
 		/* The next 10 lines of code can be replaced with the commented-out line following them, if you do care whether HTML and CFML 
 		   comments contain colored markup. */
@@ -80,6 +73,12 @@ Copyright for coloredCode function. Also note that Jeff Coughlin made some mods 
 			} else EOF = 1;
 		}
 
+		/* Convert all inline "//" comments to gray (revised) */
+		data = REReplaceNoCase(data, "([^:/]\/{2,2})([^\n]+)($|[\n])", "«span style='color: ##808080'»«em»\1\2«/em»«/span»", "ALL");
+	
+		/* Convert all multi-line script comments to gray */
+		data = REReplaceNoCase(data, "(\/\*[^\*]*\*\/)", "«span style='color: ##808080'»«em»\1«/em»«/span»", "ALL");
+	
 
 		/* Convert all quoted values to blue */
 		data = REReplaceNoCase(data, """([^""]*)""", "«span style=""color: ##0000ff""»""\1""«/span»", "all");
@@ -164,4 +163,32 @@ Copyright for coloredCode function. Also note that Jeff Coughlin made some mods 
 		
 	</cffunction>
 
+	<cffunction name="htmlToPlainText" access="public" returnType="string" output="false"
+				hint="Sanitizes a string from having HTML by replacing common entites and remove the others.">
+		<cfargument name="input" type="string" required="true">
+
+		<!---// remove html tags (do this first to avoid issues after replacing < & >) //--->
+		<cfset arguments.input = reReplace(arguments.input, "<[^>]+>", "", "all") />
+		<!---// replace the ellipse entity with three periods //--->
+		<cfset arguments.input = replace(arguments.input, "&hellip;", "...", "all") />
+		<!---// replace the em-dashes with two dashes //--->
+		<cfset arguments.input = reReplace(arguments.input, "(&mdash;)|(&##8212;)|(&##151;)", "--", "all") />
+		<!---// replace the < entity with the real character //--->
+		<cfset arguments.input = replace(arguments.input, "&lt;", "<", "all") />
+		<!---// replace the > entity with the real character //--->
+		<cfset arguments.input = replace(arguments.input, "&gt;", ">", "all") />
+		<!---// replace the & entity with the real character //--->
+		<cfset arguments.input = replace(arguments.input, "&amp;", "&", "all") />
+		<!---// remove all other html entities //--->
+		<cfset arguments.input = reReplace(arguments.input, "(&##[0-9]+;)|(&[A-Za-z]+;)", "", "all") />
+		
+		<cfreturn arguments.input />
+	</cffunction>
+	
+	
+	<cffunction name="fixUrl" access="public" returntype="string" output="false" hint="Ensures a URL is properly formatted.">
+		<cfargument name="url" type="string" required="true" />
+		
+		<cfreturn reReplace(arguments.url, "\/{2,}", "/", "all")>
+	</cffunction>
 </cfcomponent>

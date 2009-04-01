@@ -8,7 +8,14 @@
 	History      : Use imageroot (rkc 12/14/06)
 --->
 
-<cfset imageDirectory = expandPath("../images/") & application.imageroot>
+<cfif len(application.imageroot)>
+	<cfset sImgRoot = "../" & application.imageroot />
+<cfelse>
+	<cfset sImgRoot = "../images/" />
+</cfif>
+
+<cfset sImgRoot = application.utils.fixUrl(sImgRoot) />
+<cfset imageDirectory = expandPath(sImgRoot) />
 
 <cfif structKeyExists(form, "upload") and len(trim(form.newimage))>
 
