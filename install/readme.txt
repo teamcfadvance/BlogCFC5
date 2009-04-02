@@ -17,7 +17,7 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
-Last Updated: April 1, 2009 (BlogCFC 5.9.2.006) | Dan G. Switzer, II 
+Last Updated: April 1, 2009 (BlogCFC 5.9.3.000) | Dan G. Switzer, II 
 /client/addcomment.cfm
 /client/contact.cfm
  * Errors are now stored in an array instead of a string
