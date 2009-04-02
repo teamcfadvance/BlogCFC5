@@ -1660,7 +1660,7 @@
 			</cfif>
 			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#		
 		</cfquery>
-		
+
 		<!--- we now have a query from row 1 to our max, we need to get a 'page' of IDs --->
 		<cfset idList = valueList(getIds.id)>
 		<cfif idList eq "">
@@ -2266,7 +2266,8 @@ To unsubscribe, please go to this URL:
 					where	id = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.entryid#" maxlength="35">
 					</cfquery>
 					<!---// cache the link //--->
-					<cfset cacheLink(entryid=arguments.entryid, alias=q.alias, posted=q.posted) />
+					<cfset realdate = dateAdd("h", instance.offset, q.posted)>
+					<cfset cacheLink(entryid=arguments.entryid, alias=q.alias, posted=realdate) />
 				<cfelse>
 					<cfset q = structNew()>
 					<cfset q.alias = variables.lCache[arguments.entryid].alias>
@@ -2280,8 +2281,7 @@ To unsubscribe, please go to this URL:
 		</cfif>
 		
 		<cfif q.alias is not "">
-			<cfset realdate = dateAdd("h", instance.offset, q.posted)>
-			<cfreturn "#instance.blogURL#/#year(realdate)#/#month(realdate)#/#day(realdate)#/#q.alias#">
+			<cfreturn "#instance.blogURL#/#year(q.posted)#/#month(q.posted)#/#day(q.posted)#/#q.alias#">
 		<cfelse>
 			<cfreturn "#instance.blogURL#?mode=entry&entry=#arguments.entryid#">
 		</cfif>
