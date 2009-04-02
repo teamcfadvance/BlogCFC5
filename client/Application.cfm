@@ -47,9 +47,9 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- Path may be different if admin. --->
 
 	<cfset currentPath = getDirectoryFromPath(getCurrentTemplatePath()) />
-	<cfset theFile = currentPath & "includes\main" />
-	<cfset lylaFile = getRelativePath(currentPath & "includes\captcha.xml") />
-	<cfset slideshowdir = currentPath & "images\slideshows\" & application.imageroot />
+	<cfset theFile = currentPath & "includes/main" />
+	<cfset lylaFile = getRelativePath(currentPath & "includes/captcha.xml") />
+	<cfset slideshowdir = currentPath & "images/slideshows/" & application.imageroot />
 
 	<cfset application.resourceBundle.loadResourceBundle(theFile, application.blog.getProperty("locale"))>
 	<cfset application.resourceBundleData = application.resourceBundle.getResourceBundleData()>
