@@ -11,7 +11,7 @@
 
 --->
   
-	<cfset podDir = getDirectoryFromPath(getCurrentTemplatePath()) & "..\includes\pods\">
+	<cfset podDir = getDirectoryFromPath(getCurrentTemplatePath()) & "../includes/pods/">
 
 	<cfset podList = application.pod.getpods(podDir)>
 	<cfset podList = structsort(podlist.pods,"numeric")>
