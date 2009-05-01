@@ -17,6 +17,18 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: May 1, 2009 (BlogCFC 5.9.3.001) | Raymond Camden 
+/client/xmlrpc/xmlrpc.cfm - some small fixes, but NOTE, I officially consider XMLRPC support to be a bit fubared.
+/org/camden/blog/blog.cfc - Removed author name from the RSS. Why? It was causing an issue with validation. The author value for RSS2 must be an email address, and I was
+using a username. This kinda sucks for multiuser blogs. For now, what I recommend is this:
+
+a) If you store usernames, consider a small mod to the RSS method to say, 'if username=X,do email address Y.'
+Yes, it's a hack, but it would get proper attribution back in the RSS feed.
+
+b) I thought I had a b, but I don't. So this b is superflorous.
+
+/org/sweettweets/SweetTweets.cfc - Fix to a case sensitivity issue. I also reported the issue to the official SweetTweets project.
+
 Last Updated: April 1, 2009 (BlogCFC 5.9.3.000) | Dan G. Switzer, II 
 /client/addcomment.cfm
 /client/contact.cfm
