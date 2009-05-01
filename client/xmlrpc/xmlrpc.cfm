@@ -131,7 +131,7 @@
 				
 				<!--- Handle morebody --->
 				<cfif len(morebody)>
-					<cfif structFind(application.movabletype, username) is "NO">
+					<cfif structKeyExists(application.movabletype, username) and structFind(application.movabletype, username) is "NO">
 						<cfset item["description"] = body & "<more/>" & morebody>
 					<cfelse>
 						<cfset item["mt_text_more"] = morebody>
@@ -198,7 +198,7 @@
 			<cfset item["mt_text_more"] = "">
 			
 			<cfif len(entry.morebody)>
-				<cfif structFind(application.movabletype, username) IS "NO">
+				<cfif structKeyExists(application.movabletype, username) and structFind(application.movabletype, username) IS "NO">
 					<cfset item["description"] = entry.body & "<more/>" & entry.morebody>
 				<cfelse>
 					<cfset item["mt_text_more"]=entry.morebody>
@@ -343,7 +343,7 @@
 		</cfif>
 		
 		<!--- TODO: Fix allowcomments --->
-		<cfif  structKeyExists(bareentry,"mt_allow_comments")>
+		<cfif structKeyExists(bareentry,"mt_allow_comments") and isBoolean(bareentry.mt_allow_comments)>
 			<cfset entry.allowcomments = bareentry.mt_allow_comments>
 		<cfelse>
 			<cfset entry.allowcomments = true>
