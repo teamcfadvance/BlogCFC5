@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.3.000" />
+	<cfset version = "5.9.3.001" />
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -882,9 +882,11 @@
 				</cfloop>
 				<pubDate>#dateStr#</pubDate>
 				<guid>#xmlFormat(makeLink(id))#</guid>
+				<!---
 				<author>
 				<name>#xmlFormat(name)#</name>
 				</author>
+				--->
 				<cfif len(enclosure)>
 				<enclosure url="#xmlFormat("#rootURL#/enclosures/#getFileFromPath(enclosure)#")#" length="#filesize#" type="#mimetype#"/>
 				<cfif mimetype IS "audio/mpeg">
