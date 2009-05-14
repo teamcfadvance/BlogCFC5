@@ -17,6 +17,14 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: May 14, 2009 (BlogCFC 5.9.3.002) | Raymond Camden 
+/client/include/pods/calendar.cfm - Oracle fix.
+/client/stats.cfm - Oracle fix
+/org/camdne/blog/blog.cfc - version #
+/install/BLogCFC.pdf and doc - Oracle notes.
+
+All of the above thanks to Nick Hill.
+
 Last Updated: May 1, 2009 (BlogCFC 5.9.3.001) | Raymond Camden 
 /client/xmlrpc/xmlrpc.cfm - some small fixes, but NOTE, I officially consider XMLRPC support to be a bit fubared.
 /org/camden/blog/blog.cfc - Removed author name from the RSS. Why? It was causing an issue with validation. The author value for RSS2 must be an email address, and I was

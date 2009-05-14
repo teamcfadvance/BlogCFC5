@@ -100,7 +100,8 @@
 	</cfif>
 	<cfoutput>
 		<td <cfif month(now) eq month and x eq day(now) and year(now) eq year> class="calendarToday"</cfif>>
-		<cfif listFind(dayList,x)><a href="#application.blog.getProperty("blogurl")#/#year#/#month#/#x#" rel="nofollow">#x#</a><cfelse>#x#</cfif>
+		<!--- the second clause here fixes an Oracle glitch where 9 comes back as 09. Should be harmless for other DBs that aren't as 'enterprise-y' as Oracle --->
+		<cfif listFind(dayList,x) or listFind(dayList, "0" & x)><a href="#application.blog.getProperty("blogurl")#/#year#/#month#/#x#" rel="nofollow">#x#</a><cfelse>#x#</cfif>
 		</td>
 	</cfoutput>
 	<cfset rowCounter = rowCounter + 1>

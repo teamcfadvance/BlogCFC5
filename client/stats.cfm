@@ -46,7 +46,7 @@
 	</cfquery>
 
 	<cfquery name="getTopViews" datasource="#dsn#" username="#username#" password="#password#">
-		select		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10</cfif> id, title, views
+		select		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10,</cfif> id, title, views
 		from		tblblogentries
 		where 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif dbtype is "oracle">
@@ -102,7 +102,7 @@
 	<!--- gets num of comments per entry, top 10 --->
 	<cfquery name="topCommentedEntries" datasource="#dsn#" username="#username#" password="#password#">
 		select 
-		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10</cfif>
+		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10,</cfif>
 		tblblogentries.id, tblblogentries.title, count(tblblogcomments.id) as commentcount
 		from			tblblogentries, tblblogcomments
 		where			tblblogcomments.entryidfk = tblblogentries.id
@@ -126,7 +126,7 @@
 	<!--- gets num of comments per category, top 10 --->
 	<cfquery name="topCommentedCategories" datasource="#dsn#" username="#username#" password="#password#">
 		select 
-		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10</cfif>
+		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10,</cfif>
 						tblblogcategories.categoryid, 
 						tblblogcategories.categoryname, 
 						count(tblblogcomments.id) as commentcount
@@ -153,12 +153,14 @@
 		<!--- RBB 1/20/2006: gets num of trackbacks per entry, top 10 --->
 		<cfquery name="topTrackbackedEntries" datasource="#dsn#" username="#username#" password="#password#">
 			select 
-			<cfif dbtype is not "mysql">top 10</cfif>
+			<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10,</cfif>
 			tblblogentries.id, tblblogentries.title, count(tblblogtrackbacks.id) as trackbackcount
 			from			tblblogentries, tblblogtrackbacks
 			where			tblblogtrackbacks.entryid = tblblogentries.id
 			and				tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
-	
+			<cfif dbtype is "oracle">
+            and		rownum <= 10
+            </cfif>	
 			group by		tblblogentries.id, tblblogentries.title
 			<cfif dbtype is not "msaccess">
 				order by	trackbackcount desc
@@ -171,11 +173,14 @@
 		
 	<cfquery name="topSearchTerms" datasource="#dsn#" username="#username#" password="#password#">
 		select		
-		<cfif dbtype is not "mysql">top 10</cfif>
+		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10,</cfif>
 					searchterm, count(searchterm) as total
 		from		tblblogsearchstats
 		where		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
-		group by	searchterm
+		<cfif dbtype is "oracle">
+		and		rownum <= 10
+		</cfif>	
+        group by	searchterm
 		<cfif dbtype is not "msaccess">
 			order by	total desc
 		<cfelse>
