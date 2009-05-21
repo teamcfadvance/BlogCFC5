@@ -25,6 +25,13 @@ Last Updated: May 14, 2009 (BlogCFC 5.9.3.002) | Raymond Camden
 
 All of the above thanks to Nick Hill.
 
+Last Updated: May 21, 2009 (BlogCFC 5.9.3.003) | Dan G. Switzer, II 
+/org/camden/blog/blog.cfc
+ * Added check to renderEntry() function to look for existing <p> tags and if they exist, it does not use the xParagraphFormatting (although you can override this behavior by setting the ignoreParagraphFormat to false.) Adding this check helps produce valid XHTML when you're blog is already correctly entered in as XHTML.
+
+/client/xmlrpc/xmlrpc.cfm
+ * Added some code to clean up <more /> tags entered when use the url.parseMarkup variable. The new code removes <p> elements wrapped around a <p>&lt;more/&gt;</p> string, which helps to produce valid XHTML.
+
 Last Updated: May 1, 2009 (BlogCFC 5.9.3.001) | Raymond Camden 
 /client/xmlrpc/xmlrpc.cfm - some small fixes, but NOTE, I officially consider XMLRPC support to be a bit fubared.
 /org/camden/blog/blog.cfc - Removed author name from the RSS. Why? It was causing an issue with validation. The author value for RSS2 must be an email address, and I was

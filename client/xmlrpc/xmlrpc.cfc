@@ -275,8 +275,8 @@
 			</cfloop>
 		</cfif>
 		
-		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;more\s*\/&gt;", "<more/>", "all") />
-		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;textblock((\s+[^\]]*)|(\s*\/))?&gt;", "<textblock\1>", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "(<p>)?&lt;more\s*\/&gt;(</p>)?", "<more/>", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "(<p>)?&lt;textblock((\s+[^\]]*)|(\s*\/))?&gt;(</p>)?", "<textblock\1>", "all") />
 
 		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;\[code((\s+[^\]]*)|(\s*\/))?\]&gt;", "&lt;code\1&gt;", "all") />
 		<cfset arguments.string = reReplaceNoCase(arguments.string, "&lt;\[more((\s+[^\]]*)|(\s*\/))?\]&gt;", "&lt;more\1&gt;", "all") />
@@ -361,8 +361,8 @@
 			</cfloop>
 		</cfif>
 		
-		<cfset arguments.string = reReplaceNoCase(arguments.string, "<more((\s+[^>]*)|(\s*\/))>", "&lt;more\1&gt;", "all") />
-		<cfset arguments.string = reReplaceNoCase(arguments.string, "<textblock((\s+[^>]*)|(\s*\/))?>", "&lt;textblock\1&gt;", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "<more((\s+[^>]*)|(\s*\/))>", "<p>&lt;more\1&gt;</p>", "all") />
+		<cfset arguments.string = reReplaceNoCase(arguments.string, "<textblock((\s+[^>]*)|(\s*\/))?>", "<p>&lt;textblock\1&gt;</p>", "all") />
 
 		<cfreturn arguments.string />
 	</cffunction>

@@ -34,7 +34,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.3.002" />
+	<cfset version = "5.9.3.003" />
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -2486,6 +2486,7 @@ To unsubscribe, please go to this URL:
 		<cfargument name="string" type="string" required="true">
 		<cfargument name="printformat" type="boolean" required="false" default="false">
 		<cfargument name="enclosure" type="string" required="false" default="">
+		<cfargument name="ignoreParagraphFormat" type="boolean" required="false" default="#yesNoFormat(reFindNoCase('<p[^>]*>', arguments.string, 0, false))#" />
 		<cfset var counter = "">
 		<cfset var codeblock = "">
 		<cfset var codeportion = "">
@@ -2564,8 +2565,13 @@ To unsubscribe, please go to this URL:
 				<cfset counter = reFindNoCase(tbRegex,arguments.string, counter)>
 			</cfloop>
 		</cfif>
+		
+		<!---// check to see if we should paragraph format this string //--->
+		<cfif not arguments.ignoreParagraphFormat>
+			<cfset arguments.string = xhtmlParagraphFormat(arguments.string) />
+		</cfif>
 
-		<cfreturn xhtmlParagraphFormat(arguments.string)>
+		<cfreturn arguments.string />
 	</cffunction>
 	
 	<cffunction name="saveCategory" access="remote" returnType="void" roles="admin" output="false"
