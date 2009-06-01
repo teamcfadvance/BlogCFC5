@@ -4,7 +4,7 @@
 	Name         : Google Sitemap
 	Author       : Raymond Camden
 	Created      : Sometime in the past...
-	Last Updated : November 28, 2005
+	Last Updated : June 1, 2009
 	History      : November 30, 2006 (forgot to turn off enablecfoutput, thanks Hatem)
 	Purpose		 : Blog Google Sitemaps feed.
 --->
@@ -15,8 +15,9 @@
 <cfset params.mode = "short">
 
 <cfset entries = application.blog.getEntries(params)>
+<cfset entries = entries.entries>
 <cfset pages = application.page.getPages()>
-	
+
 <cfset z = getTimeZoneInfo()>
 <cfif not find("-", z.utcHourOffset)>
 	<cfset utcPrefix = "-">
@@ -34,7 +35,7 @@
 
 
 
-<cfcontent type="text/xml"><cfoutput><?xml version="1.0" encoding="UTF-8"?>
+<cfcontent type="text/xml" reset="true"><cfoutput><?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.google.com/schemas/sitemap/0.84"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84

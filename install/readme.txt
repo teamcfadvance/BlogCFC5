@@ -25,6 +25,11 @@ Last Updated: May 14, 2009 (BlogCFC 5.9.3.002) | Raymond Camden
 
 All of the above thanks to Nick Hill.
 
+Last Updated: June 1, 2009 (BlogCFC 5.9.3.004) | Dan G. Switzer, II 
+/client/googlesitemap.cfm
+ * Added "reset=true" attribute to <cfcontent /> tag
+ * Fixed bug introduces when getEntries() method return structure was changed
+
 Last Updated: May 21, 2009 (BlogCFC 5.9.3.003) | Dan G. Switzer, II 
 /org/camden/blog/blog.cfc
  * Added check to renderEntry() function to look for existing <p> tags and if they exist, it does not use the xParagraphFormatting (although you can override this behavior by setting the ignoreParagraphFormat to false.) Adding this check helps produce valid XHTML when you're blog is already correctly entered in as XHTML.
