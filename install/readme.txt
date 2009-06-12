@@ -17,13 +17,18 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
-Last Updated: May 14, 2009 (BlogCFC 5.9.3.002) | Raymond Camden 
-/client/include/pods/calendar.cfm - Oracle fix.
-/client/stats.cfm - Oracle fix
-/org/camdne/blog/blog.cfc - version #
-/install/BLogCFC.pdf and doc - Oracle notes.
+Last Updated: May 14, 2009 (BlogCFC 5.9.3.005) | Raymond Camden 
 
-All of the above thanks to Nick Hill.
+Note - the main fix in this build is to SweetTweets. ST can be VERY slow on the first hit. I've switched to using jQuery to dynamically load the STs in. So
+when you first hit the page, you will see a loading msg in that area.
+
+/admin/entry.cfm - Fix to image url issue for uploaded images.
+/org/camden/blog/blog.cfc - version only
+/tags/layout.cfm - support loading jQuery library
+/loadtweetbacks.cfm - New file
+/index.cfm - support changes to tweetbacks
+/includes/jquery.min.js - new file
+/includes/style.css - SweetTweet icon fix
 
 Last Updated: June 1, 2009 (BlogCFC 5.9.3.004) | Dan G. Switzer, II 
 /client/googlesitemap.cfm
@@ -33,6 +38,14 @@ Last Updated: June 1, 2009 (BlogCFC 5.9.3.004) | Dan G. Switzer, II
 Last Updated: May 21, 2009 (BlogCFC 5.9.3.003) | Dan G. Switzer, II 
 /org/camden/blog/blog.cfc
  * Added check to renderEntry() function to look for existing <p> tags and if they exist, it does not use the xParagraphFormatting (although you can override this behavior by setting the ignoreParagraphFormat to false.) Adding this check helps produce valid XHTML when you're blog is already correctly entered in as XHTML.
+
+Last Updated: May 14, 2009 (BlogCFC 5.9.3.002) | Raymond Camden 
+/client/include/pods/calendar.cfm - Oracle fix.
+/client/stats.cfm - Oracle fix
+/org/camdne/blog/blog.cfc - version #
+/install/BLogCFC.pdf and doc - Oracle notes.
+
+All of the above thanks to Nick Hill.
 
 /client/xmlrpc/xmlrpc.cfm
  * Added some code to clean up <more /> tags entered when use the url.parseMarkup variable. The new code removes <p> elements wrapped around a <p>&lt;more/&gt;</p> string, which helps to produce valid XHTML.
