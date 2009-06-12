@@ -205,6 +205,8 @@ background-color:#efefef;
 	float:left;
 	position:relative;
 	margin: 0 5px 5px 0;
+	max-width: 48px;
+	max-height: 48px;	
 }
 
 
