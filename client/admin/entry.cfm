@@ -397,7 +397,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		</cfif>
 
 		function newImage(str) {
-			var imgstr = '<img src="#application.utils.fixUrl("./#sImgRoot#/")#' + str + '" />';
+			var imgstr = '<img src="#application.utils.fixUrl("#application.rooturl#/#sImgRoot#/")#' + str + '" />';
 			var textbox = document.getElementById('body');
 			textbox.value = textbox.value + '\n' + imgstr;
 		}
