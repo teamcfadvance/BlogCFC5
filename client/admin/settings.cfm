@@ -80,7 +80,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 	</cfif>
 
 	<cfset form.ipblocklist = toList(form.ipblocklist)>
-	<cfset form.trackbackspamlist = toList(form.trackbackspamlist)>
+	<cfset form.trackbackspamlist = listSort(toList(form.trackbackspamlist),"textnocase")>
 
 	<cfif not arrayLen(errors)>
 		<!--- copy dsn_* --->
