@@ -17,6 +17,14 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: June 18, 2009 (BlogCFC 5.9.3.006) | Raymond Camden 
+Locale files for DE, CH, AT by Mischa Sameli
+/stats.cfm - various SQL Server fixes
+/admin/settings.cfm - suggestion by Forta to sort tb spam list
+/admin/entry.cfm - fix the image upload url
+/org/camden/blog/blog.cfc - version
+/org/camden/blog/blog.ini - the trackback spam list is sorted, but not different
+
 Last Updated: May 14, 2009 (BlogCFC 5.9.3.005) | Raymond Camden 
 
 Note - the main fix in this build is to SweetTweets. ST can be VERY slow on the first hit. I've switched to using jQuery to dynamically load the STs in. So
