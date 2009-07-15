@@ -143,7 +143,8 @@ GO
 CREATE TABLE [dbo].[tblUsers] (
 	[username] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
 	[password] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
-	[name] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 
+	[name] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+	[blog] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL 	
 ) ON [PRIMARY]
 GO
 
@@ -232,5 +233,44 @@ ALTER TABLE [dbo].[tblblogpages] WITH NOCHECK ADD
 	)  ON [PRIMARY] 
 GO
 
-insert into [dbo].[tblUsers](username,password,name) values('admin','admin','name')
+
+CREATE TABLE dbo.tblblogroles
+	(
+	role nvarchar(50) NOT NULL,
+	id nvarchar(35) NOT NULL,
+	description nvarchar(255) NOT NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE dbo.tblblogroles ADD CONSTRAINT
+	PK_Table_1 PRIMARY KEY CLUSTERED 
+	(
+	id
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+
+INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.')
 go
+INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('ManageCategories','7F197F53-CFF7-18C8-53D0C85FCC2CA3F9','The ability to manage blog categories.'),
+go
+INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('Admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','A special role for the admin. Allows all functionality.'),
+go
+INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('ManageUsers','7F26DA6C-9F03-567F-ACFD34F62FB77199','The ability to manage blog users.')
+go
+INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('ReleaseEntries','800CA7AA-0190-5329-D3C7753A59EA2589','The ability to both release a new entry and edit any released entry.')
+go
+
+CREATE TABLE dbo.tbluseroles
+	(
+	username nvarchar(50) NOT NULL,
+	roleidfk nvarchar(35) NOT NULL,
+	blog nvarchar(50) NOT NULL
+	)  ON [PRIMARY]
+GO
+
+INSERT INTO [dbo].[tbluserroles] VALUES ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default')
+go
+
+insert into [dbo].[tblUsers](username,password,name,blog) values('admin','admin','name','Default')
+go
+

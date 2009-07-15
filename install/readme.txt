@@ -17,6 +17,50 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: July 15, 2009 (BlogCFC 5.9.4 (Test)) | Raymond Camden 
+
+WARNING - PLEASE READ THIS CAREFULLY. THIS RELEASE ADDS NEW TABLES AND NEW SETTINGS AND IF YOU DO NOT FOLLOW THESE DIRECTIONS, YOU WILL NOT BE ABLE TO LOGON TO YOUR BLOG.
+YOU HAVE BEEN WARNING. -ZOD
+
+First off, the new features of this release are NOT documented in the doc/pdf yet. They will be. Check the blog entry for full details. This file will mainly describe what you have to do to get
+the new build up and running. Also be sure to copy all the files listed below. Ok, so let's begin.
+
+First, create the tblblogroles table. You will find this in the install scripts for MySQL and SQL Server. Note that you also need to run the seed statements as well.
+
+Second, the tblusers table now has a blog column. THIS IS CRITICAL. You must add the blog column, and for each user, you must enter their blog. This associates
+the user with a blog. In the past, we used the "users" property in blog.ini.cfm to say which users were matched to a blog. That property is now gone (ignored). So
+if you currently have one user in N blogs, you need to create N rows in the database, one for each blog he used to belong to.
+
+Third, run the create script for tbluserroles. This table sets roles for users. At minimum, you want to set up your Admin user to have the Admin role. You can take this line:
+
+INSERT INTO `blogcfc`.`tbluserroles` VALUES  ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default');
+
+and modify the first value (admin) to match your username. Once you've done that, you have a 'real' admin user with a 'admin' role who can set up your other users.
+
+I'm going to repeat the above to ensure it makes sense. You have one table that lists all roles - you must create and seed it. Your users table now has a blog column. And lastly, tbluserroles creates a
+relationship between the two.
+
+Ok - so in theory, thats it. Please the blog entry for a description of how these changes are used.
+
+Oracle/Access NOT updated. Looking for volunteers.
+
+
+Misc Changes:
+Removed old coloredcode function
+
+Updated Files:
+/tags/adminlayout.cfm and layout.cfm
+/admin/Application.cfm, users.cfm, user.cfm, categories.cfm, category.cfm, entries.cfm, entry.cfm
+/rss.cfm
+/org/camden/blog/blog.cfc, utils.cfc
+/includes/udf.cfm
+/trackbacks.cfm (fix by Ben Forta)
+
+
+
+
+
+
 Last Updated: June 18, 2009 (BlogCFC 5.9.3.006) | Raymond Camden 
 Locale files for DE, CH, AT by Mischa Sameli
 /stats.cfm - various SQL Server fixes

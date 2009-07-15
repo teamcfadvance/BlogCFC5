@@ -181,11 +181,43 @@ DROP TABLE IF EXISTS `tblusers`;
 CREATE TABLE `tblusers` (
   `username` varchar(50) character set latin1 default NULL,
   `password` varchar(50) character set latin1 default NULL,
-  `name` varchar(50) default NULL
+  `name` varchar(50) default NULL,
+    `blog` varchar(50) default NULL
+  
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-insert into tblusers(username,password,name) values('admin','admin','Admin');
+insert into tblusers(username,password,name) values('admin','admin','Admin','Default');
 
+
+
+DROP TABLE IF EXISTS `blogcfc`.`tblblogroles`;
+CREATE TABLE  `blogcfc`.`tblblogroles` (
+  `role` varchar(50) NOT NULL,
+  `id` varchar(35) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `blogcfc`.`tblblogroles`
+--
+
+/*!40000 ALTER TABLE `tblblogroles` DISABLE KEYS */;
+INSERT INTO `blogcfc`.`tblblogroles` VALUES  ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.'),
+ ('ManageCategories','7F197F53-CFF7-18C8-53D0C85FCC2CA3F9','The ability to manage blog categories.'),
+ ('Admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','A special role for the admin. Allows all functionality.'),
+ ('ManageUsers','7F26DA6C-9F03-567F-ACFD34F62FB77199','The ability to manage blog users.'),
+ ('ReleaseEntries','800CA7AA-0190-5329-D3C7753A59EA2589','The ability to both release a new entry and edit any released entry.');
+
+
+DROP TABLE IF EXISTS `blogcfc`.`tbluserroles`;
+CREATE TABLE  `blogcfc`.`tbluserroles` (
+  `username` varchar(50) NOT NULL,
+  `roleidfk` varchar(35) NOT NULL,
+  `blog` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `blogcfc`.`tbluserroles` VALUES  ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
