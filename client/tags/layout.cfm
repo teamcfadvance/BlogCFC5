@@ -84,7 +84,7 @@
 	function launchTrackback(id) {
 		cWin = window.open("#application.rooturl#/trackbacks.cfm?id="+id,"cWin","width=550,height=500,menubar=yes,personalbar=no,dependent=true,directories=no,status=yes,toolbar=no,scrollbars=yes,resizable=yes");
 	}
-	<cfif isDefined("url.mode") and url.mode is "entry"	and application.usetweetbacks>
+	<cfif isDefined("url.mode") and url.mode is "entry"	and application.usetweetbacks and structKeyExists(variables, "entry")>
 	$(document).ready(function() {
 		//set tweetbacks div to loading...
 		$("##tbContent").html("<div class='tweetbackBody'><i>Loading Tweetbacks...</i></div>")

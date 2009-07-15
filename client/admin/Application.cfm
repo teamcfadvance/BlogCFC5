@@ -21,6 +21,11 @@
 				  Therefore, the only say way to check for a user logon is with a flag. 
 			--->  
 			<cfset session.loggedin = true>
+			<!--- 
+			While we use roles above based on CF's built in stuff, I plan on moving away from that, and the role here
+			is more a high level role. We need to add a blog user's specific roles to the session scope.
+			--->
+			<cfset session.roles = application.blog.getUserBlogRoles(username)>
 		<cfelse>
 			<!--- Suggested by Shlomy Gantz to slow down brute force attacks --->
 			<cfset createObject("java", "java.lang.Thread").sleep(500)>

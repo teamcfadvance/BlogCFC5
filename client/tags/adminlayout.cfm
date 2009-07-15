@@ -42,7 +42,9 @@
 <li><a href="index.cfm">Home</a></li>
 <li><a href="entry.cfm?id=0">Add Entry</a></li>
 <li><a href="entries.cfm">Entries</a></li>
+<cfif application.blog.isBlogAuthorized('ManageCategories')>
 <li><a href="categories.cfm">Categories</a></li>
+</cfif>
 <li><a href="comments.cfm">Comments</a></li>
 <cfif application.commentmoderation>
 <li><a href="moderate.cfm">Moderate Comments (<cfoutput>#application.blog.getNumberUnmoderated()#</cfoutput>)</a></li>
@@ -55,6 +57,9 @@
 <li><a href="mailsubscribers.cfm">Mail Subscribers</a></li>
 <cfif application.trackbacksallowed>
 <li><a href="trackbacks.cfm">Trackbacks</a></li>
+</cfif>
+<cfif application.blog.isBlogAuthorized('ManageUsers')>
+<li><a href="users.cfm">Users</a></li>
 </cfif>
 </ul>
 <hr>

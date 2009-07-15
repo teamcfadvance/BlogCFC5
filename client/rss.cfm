@@ -108,7 +108,7 @@
 	<cfheader name="Last-Modified" value="#variables.lastModified#" />
 	<cfheader name="ETag" value="#variables.ETag#" />
 	
-	<cfcontent type="text/xml; chartset=utf-8"><cfoutput>#variables.feedXML#</cfoutput>
+	<cfcontent type="text/xml; charset=utf-8"><cfoutput>#variables.feedXML#</cfoutput>
 	<cfcatch>
 		<cfmail to="#application.blog.getProperty("ownerEmail")#" from="#application.blog.getProperty("ownerEmail")#" subject="rss bug" type="html">
 		#application.resourceBundle.getResource("type")#=#cfcatch.type#

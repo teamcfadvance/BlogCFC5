@@ -8,6 +8,10 @@
 	History      : 
 --->
 
+<cfif not application.blog.isBlogAuthorized('ManageCategories')>
+	<cflocation url="index.cfm" addToken="false">
+</cfif>
+
 <cftry>
 	<cfif url.id neq 0>
 		<cfset cat = application.blog.getCategory(url.id)>

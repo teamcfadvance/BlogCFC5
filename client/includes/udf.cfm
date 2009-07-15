@@ -133,7 +133,8 @@ Request.getRelativePath = getRelativePath;
         var targetNameMax = "";
         var targetLinkName = "";
         var i = "";
-        
+        var match = "";
+		
 		pattern = "(((https?:|ftp:|gopher:)\/\/)|(www\.|ftp\.))[-[:alnum:]\?%,\.\/&##!;@:=\+~_]+[A-Za-z0-9\/]";
         
         while (len(inputCopy)) {

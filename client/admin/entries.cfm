@@ -30,7 +30,9 @@
 </cfif>
 <cfset params.maxEntries = application.maxEntries>
 <cfset params.startRow = url.start>
-
+<cfif not application.blog.isBlogAuthorized('ReleaseEntries')>
+	<cfset params.released = false>
+</cfif>
 <cfset entryData = application.blog.getEntries(params)>
 <cfset entries = entryData.entries>
 

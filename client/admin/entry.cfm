@@ -41,7 +41,7 @@
 		<!--- handle case where form submitted, cant use cfparam --->
 		<cfif not isDefined("form.save") and not isDefined("form.preview")>
 			<cfset form.categories = structKeyList(entry.categories)>
-			<cfset variables.relatedEntries = application.blog.getRelatedBlogEntries(url.id, true, true)>	
+			<cfset variables.relatedEntries = application.blog.getRelatedBlogEntries(url.id, true, true, true)>	
 			<cfset form.relatedEntries = valueList(relatedEntries.id)>
 		</cfif>
 		
@@ -67,7 +67,8 @@
 		<cfparam name="form.oldenclosure" default="">
 		<cfparam name="form.oldfilesize" default="0">
 		<cfparam name="form.oldmimetype" default="">
-		<cfparam name="form.released" default="true">
+		<!--- default released to false if no perms to release --->
+		<cfparam name="form.released" default="#application.blog.isBlogAuthorized('ReleaseEntries')#">
 		<cfparam name="form.duration" default="">
 		<cfparam name="form.keywords" default="">
 		<cfparam name="form.subtitle" default="">
@@ -196,7 +197,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 	
 	<cfif (not isDefined("form.categories") or form.categories is "") and not len(trim(form.newCategory))>
 		<cfset arrayAppend(errors, application.resourceBundle.getResource("mustincludecategory"))>
-	<cfelse>
+	<cfelseif application.blog.isBlogAuthorized('AddCategory')>
 		<cfset form.newCategory = trim(htmlEditFormat(form.newCategory))>
 		<!--- double check if existing --->
 		<cfset cats = valueList(allCats.categoryName)>
@@ -251,6 +252,9 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 
 			<cfset application.blog.saveEntry(url.id, form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail, form.duration, form.subtitle, form.summary, form.keywords )>
 		<cfelse>
+			<cfif not application.blog.isBlogAuthorized('ReleaseEntries')>
+				<cfset form.released = 0>
+			</cfif>
 			<cfset url.id = application.blog.addEntry(form.title, form.body, moreText, form.alias, form.posted, form.allowcomments, form.oldenclosure, form.oldfilesize, form.oldmimetype, form.released, form.relatedentries, form.sendemail, form.duration, form.subtitle, form.summary, form.keywords )>
 		</cfif>
 		<!--- remove all old cats that arent passed in --->
@@ -258,7 +262,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			<cfset application.blog.removeCategories(url.id)>
 		</cfif>
 		<!--- potentially add new cat --->
-		<cfif len(trim(form.newCategory))>
+		<cfif len(trim(form.newCategory)) and application.blog.isBlogAuthorized('AddCategory')>
 			<cfparam name="form.categories" default="">
 			<cfset form.categories = listAppend(form.categories,application.blog.addCategory(form.newCategory, application.blog.makeTitle(newCategory)))>
 		</cfif>
@@ -449,10 +453,12 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				</select><br></cfif>
 				 </td>
 			</tr>
+			<cfif application.blog.isBlogAuthorized('AddCategory')>
 			<tr valign="top">
 				<td align="right">new category:</td>
 				<td><input type="text" name="newcategory" value="#htmlEditFormat(form.newcategory)#" class="txtField" maxlength="50"></td>
 			</tr>
+			</cfif>
 			<tr><td colspan="2"><br /></td></tr>		
 			<tr valign="top">
 				<td align="right">enclosure:</td>
@@ -580,10 +586,14 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			<tr>
 				<td align="right">released:</td>
 				<td>
-				<select name="released">
-				<option value="true" <cfif form.released is "true">selected</cfif>>Yes</option>
-				<option value="false" <cfif form.released is "false">selected</cfif>>No</option>
-				</select>
+				<cfif application.blog.isBlogAuthorized('ReleaseEntries')>
+					<select name="released">
+					<option value="true" <cfif form.released is "true">selected</cfif>>Yes</option>
+					<option value="false" <cfif form.released is "false">selected</cfif>>No</option>
+					</select>
+				<cfelse>
+					#yesNoFormat(form.released)#
+				</cfif>
 				</td>
 			</tr>
 			<tr>
