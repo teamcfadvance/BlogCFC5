@@ -19,6 +19,8 @@
 	<!--- Load utils immidiately. --->
 	<cfset variables.utils = createObject("component", "utils")>		
 
+	<cfset variables.roles = structNew()>
+	
 	<!--- Require 6.1 or higher --->
 	<cfset majorVersion = listFirst(server.coldfusion.productversion)>
 	<cfset minorVersion = listGetAt(server.coldfusion.productversion,2,".,")>
@@ -34,7 +36,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.3.006" />
+	<cfset version = "5.9.4 (Test)" />
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -72,7 +74,6 @@
 			<cfset instance.blogDescription = variables.utils.configParam(variables.cfgFile, arguments.name, "blogDescription")>
 			<cfset instance.blogDBType = variables.utils.configParam(variables.cfgFile, arguments.name, "blogDBType")>
 			<cfset instance.locale = variables.utils.configParam(variables.cfgFile, arguments.name, "locale")>
-			<cfset instance.users = variables.utils.configParam(variables.cfgFile,arguments.name,"users")>
 			<cfset instance.commentsFrom = variables.utils.configParam(variables.cfgFile,arguments.name,"commentsFrom")>
 			<cfset instance.mailServer = variables.utils.configParam(variables.cfgFile,arguments.name,"mailserver")>
 			<cfset instance.mailusername = variables.utils.configParam(variables.cfgFile,arguments.name,"mailusername")>
@@ -498,7 +499,38 @@
 		
 		<cfreturn newID>
 	</cffunction>
-	
+
+	<cffunction name="addUser" access="public" returnType="void" output="false">
+		<cfargument name="username" type="string" required="true">
+		<cfargument name="name" type="string" required="true">
+		<cfargument name="password" type="string" required="true">
+		<cfset var q = "">
+		
+		<cflock name="blogcfc.adduser" type="exclusive" timeout="60">
+			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+			select	username
+			from	tblusers
+			where	username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+			and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
+			</cfquery>
+			
+			<cfif q.recordCount>
+				<cfset variables.utils.throw("#arguments.name# already exists as a user.")>
+			</cfif>
+				
+			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+			insert into tblUsers(username, name, password, blog)
+			values(
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.password#" maxlength="50">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
+			)
+			</cfquery>
+		</cflock>
+		
+	</cffunction>
+		
 	<cffunction name="approveComment" access="public" returnType="void" output="false"
 				hint="Approves a comment.">
 		<cfargument name="commentid" type="uuid" required="true">
@@ -564,10 +596,7 @@
 			from	tblusers
 			where	username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			and		password = <cfqueryparam value="#arguments.password#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
-			<!--- check for restricted users --->
-			<cfif instance.users is not "">
-			and		username in (<cfqueryparam value="#instance.users#" cfsqltype="CF_SQL_VARCHAR" list="Yes">)
-			</cfif>
+			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
 		
 		<cfreturn q.recordCount is 1>
@@ -701,7 +730,18 @@
 		</cfquery>
 		
 	</cffunction>
-	
+
+	<cffunction name="deleteUser" access="public" returnType="void" output="false" hint="Deletes a user.">
+		<cfargument name="username" type="string" required="true">
+		
+		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		delete from tblusers
+		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		and		username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		</cfquery>
+		
+	</cffunction>
+		
 	<cffunction name="entryExists" access="private" returnType="boolean" output="false"
 				hint="Returns true or false if an entry exists.">
 		<cfargument name="id" type="uuid" required="true">		
@@ -955,6 +995,17 @@
 
 		<cfreturn valueList(days.posted_day)>
 
+	</cffunction>
+
+	<cffunction name="getBlogRoles" access="public" returnType="query" output="false">
+		<cfset var q = "">
+
+		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		select	id, role, description
+		from	tblblogroles
+		</cfquery>
+		
+		<cfreturn q>
 	</cffunction>
 	
 	<cffunction name="getCategories" access="remote" returnType="query" output="false">
@@ -1584,7 +1635,7 @@
 		from	tblblogentries, tblusers
 			<cfif structKeyExists(arguments.params,"byCat")>,tblblogentriescategories</cfif>
 			where		1=1
-						and blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+						and tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 						and tblblogentries.username = tblusers.username
 			<cfif structKeyExists(arguments.params,"lastXDays")>
 				and tblblogentries.posted >= <cfqueryparam value="#dateAdd("d",-1*arguments.params.lastXDays,blogNow())#" cfsqltype="CF_SQL_DATE">
@@ -1660,6 +1711,11 @@
 				</cfif>
 				and			released = 1
 			</cfif>
+			
+			<cfif structKeyExists(arguments.params, "released")>
+			and	released = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.params.released#">
+			</cfif>
+			
 			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#		
 		</cfquery>
 
@@ -1699,7 +1755,7 @@
 			from	tblblogentries, tblusers
 			where		
 				tblblogentries.id in (<cfqueryparam cfsqltype="cf_sql_varchar" list="true" value="#pageIdList#">)
-						and blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+						and tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 						and tblblogentries.username = tblusers.username
 			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
 		</cfquery>
@@ -1878,6 +1934,7 @@
 	    <cfargument name="entryId" type="uuid" required="true" />
 	    <cfargument name="bDislayBackwardRelations" type="boolean" hint="Displays related entries that set from another entry" default="true" />
 	    <cfargument name="bDislayFutureLinks" type="boolean" hint="Displays related entries that occur after the posted date of THIS entry" default="true" />
+	    <cfargument name="bDisplayForAdmin" type="boolean" hint="If admin, we can show future links not released to public" default="false" />
 	
 	    <cfset var qEntries = "" />
 
@@ -1931,6 +1988,16 @@
 				and tblblogentries.posted <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#qthisentry.posted#">
 				</cfif>
 	        </cfif>
+
+			<cfif not arguments.bDisplayForAdmin>
+				<cfif instance.blogDBType IS "ORACLE">
+					 and			to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#"> 
+				<cfelse>
+					and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
+				</cfif>
+				and			released = 1
+			</cfif>
+			
 			<!--- END : added categoryName to query : cjg : 31 december 2005 --->
 	      </cfquery>
 		  
@@ -2106,7 +2173,57 @@
 		<cfreturn getC>
 		
 	</cffunction>
+
+	<cffunction name="getUser" access="public" returnType="struct" output="false" hint="Returns a user for a blog.">
+		<cfargument name="username" type="string" required="true">
+		<cfset var q = "">
+		<cfset var s = structNew()>
+		
+		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		select	username, password, name
+		from	tblusers
+		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		and		username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		</cfquery>
+		<cfif q.recordCount>
+			<cfset s.username = q.username>
+			<cfset s.password = q.password>
+			<cfset s.name = q.name>
+			<cfreturn s>
+		<cfelse>
+			<cfthrow message="Unknown user #arguments.username# for blog.">
+		</cfif>		
+		
+	</cffunction>
+
+	<cffunction name="getUserBlogRoles" access="public" returnType="string" output="false">
+		<cfargument name="username" type="string" required="true">
+		<cfset var q = "">
+		
+		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		select	tblblogroles.id
+		from	tblblogroles
+		left join tbluserroles on tbluserroles.roleidfk = tblblogroles.id
+		left join tblusers on tbluserroles.username = tblusers.username
+		where tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		</cfquery>
 	
+		<cfreturn valueList(q.id)>
+	</cffunction>
+	
+	<cffunction name="getUsers" access="public" returnType="query" output="false" hint="Returns users for a blog.">
+		<cfset var q = "">
+		
+		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		select	username, password, name
+		from	tblusers
+		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		</cfquery>
+		
+		<cfreturn q>
+	</cffunction>
+
 	<cffunction name="getValidDBTypes" access="public" returnType="string" output="false"
 				hint="Returns the valid database types.">
 		<cfreturn variables.validDBTypes>
@@ -2117,6 +2234,33 @@
 		<cfreturn variables.version>
 	</cffunction>
 	
+	<cffunction name="isBlogAuthorized" access="public" returnType="boolean" output="false" hint="Simple wrapper to check session roles and see if you are cool to do stuff. Admin role can do all.">
+		<cfargument name="role" type="string" required="true">
+		<!--- Roles are IDs, but to make code simpler, we allow you to specify a string, so do a cached lookup conversion. --->
+		<cfset var q = "">
+
+		<!--- cache admin once --->
+		<cfif not structKeyExists(variables.roles, 'admin')>
+			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+			select	id
+			from	tblblogroles
+			where	role = <cfqueryparam cfsqltype="cf_sql_varchar" value="admin" maxlength="50">
+			</cfquery>
+			<cfset variables.roles['admin'] = q.id>
+		</cfif>
+		
+		<cfif not structKeyExists(variables.roles, arguments.role)>
+			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+			select	id
+			from	tblblogroles
+			where	role = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.role#" maxlength="50">
+			</cfquery>
+			<cfset variables.roles[arguments.role] = q.id>
+		</cfif>
+		
+		<cfreturn (listFindNoCase(session.roles, variables.roles[arguments.role]) or listFindNoCase(session.roles, variables.roles['admin']))>
+	</cffunction>
+		
 	<cffunction name="isValidDBType" access="private" returnType="boolean" output="false"
 				hint="Checks to see if a db type is valid for the blog.">
 		<cfargument name="dbtype" type="string" required="true">
@@ -2800,6 +2944,21 @@ To unsubscribe, please go to this URL:
 		
 	</cffunction>
 
+	<cffunction name="saveUser" access="public" returnType="void" output="false">
+		<cfargument name="username" type="string" required="true">
+		<cfargument name="name" type="string" required="true">
+		<cfargument name="password" type="string" required="true">
+		
+		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		update	tblusers
+		set		name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">,
+				password = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.password#" maxlength="50">
+		where	username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
+		</cfquery>
+
+	</cffunction>
+	
 	<cffunction name="setCodeRenderer" access="public" returnType="void" output="false" hint="Injector for coldfish">
 		<cfargument name="renderer" type="any" required="true">
 		<cfset variables.coderenderer = arguments.renderer>
@@ -2817,12 +2976,37 @@ To unsubscribe, please go to this URL:
 	<cffunction name="setModeratedComment" access="public" returnType="void" output="false" roles="admin" hint="Sets a comment to approved">
 		<cfargument name="id" type="string" required="true">
 		
-		<cfquery datasource="#instance.dsn#">
+		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			update tblblogcomments set moderated=1 where id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 		
 	</cffunction>
-	
+
+	<cffunction name="setUserBlogRoles" access="public" returnType="void" output="false" roles="admin" hint="Sets a user's blog roles">
+		<cfargument name="username" type="string" required="true">
+		<cfargument name="roles" type="string" required="true">
+		<cfset var r = "">
+		<cflog file="blogcfc5" text="setuserblogroles, #username# #roles#">
+		<!--- first, nuke old roles --->
+		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		delete from tbluserroles
+		where username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
+		</cfquery>
+		
+		<cfloop index="r" list="#arguments.roles#">
+			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+			insert into tbluserroles(username, roleidfk, blog)
+			values(
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#r#" maxlength="35">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
+			)
+			</cfquery>		
+		</cfloop>
+		
+	</cffunction>
+		
 	<cffunction name="unsubscribeThread" access="public" returnType="boolean" output="false"
 				hint="Removes a user from a thread.">
 		<cfargument name="commentID" type="UUID" required="true">
@@ -2865,6 +3049,7 @@ To unsubscribe, please go to this URL:
 		from	tblusers
 		where	username = <cfqueryparam value="#getAuthUser()#" cfsqltype="cf_sql_varchar" maxlength="50">
 		and		password = <cfqueryparam value="#arguments.oldpassword#" cfsqltype="cf_sql_varchar" maxlength="50">
+		and		blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="50">
 		</cfquery>
 		
 		<cfif checkit.recordCount is 0>
@@ -2874,6 +3059,7 @@ To unsubscribe, please go to this URL:
 			update	tblusers
 			set		password = <cfqueryparam value="#arguments.newpassword#" cfsqltype="cf_sql_varchar" maxlength="50">
 			where	username = <cfqueryparam value="#getAuthUser()#" cfsqltype="cf_sql_varchar" maxlength="50">
+			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="50">
 			</cfquery>
 			<cfreturn true>
 		</cfif>		
