@@ -68,7 +68,8 @@
 </cfif>
 
 <cfset params.byEntry = url.id>
-<cfset article = application.blog.getEntries(params)>
+<cfset articlesData = application.blog.getEntries(params)>
+<cfset article=articlesData.entries>
 
 <cfoutput>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" />
