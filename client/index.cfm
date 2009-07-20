@@ -47,7 +47,7 @@
 <!--- Call layout custom tag. --->
 <cfmodule template="tags/layout.cfm">
 
-	<!-- load up swfobject --->
+	<!--- load up swfobject --->
 	<cfoutput>
 	<script src="#application.rooturl#/includes/swfobject_modified.js" type="text/javascript"></script>
 	</cfoutput>
