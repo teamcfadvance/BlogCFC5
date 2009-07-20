@@ -29,7 +29,7 @@
 	Your blog currently has 
 		<cfif users.recordCount gt 1 or users.recordCount is 0>
 		#users.recordcount# users.
-		<cfelseif user.recordCount is 1>
+		<cfelseif users.recordCount is 1>
 		1 user.
 		</cfif>
 	</p>
