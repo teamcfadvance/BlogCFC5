@@ -251,16 +251,16 @@ GO
 
 INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.')
 go
-INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('ManageCategories','7F197F53-CFF7-18C8-53D0C85FCC2CA3F9','The ability to manage blog categories.'),
+INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('ManageCategories','7F197F53-CFF7-18C8-53D0C85FCC2CA3F9','The ability to manage blog categories.')
 go
-INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('Admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','A special role for the admin. Allows all functionality.'),
+INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('Admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','A special role for the admin. Allows all functionality.')
 go
 INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('ManageUsers','7F26DA6C-9F03-567F-ACFD34F62FB77199','The ability to manage blog users.')
 go
 INSERT INTO [dbo].[tblblogroles](role,id,description) VALUES('ReleaseEntries','800CA7AA-0190-5329-D3C7753A59EA2589','The ability to both release a new entry and edit any released entry.')
 go
 
-CREATE TABLE dbo.tbluseroles
+CREATE TABLE dbo.tbluserroles
 	(
 	username nvarchar(50) NOT NULL,
 	roleidfk nvarchar(35) NOT NULL,
