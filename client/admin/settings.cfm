@@ -88,7 +88,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset form.password = form.dsn_password>
 
 		<!--- make a list of the keys we will send. --->
-		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,users,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit">
+		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit">
 		<cfloop index="key" list="#keylist#">
 			<cfif structKeyExists(form, key)>
 				<cfset application.blog.setProperty(key, trim(form[key]))>
@@ -270,10 +270,6 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<tr>
 			<td align="right">mail password:</td>
 			<td><input type="text" name="mailpassword" value="#form.mailpassword#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">users:</td>
-			<td><input type="text" name="users" value="#form.users#" class="txtField" maxlength="255"></td>
 		</tr>
 		<tr>
 			<td colspan="2">The following entries are specifically related to podcasting.</td>
