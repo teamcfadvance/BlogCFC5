@@ -16,10 +16,18 @@
 <cfelse>
 	<cfset searchAlias = "">
 </cfif>
+
+<cfif structKeyExists(url, "search")>
+	<cfset form.search = url.search>
+</cfif>
+<cfif structKeyExists(url, "category")>
+	<cfset form.category = url.category>
+</cfif>
+<cfparam name="url.start" default="1">
 <cfparam name="form.search" default="#searchAlias#">
 <cfparam name="form.category" default="">
 
-<cfif not len(trim(form.search))>
+<cfif not len(trim(form.search)) or not isNumeric(url.start) or url.start lt 1 or round(url.start) neq url.start>
 	<cflocation url="#application.rooturl#/index.cfm" addToken="false">
 </cfif>
 
@@ -32,7 +40,8 @@
 <cfif form.category is not "">
 	<cfset params.byCat = form.category>
 </cfif>
-<cfset params.maxEntries = 100>
+<cfset params.startrow = url.start>
+<cfset params.maxEntries = application.maxEntries>
 <!---// dgs: only get released items //--->
 <cfset params.releasedonly = true />
 <cfset results = application.blog.getEntries(params)>
@@ -52,7 +61,7 @@
 	<cfloop query="cats">
 	<option value="#categoryid#" <cfif form.category is categoryid>selected</cfif>>#categoryname#</option>
 	</cfloop>
-	</select>
+	</select><br/>
 	There  
 		<cfif results.totalEntries is 1>was one result<cfelse>were #results.totalEntries# results</a></cfif>.
 	<input type="submit" value="Search Again"> 	
@@ -105,8 +114,26 @@
 			<b><a href="#application.blog.makeLink(id)#">#newtitle#</a></b> (#application.localeUtils.dateLocaleFormat(posted)# #application.localeUtils.timeLocaleFormat(posted)#)<br />
 			<br />
 			#excerpt#
+			<cfif currentRow neq recordCount>
+			<hr/>
+			</cfif>
 		</p>
 		</cfloop>
+		<cfif results.totalEntries gte url.start + application.maxEntries>
+			<p align="right">
+			<cfif url.start gt 1>
+				<a href="search.cfm?search=#urlEncodedFormat(form.search)#&category=#form.category#&start=#url.start-application.maxEntries#">Previous Results</a>
+			<cfelse>
+				Previous Entries
+			</cfif>
+			-
+			<cfif (url.start + application.maxEntries-1) lt results.totalEntries>
+				<a href="search.cfm?search=#urlEncodedFormat(form.search)#&category=#form.category#&start=#url.start+application.maxEntries#">Next Results</a>
+			<cfelse>
+				Next Entries
+			</cfif>
+			</p>
+		</cfif>
 	</cfif>
 	
 	</div>
