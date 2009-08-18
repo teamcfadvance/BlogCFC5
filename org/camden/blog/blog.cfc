@@ -2200,13 +2200,22 @@
 		<cfargument name="username" type="string" required="true">
 		<cfset var q = "">
 		
+		<!--- MSACCESS fix provided by Andy Florino --->
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
+		<cfif instance.blogDBType is "MSACCESS">
+		select tblblogroles.id
+		from tblblogroles, tbluserroles, tblusers
+		where (tblblogroles.id = tbluserroles.roleidfk and tbluserroles.username = tblusers.username)
+		and tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		<cfelse>
 		select	tblblogroles.id
 		from	tblblogroles
 		left join tbluserroles on tbluserroles.roleidfk = tblblogroles.id
 		left join tblusers on tbluserroles.username = tblusers.username
 		where tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
 		and tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		</cfif>
 		</cfquery>
 	
 		<cfreturn valueList(q.id)>
@@ -2630,7 +2639,7 @@ To unsubscribe, please go to this URL:
 		<cfargument name="string" type="string" required="true">
 		<cfargument name="printformat" type="boolean" required="false" default="false">
 		<cfargument name="enclosure" type="string" required="false" default="">
-		<cfargument name="ignoreParagraphFormat" type="boolean" required="false" default="#yesNoFormat(reFindNoCase('<p[^>]*>', arguments.string, 0, false))#" />
+		<cfargument name="ignoreParagraphFormat" type="boolean" required="false" />
 		<cfset var counter = "">
 		<cfset var codeblock = "">
 		<cfset var codeportion = "">
@@ -2711,6 +2720,9 @@ To unsubscribe, please go to this URL:
 		</cfif>
 		
 		<!---// check to see if we should paragraph format this string //--->
+		<cfif not structKeyExists(arguments, "ignoreParagraphFormat")>
+			<cfset arguments.ignoreParagraphFormat = yesNoFormat(reFindNoCase('<p[^>]*>', arguments.string, 0, false))>
+		</cfif>
 		<cfif not arguments.ignoreParagraphFormat>
 			<cfset arguments.string = xhtmlParagraphFormat(arguments.string) />
 		</cfif>
