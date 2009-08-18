@@ -42,7 +42,8 @@ relationship between the two.
 
 Ok - so in theory, thats it. Please the blog entry for a description of how these changes are used.
 
-Oracle/Access NOT updated. Looking for volunteers.
+Oracle/Access NOT updated. Looking for volunteers. On July 20, I checked in an Access update by Andy Florino. May be ok now.
+
 
 
 Misc Changes:
@@ -55,7 +56,7 @@ Updated Files:
 /org/camden/blog/blog.cfc, utils.cfc
 /includes/udf.cfm
 /trackbacks.cfm (fix by Ben Forta)
-
+/admin/settings.cfm
 
 
 
