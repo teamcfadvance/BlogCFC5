@@ -892,12 +892,14 @@
 				<itunes:email>#xmlFormat(instance.owneremail)#</itunes:email>
 				<itunes:name>#xmlFormat(instance.itunesAuthor)#</itunes:name>
 			</itunes:owner>
+			<cfif len(instance.itunesImage)>
 			<itunes:image href="#xmlFormat(instance.itunesImage)#" />
 			<image>
 				<url>#xmlFormat(instance.itunesImage)#</url>
 				<title>#xmlFormat(instance.blogTitle)#</title>
 				<link>#xmlFormat(instance.blogURL)#</link>
 			</image>
+			</cfif>
 			<itunes:explicit>#xmlFormat(instance.itunesExplicit)#</itunes:explicit>
 			</cfoutput>
 			</cfsavecontent>
