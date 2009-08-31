@@ -519,7 +519,7 @@
 			</cfif>
 				
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			insert into tblUsers(username, name, password, blog)
+			insert into tblusers(username, name, password, blog)
 			values(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">,
