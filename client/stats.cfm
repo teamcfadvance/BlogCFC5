@@ -229,11 +229,11 @@
 	<table border="1" width="100%">
 		<tr>
 			<td width="50%"><b>#rb("totalnumentries")#:</b></td>
-			<td align="right">#getTotalEntries.totalEntries#</td>
+			<td align="right">#numberFormat(getTotalEntries.totalEntries)#</td>
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("last30")#:</b></td>
-			<td align="right">#last30.totalEntries#</td>
+			<td align="right">#numberFormat(last30.totalEntries)#</td>
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("last30avg")#:</b></td>
@@ -249,11 +249,11 @@
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("bloggingfor")#:</b></td>
-			<td align="right"><cfif isDefined("dur")>#dur# #rb("days")#<cfelse>&nbsp;</cfif></td>
+			<td align="right"><cfif isDefined("dur")>#numberFormat(dur)# #rb("days")#<cfelse>&nbsp;</cfif></td>
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("totalcomments")#:</b></td>
-			<td align="right">#getTotalComments.totalComments#</td>
+			<td align="right">#numberFormat(getTotalComments.totalComments)#</td>
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("avgcommentsperentry")#:</b></td>
@@ -268,7 +268,7 @@
 		</cfif>
 		<tr>
 			<td width="50%"><b>#rb("totalviews")#:</b></td>
-			<td align="right">#getTotalViews.total#</td>
+			<td align="right">#numberFormat(getTotalViews.total)#</td>
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("avgviews")#:</b></td>
@@ -296,7 +296,7 @@
 		<cfloop query="getTopViews">
 		<tr>
 			<td width="50%"><b><a href="#application.blog.makeLink(id)#" rel="nofollow">#title#</a></b></td>
-			<td align="right">#views#</td>
+			<td align="right">#numberFormat(views)#</td>
 		</tr>
 		</cfloop>
 	</table>
@@ -310,7 +310,7 @@
 		<cfloop query="getCategoryCount">
 		<tr>
 			<td width="50%"><a href="#application.blog.makeCategoryLink(categoryid)#">#categoryname#</a></td>
-			<td align="right">#total#</td>
+			<td align="right">#numberFormat(total)#</td>
 		</tr>
 		</cfloop>
 	</table>
@@ -324,7 +324,7 @@
 		<cfloop query="topCommentedEntries">
 		<tr>
 			<td width="50%"><b><a href="#application.blog.makeLink(id)#" rel="nofollow">#title#</a></b></td>
-			<td align="right">#commentCount#</td>
+			<td align="right">#numberFormat(commentCount)#</td>
 		</tr>
 		</cfloop>
 	</table>
@@ -381,7 +381,7 @@
 		<cfloop query="topSearchTerms">
 		<tr>
 			<td width="50%"><b><a href="#application.rooturl#/index.cfm?mode=search&search=#urlEncodedFormat(searchterm)#" rel="nofollow">#searchterm#</a></b></td>
-			<td align="right">#total#</td>
+			<td align="right">#numberFormat(total)#</td>
 		</tr>
 		</cfloop>
 	</table>
@@ -394,7 +394,7 @@
 		<cfloop query="topCommenters">
 		<tr>
 			<td width="50%"><b>#name#</b></td>
-			<td align="right">#emailcount#</td>
+			<td align="right">#numberFormat(emailcount)#</td>
 		</tr>
 		</cfloop>
 	</table>
