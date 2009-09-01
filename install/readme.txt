@@ -17,6 +17,12 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: September 1, 2009 (BlogCFC 5.9.4.001) | Raymond Camden 
+/org/camden/blog/blog.cfc - Fix to rss code to not output image stuff if the itunesimage value not specified
+/org/camden/blog/blog.cfc - case sensitivity issue for mysql fixed
+/client/stats.cfm - Added numerFormat around most stats. Makes the #s a bit nicer.
+/client/admin/settings.cfm - Support setting Use cfFormProtect (thanks Todd Sharp!)
+
 Last Updated: July 15, 2009 (BlogCFC 5.9.4 (Test)) | Raymond Camden 
 
 WARNING - PLEASE READ THIS CAREFULLY. THIS RELEASE ADDS NEW TABLES AND NEW SETTINGS AND IF YOU DO NOT FOLLOW THESE DIRECTIONS, YOU WILL NOT BE ABLE TO LOGON TO YOUR BLOG.
