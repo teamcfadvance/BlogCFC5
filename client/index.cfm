@@ -306,9 +306,12 @@
 		</cfif>
 		</div>
 		</cfoutput>
-		
-	<cfelseif articleData.totalEntries gte url.startRow + application.maxEntries>
-		
+	
+	</cfif>
+
+	<!--- Used for pagination. --->
+	<cfif (url.startRow gt 1) or (articleData.totalEntries gte url.startRow + application.maxEntries)>
+	
 		<!--- get path if not /index.cfm --->
 		<cfset path = rereplace(cgi.path_info, "(.*?)/index.cfm", "")>
 		
@@ -317,19 +320,46 @@
 		<!--- handle: http://www.coldfusionjedi.com/forums/messages.cfm?threadid=4DF1ED1F-19B9-E658-9D12DBFBCA680CC6 --->
 		<cfset qs = reReplace(qs, "<.*?>", "", "all")>
 		<cfset qs = reReplace(qs, "[\<\>]", "", "all")>
-
-		<cfset qs = reReplaceNoCase(qs, "&*startrow=[0-9]+", "")>
-		<cfset qs = qs & "&startRow=" & (url.startRow + application.maxEntries)>
+	
+		<cfset qs = reReplaceNoCase(qs, "&*startrow=[\-0-9]+", "")>
 		<cfif isDefined("form.search") and len(trim(form.search)) and not structKeyExists(url, "search")>
 			<cfset qs = qs & "&search=#htmlEditFormat(form.search)#">
 		</cfif>
 
 		<cfoutput>
 		<p align="right">
-		<a href="#application.rooturl#/index.cfm#path#?#qs#">#rb("moreentries")#</a>
+		</cfoutput>
+		
+		<cfif url.startRow gt 1>
+
+			<cfset prevqs = qs & "&startRow=" & (url.startRow - application.maxEntries)>
+	
+			<cfoutput>
+			<a href="#application.rooturl#/index.cfm#path#?#prevqs#">#rb("preventries")#</a>
+			</cfoutput>
+
+		</cfif>
+		
+		<cfif (url.startRow gt 1) and (articleData.totalEntries gte url.startRow + application.maxEntries)>
+			<cfoutput> / </cfoutput>
+		</cfif>
+		
+		<cfif articleData.totalEntries gte url.startRow + application.maxEntries>
+			
+			<cfset nextqs = qs & "&startRow=" & (url.startRow + application.maxEntries)>
+	
+			<cfoutput>
+			<a href="#application.rooturl#/index.cfm#path#?#nextqs#">#rb("moreentries")#</a>
+			</cfoutput>
+
+		</cfif>
+
+		<cfoutput>
 		</p>
 		</cfoutput>
-	</cfif>
+		
+	</cfif>		
+	
 
 </cfmodule>
 </cfmodule>
