@@ -25,6 +25,18 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="#application.rooturl#/includes/admin.css" media="screen" />
+<link rel="stylesheet" href="#application.rooturl#/includes/jqtransform/jqtransform.css" type="text/css" media="all" />
+<script type="text/javascript" src="#application.rooturl#/includes/jquery.min.js"></script>
+<script type="text/javascript" src="#application.rooturl#/includes/jquery.selectboxes.js"></script>
+<script type="text/javascript" src="#application.rooturl#/includes/jquery.autogrow.js"></script>
+<link type="text/css" href="#application.rooturl#/includes/jqueryui/css/custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+
+<style type="text/css" media="screen">
+  @import "#application.rooturl#/includes/uni-form/css/uni-form.css";
+</style>
+<script type="text/javascript" src="#application.rooturl#/includes/uni-form/js/uni-form.jquery.js"></script>
+
+<script type="text/javascript" src="#application.rooturl#/includes/jqueryui/jqueryui.js"></script>
 <cfif NOT caller.isLoggedIn()>
   <style type="text/css">
     body{background:none;}
