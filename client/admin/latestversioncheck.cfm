@@ -9,9 +9,10 @@
 
 <cfif latestVersion neq application.blog.getVersion()>
 	<cfoutput>
+	<div style="margin: 15px 0; padding: 15px; border: 5px solid ##ffff00;; background-color: ##e4e961;">
 	<p>
 	<b>Your BlogCFC install may be out of the date!</b><br/>
-	The latest released version of BlogCFC is #latestVersion#. Updates for this version include:<br/>
+	The latest released version of BlogCFC is <b>#latestVersion#</b>. Updates for this version include:<br/>
 	#latestDescription#
 	</p>
 	</cfoutput>
