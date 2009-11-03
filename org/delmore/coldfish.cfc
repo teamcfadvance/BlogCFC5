@@ -13,7 +13,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
+    You should have received a copy of the GNU Lesser General Public License	
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	--->
 <!---
@@ -28,6 +28,7 @@
 	5/27/2008	1.0.9	Made it works with older version of CF... not very happy about implementing the old syntax... may rewrite to use native CF functions...
 	
 	6/4/2008	1.0.12	Fixed cfsetting coloring defect, also replaced use of CharAt function as it throws if there is no character at that reference
+	6/5/2009	2.0		ColdFiSH 2.0 with ActionScript and MXML support.
 	
 	--->
 <cfcomponent output="false">
@@ -39,6 +40,7 @@
     <cffunction name="initializeColors" access="private" returntype="void" hint="This function initializes all of the colors used for highlighting." output="false">
 		<cfscript>
 			variables.colors=structnew();
+			variables.initialparser="";
 			
 			// Initialize styles for various types of elements
 			//
@@ -47,9 +49,12 @@
 			
 			// Comments
 			// Greyed out
-			setStyle("HTMLCOMMENT","color:##008000");
+			setStyle("HTMLCOMMENT","color:##AAAAAA");
 			// Yellow highlight with black text
 			setStyle("CFCOMMENT","color:##333333;background-color:##FFFF00");
+			
+			// Line Numbers
+			setStyle("LINENUMBER","display:block;float:left;clear:left;width:2em;color:##333333;background-color:##ddd;text-align:right");
 			
 			// CF Tags
 			setStyle("CFTAG","color:##990033");
@@ -57,10 +62,24 @@
 			setStyle("SCRIPT","color:##000000");
 			
 			// HTML Tags
-			setStyle("HTML","color:##008080");
+			setStyle("HTML","color:##000099");
 			setStyle("HTMLSTYLES","color:##990099");
 			setStyle("HTMLTABLES","color:##009999");
 			setStyle("HTMLFORMS","color:##FF9900");
+			
+			// MXML Tags
+			setStyle("MXML","color:##00F");
+			setStyle("MXMLCOMMENT","color:##093");
+			setStyle("MXMLATTRIBUTES","color:##000000");
+			setStyle("MXMLVALUE","color:##900");
+			
+			// ACTIONSCRIPT
+			setStyle("ACTIONSCRIPTTAG","color:##093");
+			setStyle("ACTIONSCRIPT","color:##000");
+			setStyle("ACTIONSCRIPTVALUE","color:##900");
+			setStyle("ACTIONSCRIPTKEYWORD1","color:##00F");
+			setStyle("ACTIONSCRIPTKEYWORD2","color:##093");
+			setStyle("ACTIONSCRIPTKEYWORD3","color:##69C");
 			
 			// VALUES
 			setStyle("VALUE","color:##0000CC");
@@ -86,9 +105,24 @@
 			variables.isCFSETTag=false;
 			variables.isScript=false;
 			variables.isOneLineComment=false;
+			variables.isMXML=false;
+			variables.isActionscript=false;
+			initializeKeywordMap();
 		</cfscript>
     </cffunction>
     
+    <cffunction name="initializeKeywordMap" access="private" returntype="void" hint="This function initializes all of the variables needed for keyword searching." output="false">
+    	<cfset variables.keywordmap = structnew()>
+        <cfset variables.keywordmap.Actionscript = structnew()/>
+        <cfset variables.keywordmap.Actionscript.list = arraynew(1)/>
+        <cfset variables.keywordmap.Actionscript.style = arraynew(1)/>
+        <cfset variables.keywordmap.Actionscript.list[1] = "as,break,case,catch,class,const,continue,default,delete,do,else,extends,false,finally,for,if,implements,import,in,instanceof,interface,internal,is,native,new,null,package,private,protected,public,return,super,switch,this,throw,to,true,try,typeof,use,void,while,with,each,get,set,namespace,include,dynamic,final,native,override,static,abstract,boolean,byte,cast,char,debugger,double,enum,export,float,goto,intrinsic,long,prototype,short,synchronized,throws,to,transient,type,virtual,volatile">
+        <cfset variables.keywordmap.Actionscript.style[1] = "ACTIONSCRIPTKEYWORD1"/>
+        <cfset variables.keywordmap.Actionscript.list[2] = "function">
+        <cfset variables.keywordmap.Actionscript.style[2] = "ACTIONSCRIPTKEYWORD2"/>
+        <cfset variables.keywordmap.Actionscript.list[3] = "var">
+        <cfset variables.keywordmap.Actionscript.style[3] = "ACTIONSCRIPTKEYWORD3"/>
+    </cffunction>
     
     <cffunction name="getStyle" access="public" hint="This function can be used to get the style used in conjunction with a type of language element." output="false">
     	<cfargument name="element" type="string"/>
@@ -102,6 +136,9 @@
     <cffunction name="getStyles" access="public" hint="This function returns all of the styles used for each type of language element." output="false">
 		<cfreturn variables.colors/>
     </cffunction>
+    <cffunction name="setInitialParser" access="public" hint="You can set the initial parser state with this.  This is helpful for scripts that make initial parsing impossible (ie. Script, Actionscript)" output="false">
+		<cfset variables.initialparser = arguments[1]/>
+    </cffunction>
     
 	<cffunction name="formatString" access="public" hint="This function accepts a block of code and formats it into syntax highlighted HTML." output="false">
     	<cfargument name="code" type="string"/>
@@ -110,11 +147,19 @@
             var IStream = createObject("java","java.io.InputStreamReader").init(BIstream);
             var reader = createObject("java","java.io.BufferedReader").init(IStream);
             var line = reader.readLine();
+			var linenumber = 0;
 			initializeVariables();
+			
+			
+			if (variables.initialparser neq "") {
+				"variables.is#variables.initialparser#" = true;
+			}
 			
 			bufferAppend("<span style='" & getStyle("TEXT") & "'>"); // start the default text color
 			while (isdefined("line")) {
-                formatLine(line);
+				linenumber = linenumber + 1;
+                bufferAppend("<span style='" & getStyle("LINENUMBER") & "'>" & linenumber & "&nbsp;</span>&nbsp;");
+				formatLine(line);
                 line = reader.readLine();
             }
 			bufferAppend("</span>");
@@ -206,8 +251,44 @@
 								)
 						{
 							startTag("HTMLFORMS");
+						}
+						else if (
+								 	regionMatches(thisLine, 1, i+1, "MX:", 0, 3) OR
+									regionMatches(thisLine, 1, i+1, "/MX:", 0, 4)
+								)
+						{
+							if (regionMatches(thisLine, 1, i+4, "SCRIPT>", 0, 6)) // SCRIPT TAG
+							{
+								startTag("ACTIONSCRIPTTAG");
+								bufferAppend(substring(thisLine, i+1, i+10) & "&gt;");
+								i=i+10;
+								startActionscript();
+							} else {
+								startTag("MXML");
+								endpos=find(' ',thisLine);
+								//bufferAppend(endpos);
+								if (endpos EQ 1) {
+									endpos=find('>',thisLine);
+								}
+								try {
+									bufferAppend(substring(thisLine,i+1,endpos));
+									i=i+endpos;
+								} catch(Any e) {
+									bufferAppend(substring(thisLine,i+1,len(thisLine)-i));
+									i=len(thisLine)-i;
+								}
+								
+								startMXMLTag();		
+							}
 						} else {
-							startTag("HTML");
+							if (variables.isActionscript) {
+								if (!regionMatches(thisLine, 1, i+1, "![CDATA", 0, 6)) {
+									endActionscript();
+								}
+								bufferAppend("&lt;");
+							} else {
+								startTag("HTML");
+							}
 						}
 					}
 				}
@@ -224,6 +305,8 @@
 					} else {
 						if (variables.isCFSETTag) {
 							endCFSET();
+						} else if (variables.isMXML) {
+							endMXMLTag();
 						} else {
 							endTag();
 						}
@@ -231,7 +314,7 @@
 				}
 				else if (character EQ '"')
 				{
-					if (variables.isTag OR variables.isScript)
+					if (variables.isTag OR variables.isScript OR variables.isActionscript)
 					{
 						if (NOT variables.isValue) {
 							startValue();
@@ -258,9 +341,13 @@
 				}
 				else if (character EQ '/')
 				{
-					if (variables.isScript AND regionMatches(thisLine, 1, i+1, "/", 0, 1))
+					if ((variables.isScript OR variables.isActionscript) AND regionMatches(thisLine, 1, i+1, "/", 0, 1) AND NOT variables.isCommented)
 					{
-						startOneLineComment();
+						if (variables.isActionscript) {
+							startOneLineComment("MXMLCOMMENT");
+						} else {
+							startOneLineComment("HTMLCOMMENT");
+						}
 					}
 					else if (variables.isCommented)
 					{
@@ -289,7 +376,16 @@
 				{
 					 bufferAppend("&##32;");
 				} else {
-					bufferAppend(character.toString());
+					if (not variables.isCommented AND not variables.isValue) {
+						keywordskip = keywordsearch(thisLine,i);
+						if (keywordskip) {
+							i = i + keywordskip;
+						} else {
+							bufferAppend(character.toString());
+						}
+					} else {
+						bufferAppend(character.toString());
+					}
 				}
 			}
 			bufferAppend("<br />");
@@ -314,6 +410,25 @@
         <cfargument name="string" type="string"/>
 		<cfreturn variables.buffer.append(arguments.string)/>
     </cffunction>
+    <cffunction name="keywordsearch" access="private" hint="This function searches for keywords." output="false">
+    	<cfargument name="thisLine" type="any"/>
+        <cfargument name="i" type="numeric"/>
+        <cfset var keywordmap = ""/>
+		<cfif isActionscript>
+        	<cfset keywordmap = variables.keywordmap.Actionscript/>
+        </cfif>
+        <cfif isStruct(keywordmap)>
+            <cfloop from="1" to="#ArrayLen(keywordmap.list)#" index="keywordarray">
+                <cfloop list="#keywordmap.list[keywordarray]#" index="keyword">
+                    <cfif regionMatches(thisLine, 1, i, keyword & ' ', 0, keyword.length()+1)>
+                        <cfset bufferAppend("<span style='" & getStyle(keywordmap.style[keywordarray]) & "'>" & keyword & "</span>&nbsp;")/>
+                        <cfreturn keyword.length()/>
+                    </cfif>
+                </cfloop>
+            </cfloop>
+		</cfif>
+        <cfreturn 0/>
+    </cffunction>
     <cffunction name="startHighlight" access="private" hint="" output="false">
     	<cfargument name="element" type="string"/>
 		<cfset bufferAppend("<span style='" & variables.colors[arguments.element]& "'>")/>
@@ -323,17 +438,16 @@
 		<cfset bufferAppend("</span>")/>
     </cffunction>
     <cffunction name="startOneLineComment" access="private" output="false">
-    	<cfargument name="line" type="any"/>
+    	<cfargument name="type" type="string"/>
 		<cfscript>
-		startHighlight("HTMLCOMMENT");
+		startHighlight(type);
 		bufferAppend("/");
 		variables.isOneLineComment=true;
 		variables.isCommented=true;
 		</cfscript>	
     </cffunction>
     <cffunction name="endOneLineComment" access="private" output="false">
-    	<cfargument name="line" type="any"/>
-		<cfscript>
+    	<cfscript>
 		endHighlight();
 		variables.isOneLineComment=false;
 		variables.isCommented=false;
@@ -369,7 +483,8 @@
     </cffunction>
 	<cffunction name="startTag" access="private" output="false">
     	<cfargument name="type" type="string"/>
-        <cfscript>
+        <cflog text="Starting TAG #TYPE#">
+		<cfscript>
 		if (NOT variables.isCommented AND NOT variables.isValue) {
 			if (type  EQ  "CF") {
 				startHighlight("CFTAG");
@@ -379,6 +494,10 @@
 				startHighlight("HTMLTABLES");
 			} else if (type  EQ  "HTMLFORMS") {
 				startHighlight("HTMLFORMS");
+			} else if (type EQ "MXML") {
+				startHighlight("MXML");
+			} else if (type EQ "ACTIONSCRIPTTAG") {
+				startHighlight("ACTIONSCRIPTTAG");
 			} else { // type is HTML
 				startHighlight("HTML");
 			}
@@ -388,7 +507,8 @@
 		</cfscript>
     </cffunction>
 	<cffunction name="endTag" access="private" output="false">
-    	<cfscript>
+    	<cflog text="Ending Tag"/>
+		<cfscript>
 		bufferAppend("&gt;");
 		if (NOT variables.isCommented AND NOT variables.isValue) {
 			endHighlight();
@@ -401,6 +521,10 @@
 		if (NOT variables.isCommented) {
 			if (variables.isCFSETTag OR variables.isScript) {
 				startHighlight("SCRIPTVALUE");
+			} else if (variables.isActionscript) {
+				startHighlight("ACTIONSCRIPTVALUE");
+			} else if (variables.isMXML) {
+				startHighlight("MXMLVALUE");
 			} else {
 				startHighlight("VALUE");
 			}
@@ -452,8 +576,32 @@
 		}
 		</cfscript>
     </cffunction>
+    <cffunction name="startMXMLTag" access="private" output="false">
+    	<cflog text="Starting MXML Tag">
+		<cfscript>
+		if (NOT variables.isCommented) {
+			startHighlight("MXMLATTRIBUTES");
+			setStyle("VALUE","color:##900");
+			variables.isMXML=true;
+		}
+		</cfscript>
+    </cffunction>
+	<cffunction name="endMXMLTag" access="private" output="false">
+    	<cflog text="Ending MXML Tag">
+		<cfscript>
+		if (NOT variables.isCommented) {
+			endHighlight();
+			bufferAppend("&gt;");
+			endHighlight();
+			variables.isMXML=false;
+		} else {
+			bufferAppend("&gt;");
+		}
+		</cfscript>
+    </cffunction>
 	<cffunction name="startScript" access="private" output="false">
-    	<cfscript>
+    	<cflog text="Starting SCRIPT">
+		<cfscript>
 		if (NOT variables.isCommented) {
 			endHighlight();
 			startHighlight("SCRIPT");
@@ -462,10 +610,30 @@
 		</cfscript>
 	</cffunction>
 	<cffunction name="endScript" access="private" output="false">
+    	<cflog text="Ending Script">
     	<cfscript>
 		if (NOT variables.isCommented) {
 			endHighlight();
 			variables.isScript=false;
+		}
+		</cfscript>
+	</cffunction>
+    <cffunction name="startActionscript" access="private" output="false">
+    	<cflog text="Starting ACTIONSCRIPT">
+		<cfscript>
+		if (NOT variables.isCommented) {
+			endHighlight();
+			startHighlight("ACTIONSCRIPT");
+			variables.isActionscript=true;
+		}
+		</cfscript>
+	</cffunction>
+	<cffunction name="endActionscript" access="private" output="false">
+    	<cflog text="Ending ACTIONSCRIPT">
+		<cfscript>
+		if (NOT variables.isCommented) {
+			endHighlight();
+			variables.isActionscript=false;
 		}
 		</cfscript>
 	</cffunction>
