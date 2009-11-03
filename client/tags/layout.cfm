@@ -71,9 +71,7 @@
 	<link rel="stylesheet" href="#application.rooturl#/includes/style.css" type="text/css" />
 	<!--- For Firefox --->
 	<link rel="alternate" type="application/rss+xml" title="RSS" href="#application.rooturl#/rss.cfm?mode=full" />
-	<cfif isDefined("url.mode") and url.mode is "entry">
 	<script type="text/javascript" src="#application.rooturl#/includes/jquery.min.js"></script>
-	</cfif>
 	<script type="text/javascript">
 	function launchComment(id) {
 		cWin = window.open("#application.rooturl#/addcomment.cfm?id="+id,"cWin","width=550,height=700,menubar=yes,personalbar=no,dependent=true,directories=no,status=yes,toolbar=no,scrollbars=yes,resizable=yes");
