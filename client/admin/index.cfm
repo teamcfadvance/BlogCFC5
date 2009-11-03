@@ -30,6 +30,14 @@ order by views desc
 
 <cfmodule template="../tags/adminlayout.cfm" title="Welcome">
 
+	<cfoutput>
+	<script>
+	$(document).ready(function() {
+		$("##latestversioncheck").html("<p>Checking to see if your blog is up to date. Please stand by...</p>").load("latestversioncheck.cfm")
+	})
+	</script>
+	</cfoutput>
+	
 	<cfif structKeyExists(url, "reinit")>
 		<cfoutput>
 			<div style="margin: 15px 0; padding: 15px; border: 5px solid ##cd6f6f; background-color: ##f79992; color: ##c54043; font-weight: bold; text-align: center;">
@@ -43,11 +51,14 @@ order by views desc
 	<h3>About</h3>
 	<p>
 	Welcome to BlogCFC Administrator. You are running BlogCFC version #application.blog.getVersion()#. This blog is named
-	#htmlEditFormat(application.blog.getProperty("blogtitle"))#. For more information, please visit the BlogCFC blog at <a href="http://www.blogcfc.com">http://www.blogcfc.com</a>.
+	#htmlEditFormat(application.blog.getProperty("blogtitle"))#. For more information, please visit the BlogCFC site at <a href="http://www.blogcfc.com">http://www.blogcfc.com</a>.
 	BlogCFC was created by <a href="http://www.coldfusionjedi.com">Raymond Camden</a>. For support, please visit the <a href="http://www.coldfusionjedi.com/forums/forums.cfm?conferenceid=CBD210FD-AB88-8875-EBDE545BF7B67269">forums</a>
 	or send me an <a href="mailto:ray@camdenfamily.com">email</a>.
 	</p>
 
+	<div id="latestversioncheck">
+	</div>
+	
 	<cfif topByViews.recordCount>
 	<h3>Top Entries</h3>
 	<p>
@@ -63,12 +74,13 @@ order by views desc
 	<h3>Credits</h3>
 	<p>
 	BlogCFC has had the support and active help of <i>many</i> people. I'd like to especially thank Scott Stroz, Jeff Coughlin, Charlie Griefer, and Paul Hastings. BlogCFC
-	also makes use of Lyla Captcha from Peter Farrell. The administrator makes use of the Spry framework from Adobe.
+	makes use of <a href="http://lyla.maestropublishing.com/">Lyla Captcha</a> from Peter Farrell. Default spam protection provided by <a href="http://cfformprotect.riaforge.org/">CFFormProtect</a> by Jake Munson.
 	</p>
 
-	<h3>Support</h3>
+	<h3>Support BlogCFC Development!</h3>
 	<p>
 	If you find this blog useful, please consider visiting my <a href="http://www.amazon.com/o/registry/2TCL1D08EZEYE">wishlist</a>.
+	</p>
 	</cfoutput>
 
 </cfmodule>
