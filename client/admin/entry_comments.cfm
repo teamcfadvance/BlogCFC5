@@ -43,12 +43,12 @@
 	<p>
 		This entry currently has
 			<cfif comments.recordCount gt 1>
-			#comments.recordcount# comments
+			#numberFormat(comments.recordcount)# comments.
 			<cfelseif comments.recordCount is 1>
-			1 comment
+			1 comment.
 			<cfelse>
-			0 comments
-			</cfif>.
+			0 comments.
+			</cfif>
 	</p>
 </cfoutput>
 
