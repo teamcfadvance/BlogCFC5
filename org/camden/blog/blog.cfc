@@ -36,7 +36,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.4.001" />
+	<cfset version = "5.9.5" />
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -294,7 +294,7 @@
 		
 		<cfset var id = createUUID()>
 		<cfset var theURL = "">
-				
+
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			insert into tblblogentries(id,title,body,posted
 				<cfif len(arguments.morebody)>,morebody</cfif>
