@@ -17,7 +17,7 @@ specific language governing permissions and limitations under the License.
 
 VERSION INFORMATION:
 
-This file is part of SweetTweetsCFC (1.4).
+This file is part of SweetTweetsCFC.
 http://sweettweetscfc.riaforge.org/
 --->
 <!---
@@ -138,22 +138,83 @@ http://sweettweetscfc.riaforge.org/
 	</cffunction>
 	
 	<!--- data functions --->
-	<cffunction name="getShortUrls" access="private" output="false" returnType="struct">
+	<cffunction name="getShortUrls" access="public" output="false" returnType="struct">
 		<cfargument name="uri" type="string" required="true"/>
 		<cfscript>
 			var local = StructNew();
 			local.shortened = structNew();
-			//cligs
-			local.cligsParams = StructNew();
-			local.cligsParams['appid'] = urlEncodedFormat('http://sweettweetscfc.riaforge.org'); 
-			local.shortened.cligs = urlService.shrink('cligs',arguments.uri,local.cligsParams);
-			if (len(trim(local.shortened.cligs)) eq 0){
-				structDelete(local.shortened, "cligs");
+			local.params = StructNew();
+			
+			//cli.gs
+			local.params['appid'] = 'http://sweettweetscfc.riaforge.org';
+			local.params['url'] = arguments.uri;
+			try {
+				local.shortened.cligs = urlService.shrink('cligs',local.params);
+			}catch (any e){
+				local.shortened.cligs = '';
 			}
-			//simple services
-			local.shortened.isgd = urlService.shrink('isgd',arguments.uri);
-			local.shortened.tinyurl = urlService.shrink('tinyurl', arguments.uri);
-			local.shortened.hexio = urlService.shrink('hexio', arguments.uri);
+			
+			//is.gd
+			structClear(local.params);
+			local.params['longurl'] = arguments.uri;
+			try {
+				local.shortened.isgd = urlService.shrink('isgd',local.params);
+			}catch (any e){
+				local.shortened.cligs = '';
+			}
+			
+			//tinyurl.com
+			structClear(local.params);
+			local.params['url'] = arguments.uri;
+			try {
+				local.shortened.tinyurl = urlService.shrink('tinyurl', local.params);
+			}catch (any e){
+				local.shortened.cligs = '';
+			}
+			
+			//hex.io
+			structClear(local.params);
+			local.params['url'] = arguments.uri;
+			try {
+				local.shortened.hexio = urlService.shrink('hexio', local.params);
+			}catch (any e){
+				local.shortened.cligs = '';
+			}
+			
+			//urlzen.com
+			structClear(local.params);
+			local.params['url'] = arguments.uri;
+			try {
+				local.shortened.urlzen = urlService.shrink('urlzen', local.params);
+			}catch (any e){
+				local.shortened.cligs = '';
+			}
+			
+			//budurl.com
+			structClear(local.params);
+			local.params['myurl'] = arguments.uri;
+			try {
+				local.shortened.budurl = urlService.shrink('budurl', local.params);
+			}catch (any e){
+				local.shortened.cligs = '';
+			}
+			
+			//MooURL.com
+			structClear(local.params);
+			local.params['source'] = arguments.uri;
+			try {
+				local.shortened.moourl = urlService.shrink('MooURL', local.params);
+			}catch (any e){
+				local.shortened.cligs = '';
+			}
+			
+			//remove blank items
+			for (local.service in local.shortened){
+				if (len(trim(local.shortened[local.service])) eq 0 or find(" ",trim(local.shortened[local.service]))){
+					structDelete(local.shortened, local.service);
+				}
+			}
+			
 			return local.shortened;
 		</cfscript>
 	</cffunction>
@@ -173,12 +234,11 @@ http://sweettweetscfc.riaforge.org/
 			}
 
 			//compile twitter search url
-			local.api = 'http://search.twitter.com/search.json?rpp=100&q=&ors=';
-			local.thisSearch = local.api
-				& urlEncodedFormat(local.shortened.isgd) & '+' 
-				& urlEncodedFormat(local.shortened.cligs) & '+' 
-				& urlEncodedFormat(local.shortened.tinyurl) & '+' 
-				& urlEncodedFormat(local.shortened.hexio);
+			local.thisSearch = 'http://search.twitter.com/search.json?rpp=100&q=&ors=';
+			for (local.svc in local.shortened){
+				local.thisSearch = local.thisSearch & urlEncodedFormat(local.shortened[local.svc]) & "+";
+			}
+			local.thisSearch = left(local.thisSearch,len(local.thisSearch)-1);//drop the last "+"
 			
 			return local.thisSearch;
 		</cfscript>
@@ -186,7 +246,8 @@ http://sweettweetscfc.riaforge.org/
 	<cffunction name="makeTwitterSearchRequest" access="private" output="false" returnType="any">
 		<cfargument name="req" type="String" required="true"/>
 		<cfset var result = ""/>
-		<cfhttp url="#arguments.req#" method="get" result="result" useragent="SweetTweets plugin v0.0 for Mango Blog|http://fusiongrokker.com"></cfhttp>
+		<cfhttp url="#arguments.req#" method="get" result="result" useragent="SweetTweetsCFC | http://fusiongrokker.com"></cfhttp>
+		<!--- <cflog application="false" file="SweetTweets" text="Twitter Search Result: #result.fileContent#"/> --->
 		<cftry>
 			<cfset result = jsonService.deserialize(result.fileContent.toString())/>
 			<cfcatch type="any"><!--- catch errors thrown by jsonService (likely problem w/twitter search - down,etc), return empty set --->
