@@ -17,6 +17,33 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+Last Updated: November 3, 2009 (BlogCFC 5.9.5) | Raymond Camden 
+/client/admin/comments.cfm - Just a simple typo fix to make the period line up next to the sentence.
+/client/admin/entry.cfm - 
+BIG changes. Removed Tabber/Spry. jQuery and jQuery UI used instead. The forms make use of uni-form to make it pretty. The textareas make use of a auto-grow plugin.
+Related entries changed to allow you to filter by search, and to only return, at most, 200 records. Will help on blogs w/ lots of entries.
+/client/admin/entry_comments.cfm - a typo fix like for comments.cfm.
+/client/admin/index.cfm - Support remote version check.
+/client/admin/latestversioncheck.cfm - Support for the above.
+/client/admin/proxy.cfm - New support for updated related entry support.
+/client/admin/spryproxy.cfm - Deleted!
+/client/includes/admin.css - minor update to Admin css.
+/client/includes/jquery.autogrow.js - New file
+/client/includes/jquery.selectboxes.js - New file
+/client/includes/jqueryui - New folder
+/client/includes/main_en_US.properties - SUpport for previous entries string.
+/client/includes/relatedposts.js, relatedpostsjs.cfm, relatedpostsjs_error.cfm - Deleted!
+/client/includes/spry - Deleted!
+/client/includes/tab.css + tabber.js - Deleted!
+/client/includes/uni-form - New folder
+/client/index.cfm - Support going backwards in pagination.
+/org/blog/blog.cfc - Version update.
+/client/tags/adminlayout.cfm - support for loading new jquery libraries
+/client/tags/layout.cfm - jquery always loaded
+/client/tags/textarea.cfm - support for passing in style attribute
+/org/sweettweets/* - Updated to latest SweetTweets library.
+/org/delmore/coldfish.cfc - Updated to latest ColdFish.
+
 Last Updated: September 1, 2009 (BlogCFC 5.9.4.001) | Raymond Camden 
 /org/camden/blog/blog.cfc - Fix to rss code to not output image stuff if the itunesimage value not specified
 /org/camden/blog/blog.cfc - case sensitivity issue for mysql fixed
