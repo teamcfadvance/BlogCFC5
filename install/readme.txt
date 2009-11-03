@@ -43,6 +43,7 @@ Related entries changed to allow you to filter by search, and to only return, at
 /client/tags/textarea.cfm - support for passing in style attribute
 /org/sweettweets/* - Updated to latest SweetTweets library.
 /org/delmore/coldfish.cfc - Updated to latest ColdFish.
+/client/admin/login.cfm - small design tweak
 
 Last Updated: September 1, 2009 (BlogCFC 5.9.4.001) | Raymond Camden 
 /org/camden/blog/blog.cfc - Fix to rss code to not output image stuff if the itunesimage value not specified
