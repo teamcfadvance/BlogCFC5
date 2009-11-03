@@ -281,27 +281,110 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 
 <cfmodule template="../tags/adminlayout.cfm" title="Entry Editor">
 
-	<cfoutput>
-	<link rel="stylesheet" type="text/css" href="#application.rooturl#/includes/tab.css">
-	<script type="text/javascript">
-		var tabberOptions = {'onClick':function(args){
-			// if we call the comments tab, we need to resize the iframe
-			if( args.tabber.tabs[args.index].headingText == "Comments" ){
-				var el = top.commentsFrame;
-				// we need to delay the call so the tab can be shown
-				setTimeout( function (){
-					el.adjustIframeSize();
-				}, 100);
-			}
-		}};
-		// Used to hide tabber flash
-		document.write('<style type="text/css">.tabber{display:none;}<\/style>');
-	</script>
-	<script type="text/javascript" src="#application.rooturl#/includes/tabber.js"></script>
-	</cfoutput>
 
 	<cfif not structKeyExists(form, "preview")>
 
+		<cfif len(application.imageroot)>
+			<cfset sImgRoot = application.imageroot />
+		<cfelse>
+			<cfset sImgRoot = "/images/" />
+		</cfif>
+		
+		<cfoutput>
+		<script type="text/javascript">
+		$(document).ready(function() {
+			
+			//create tabs
+			$("##entrytabs").tabs()
+			
+			//handles searching
+			getEntries = function() {
+				$("##entries_dropdown").removeOption(/./);
+				var id = $("##categories_dropdown option:selected").val()
+				if(id==null) id=""
+				var text = $("##titlefilter").val()
+				text = $.trim(text)
+				if(id == "" && text == "") return
+				$("##entries_dropdown").ajaxAddOption("proxy.cfm?category="+id+"&text="+escape(text),{}, false)
+			}
+					
+			$("##titlefilter").keyup(getEntries)
+			
+			//listen for select change on related
+			$("##categories_dropdown").change(getEntries)
+			
+			$("##entries_dropdown").change(function () {
+				var selid = $("option:selected", $(this)).val()
+				var text = $("option:selected", $(this)).text()
+
+				if($("##cbRelatedEntries").containsOption(selid)) return
+			
+				//sets the hidden form field
+				var relEntry = $("##relatedentries")
+				if(relEntry.val() == "") relEntry.val(selid)
+				else relEntry.val(relEntry.val() + "," + selid)
+
+				$("##cbRelatedEntries").addOption(selid,text,false)
+
+			})
+
+			$("##cbRelatedEntries").change(function() {
+				var selid = $("option:selected", $(this)).val()
+				
+				if(selid == null) return
+				$("##cbRelatedEntries").removeOption(selid)
+
+				//quickly regen the hidden field
+				var relEntry = $("##relatedentries")
+				relEntry.val('')
+				$("##cbRelatedEntries option").each(function() {
+					var id = $(this).val()
+					if(relEntry.val() == '') relEntry.val(id)
+					else relEntry.val(relEntry.val() + "," + id)
+				})
+			})
+			
+			$('.ctrlHolder textarea').autogrow()
+			
+		})
+
+		
+		//for image upload
+		function imgUpload() {
+			var imgWin = window.open('#application.rooturl#/admin/imgwin.cfm','imgWin','width=400,height=100,toolbar=0,resizeable=1,menubar=0');	
+		}
+
+		function newImage(str) {
+			var imgstr = '<img src="#application.rooturl##application.utils.fixUrl("/#sImgRoot#/")#' + str + '" />';
+			$("##body").val($("##body").val() + '\n' + imgstr)
+		}
+
+		//for image browse
+		function imgBrowse() {
+			var imgBrowse = window.open('#application.rooturl#/admin/imgbrowse.cfm','imgBrowse','width=800,height=800,toolbar=1,resizeable=1,menubar=1,scrollbars=1');	
+		}
+
+		<cfif url.id eq 0>
+		//used to save your form info (title/body) in case your browser crashes
+		function saveText() {
+			var titleField = $("##title").val()
+			var bodyField = $("##body").val()
+			var expire = new Date();
+			expire.setDate(expire.getDate()+7);
+			
+			//write title to cookie
+			var cookieString = 'SAVEDTITLE='+escape(titleField)+'; expires='+expire.toGMTString()+'; path=/';
+			document.cookie = cookieString;
+			cookieString = 'SAVEDBODY='+escape(bodyField)+'; expires='+expire.toGMTString()+'; path=/';
+			document.cookie = cookieString;
+			window.setTimeout('saveText()',5000);
+		}
+		
+		window.setTimeout('saveText()',5000);
+		</cfif>
+		</script>
+		</cfoutput>
+	
 		<!--- 
 		Ok, so this line below here has been the cuase of MUCH pain in agony. The problem is in noticing
 		when you save and ensuring you have a valid date. I don't know why this is so evil, but it caused
@@ -318,11 +401,18 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 
 		<!--- tabs --->
 		<cfoutput>
-		<form action="entry.cfm?id=#url.id#" method="post" enctype="multipart/form-data" name="editForm" id="editForm">
+		<form action="entry.cfm?id=#url.id#" method="post" enctype="multipart/form-data" name="editForm" id="editForm" class="uniForm inlineLabels">
 
-		<div class="tabber">
+		<div id="entrytabs">
 
-		<div class="tabbertab" title="Main">	
+			<ul>
+				<li><a href="##main"><span>Main</span></a></li>
+				<li><a href="##additional"><span>Additional Settings</span></a></li>
+				<li><a href="##related"><span>Related Entries</span></a></li>				
+				<cfif url.id neq 0><li><a href="##comments"><span>Comments</span</a></li></cfif>
+			</ul>
+			
+		<div id="main">	
 		<p>
 		You can use &lt;code&gt;....&lt;/code&gt; to add formatting to code blocks.<br />
 		You can dynamically include textblocks using &lt;textblock label="..."&gt;.<br />
@@ -350,264 +440,164 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		</cfif>
 		
 		<cfoutput>
-		<script type="text/javascript" src="#application.rooturl#/includes/spry/xpath.js"></script>
-		<script type="text/javascript" src="#application.rooturl#/includes/spry/SpryData.js"></script>
-		<script type="text/javascript">
-		var dsCategories = new Spry.Data.XMLDataSet("spryproxy.cfm?method=getcategories", "categories/category");
-		var dsEntries = new Spry.Data.XMLDataSet("spryproxy.cfm?method=getentries&category={dsCategories::CATEGORYID}", "entries/entry");		
-		
-		function addEntry(id) { 
-			// was this ID already added?
-			for(var i = 0; i < document.editForm.cbRelatedEntries.length; i++) {
-				if(document.editForm.cbRelatedEntries.options[i].value == id) return;
-			}
-			
-			//sets the hidden form field
-			if(document.editForm.relatedentries.value == '') document.editForm.relatedentries.value = id;
-			else document.editForm.relatedentries.value = document.editForm.relatedentries.value + "," + id;
-
-			//We can't pass in the title as it may have a ', and with Spry I can't pre-filter the content for JS safeness.
-			//So I passed in row num, which should equal the option
-			var data = dsEntries.getData();
-			for(var i = 0; i < data.length; i++) {
-				if(data[i]["ID"] == id) title = data[i]["TITLE"];	
-			}
-			//sets the new combox 
-			var opt = new Option(title,id);
-			document.editForm.cbRelatedEntries.options[document.editForm.cbRelatedEntries.options.length] = opt;
-		}
-		
-		function removeSelected() {
-			for(var i = document.editForm.cbRelatedEntries.length-1; i >= 0; i--) {
-				if(document.editForm.cbRelatedEntries.options[i].selected) document.editForm.cbRelatedEntries.options[i] = null;
-			}
-			//quickly regen the hidden field
-			document.editForm.relatedentries.value = '';
-			for(var i = 0; i < document.editForm.cbRelatedEntries.length; i++) {
-				if(document.editForm.relatedentries.value == '') document.editForm.relatedentries.value = document.editForm.cbRelatedEntries.options[i].value;
-				else document.editForm.relatedentries.value = document.editForm.relatedentries.value + "," + document.editForm.cbRelatedEntries.options[i].value;				
-			}			
-		}
-		
-		//for image upload
-		function imgUpload() {
-			var imgWin = window.open('#application.rooturl#/admin/imgwin.cfm','imgWin','width=400,height=100,toolbar=0,resizeable=1,menubar=0');	
-		}
-
-		<cfif len(application.imageroot)>
-			<cfset sImgRoot = application.imageroot />
-		<cfelse>
-			<cfset sImgRoot = "/images/" />
-		</cfif>
-
-		function newImage(str) {
-			var imgstr = '<img src="#application.rooturl##application.utils.fixUrl("/#sImgRoot#/")#' + str + '" />';
-			var textbox = document.getElementById('body');
-			textbox.value = textbox.value + '\n' + imgstr;
-		}
-
-		//for image browse
-		function imgBrowse() {
-			var imgBrowse = window.open('#application.rooturl#/admin/imgbrowse.cfm','imgBrowse','width=800,height=800,toolbar=1,resizeable=1,menubar=1,scrollbars=1');	
-		}
-
-		<cfif url.id eq 0>
-		//used to save your form info (title/body) in case your browser crashes
-		function saveText() {
-			var titleField = Spry.$("title");
-			var bodyField = Spry.$("body");
-			var expire = new Date();
-			expire.setDate(expire.getDate()+7);
-			
-			//write title to cookie
-			var cookieString = 'SAVEDTITLE='+escape(titleField.value)+'; expires='+expire.toGMTString()+'; path=/';
-			document.cookie = cookieString;
-			cookieString = 'SAVEDBODY='+escape(bodyField.value)+'; expires='+expire.toGMTString()+'; path=/';
-			document.cookie = cookieString;
-			window.setTimeout('saveText()',5000);
-		}
-		
-		window.setTimeout('saveText()',5000);
-		</cfif>
-		</script>
-
-		<table width="75%"	>
-			<tr>
-				<td align="right">title:</td>
-				<td><input type="text" name="title" id="title" value="#htmlEditFormat(form.title)#" class="txtField" maxlength="100"></td>
-			</tr>
-			<tr valign="top">
-				<td align="right">body:</td>
-				<td>
-				</cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" class="txtArea"><cfoutput>
-				<br />
-				<a href="javascript:imgUpload()">[Upload and Insert Image]</a> / <a href="javascript:imgBrowse()">[Browse Image Library]</a>
-				</td>
-			</tr>
-			<tr valign="top">
-				<td align="right">categories:</td>
-				<td><cfif allCats.recordCount><select name="categories" multiple size=4 class="txtDropdown">
+		<fieldset class="inlineLabels">
+		<div class="ctrlHolder">
+			<label for="title">Title: </label>
+			<input type="text" name="title" id="title" value="#htmlEditFormat(form.title)#" maxlength="100" class="textInput">
+		</div>
+		</fieldset>
+		<fieldset class="blockLabels">
+		<div class="ctrlHolder">
+			<label for="body">Body: </label>
+			</cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" style="width:100%;min-height:300px"><cfoutput>		
+		</div>
+		</fieldset>
+		<fieldset class="inlineLabels">		
+		<div class="ctrlHolder">
+			<label for="categories">Categories: </label>
+			<cfif allCats.recordCount><select name="categories" id="categories" multiple="multiple" size="4">
 				<cfloop query="allCats">
 				<option value="#categoryID#" <cfif isDefined("form.categories") and listFind(form.categories,categoryID)>selected</cfif>>#categoryName#</option>
 				</cfloop>
-				</select><br></cfif>
-				 </td>
-			</tr>
-			<cfif application.blog.isBlogAuthorized('AddCategory')>
-			<tr valign="top">
-				<td align="right">new category:</td>
-				<td><input type="text" name="newcategory" value="#htmlEditFormat(form.newcategory)#" class="txtField" maxlength="50"></td>
-			</tr>
+				</select>
 			</cfif>
-			<tr><td colspan="2"><br /></td></tr>		
-			<tr valign="top">
-				<td align="right">enclosure:</td>
-				<td>
-				<input type="hidden" name="oldenclosure" value="#form.oldenclosure#">
-				<input type="hidden" name="oldfilesize" value="#form.oldfilesize#">
-				<input type="hidden" name="oldmimetype" value="#form.oldmimetype#">
-				<input type="file" name="enclosure" style="width:100%"> 
-				or manually enter a file name (must exist under encloses folder) 
-				<input type="text" name="manualenclosure">
-				
-				<cfif len(form.oldenclosure)><br /><br />#listLast(form.oldenclosure,"/\")# <input type="submit" name="delete_enclosure" value="#application.resourceBundle.getResource("deleteenclosure")#"></cfif>
-
-				</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td><input type="submit" name="cancel" value="Cancel" onClick="return confirm('Are you sure you want to cancel this entry?')"> <input type="submit" name="preview" value="Preview"> <input type="submit" name="save" value="Save"></td>
-			</tr>
-		</table>
+		</div>
+		<cfif application.blog.isBlogAuthorized('AddCategory')>
+		<div class="ctrlHolder">
+			<label for="newcategory">Add  a New Category: </label>
+			<input type="text" name="newcategory" id="newcategory" value="#htmlEditFormat(form.newcategory)#" maxlength="50">
+		</div>
+		</cfif>
+		<div class="ctrlHolder">
+			<input type="hidden" name="oldenclosure" value="#form.oldenclosure#">
+			<input type="hidden" name="oldfilesize" value="#form.oldfilesize#">
+			<input type="hidden" name="oldmimetype" value="#form.oldmimetype#">
+			<label for="enclosure">Enclosure: </label>
+			<input name="enclosure" id="enclosure" size="30" type="file" class="fileUpload" />
+		</div>	
+		<div class="ctrlHolder">
+			<label for="manualenclosure">Manually Set Enclosure: </label>
+			<input type="text" name="manualenclosure" id="manualenclosure" class="textInput">
+		</div>		
+		<cfif len(form.oldenclosure)>
+		<div class="ctrlHolder">
+		#listLast(form.oldenclosure,"/\")# <input type="submit" name="delete_enclosure" value="#application.resourceBundle.getResource("deleteenclosure")#">	
+		</div>
+		</cfif>
+		</fieldset>
+			
 		</div>
 		</cfoutput>
 		
 		<!--- tab 2 --->
 		<cfoutput>
-		<div class="tabbertab" title="Additional Settings">	
-			<table>
-			<tr>
-				<td align="right">posted:</td>
-				<td><input type="text" name="posted" value="#form.posted#" class="txtField" maxlength="100"></td>
-			</tr>			
-			<tr valign="top">
-				<td>related entries:</td>
-				<td>
-					<table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding: 5px;">
-					<tr>
-						<td width="50%"><strong>Categories</strong></td>
-						<td width="50%">
-				  			<div style="float:left;"><strong>Entries</strong></div> 
-							<div style="float:right; padding-right: .5em;"> 
-								Sort By:  
-								<a href="javascript:void(0);" id="sortLinkDate" onclick="dsEntries.sort('POSTED','toggle')" style="color:rgb(0, 0, 255);">Date</a> |  
-								<a href="javascript:void(0);" id="sortLinkTitle" onclick="dsEntries.sort('TITLE','toggle')" style="color:rgb(128, 128, 128);">Title</a>  
-							</div>
-						</td>
-		        	</tr>
-			        <tr>
-		    	      <td style="padding-right: 5px;">
-						<div id="Categories_DIV" spry:region="dsCategories">
-						<select id="Categories_DropDown" onchange="dsCategories.setCurrentRow(this.selectedIndex)" multiple="multiple" size="4" style="width:100%;" >
-						<option spry:repeat="dsCategories" id="{CATEGORYID}">{CATEGORYNAME}</option>
-						</select>
-						</div>
-		    	      </td>
-		        	  <td><!---dsEntries.setCurrentRow(this.selectedIndex)--->
-						<div id="Entries_DIV" spry:region="dsEntries">
-						<select id="Entries_DropDown" onchange="addEntry(this.options[this.selectedIndex].value);" size="4" style="width:100%;" >
-						<option spry:repeat="dsEntries" value="{ID}">{TITLE}</option>
-						</select>
-						</div>
-		        	  </td>
-			        </tr>
-			        <tr>
-			        	<td width="100%" colspan="2"><strong>Current Related Entries</strong></td>
-			        </tr>
-			        <tr valign="top">
-			        	<td width="100%" colspan="2">
-			        	<input type="hidden" name="relatedentries" value="#form.relatedentries#">
-						<select id="cbRelatedEntries" name="cbRelatedEntries" multiple="multiple" size="4" style="width: 70%;" >
-						<cfif structKeyExists(variables, "relatedEntries")>
-							<cfloop query="relatedEntries">
-							<option value="#id#">#title#</option>
-							</cfloop>
-						<cfelse>
-							<cfloop list="#form.relatedentries#" index="i">
-							<option value="#i#">#application.blog.getEntry(i).title#</option>
-							</cfloop>
-						</cfif>
-						</select>
-						<input type="button" value="Remove Selected" onClick="removeSelected()">
-			        	</td>
-			        </tr>
-					</table>
-				</td>
-			</tr>
-				
-			<tr>
-				<td align="right">alias:</td>
-				<td><input type="text" name="alias" value="#form.alias#" class="txtField" maxlength="100"></td>
-			</tr>
-			<tr>
-				<td align="right">iTunes Subtitle:</td>
-				<td><input type="text" name="subtitle" value="#form.subtitle#" class="txtField" maxlength="100"></td>
-			</tr>
-			<tr>
-				<td align="right">iTunes Keywords:</td>
-				<td><input type="text" name="keywords" value="#form.keywords#" class="txtField" maxlength="100"></td>
-			</tr>
-			<tr>
-				<td align="right">iTunes Summary:</td>
-				<td></cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="summary" value="#htmlEditFormat(form.summary)#" class="txtArea"><cfoutput></td>
-			</tr>
-			<tr>
-				<td align="right">duration:</td>
-				<td><input type="text" name="duration" value="#form.duration#" class="txtField" maxlength="10"></td>
-			</tr>
-			<tr>
-				<td align="right">allow comments:</td>
-				<td>
-				<select name="allowcomments">
+
+		<div id="additional">	
+			<fieldset class="inlineLabels">
+			<div class="ctrlHolder">
+				<label for="posted">Posted: </label>
+				<input type="text" name="posted" id="posted" value="#form.posted#" maxlength="100" class="textInput">
+			</div>
+			<div class="ctrlHolder">
+				<label for="alias">Alias: </label>
+				<input type="text" name="alias" id="alias" value="#form.alias#" maxlength="100" class="textInput">
+			</div>
+			<div class="ctrlHolder">
+				<label for="allowcomments">Allow Comments: </label>
+				<select name="allowcomments" id="allowcomments">
 				<option value="true" <cfif form.allowcomments is "true">selected</cfif>>Yes</option>
 				<option value="false" <cfif form.allowcomments is "false">selected</cfif>>No</option>
 				</select>
-				</td>
-			</tr>
-			<tr>
-				<td align="right">send blog entry<br />to subscribers:</td>
-				<td>
-				<select name="sendemail">
+			</div>
+			<div class="ctrlHolder">
+				<label for="sendemail">Email Blog Entry: </label>
+				<select name="sendemail" id="sendemail">
 				<option value="true" <cfif form.sendemail is "true">selected</cfif>>Yes</option>
 				<option value="false" <cfif form.sendemail is "false">selected</cfif>>No</option>
 				</select>
-				</td>
-			</tr>
-			<tr>
-				<td align="right">released:</td>
-				<td>
+			</div>
+			<div class="ctrlHolder">
+				<label for="released">Released: </label>
 				<cfif application.blog.isBlogAuthorized('ReleaseEntries')>
-					<select name="released">
+					<select name="released" id="released">
 					<option value="true" <cfif form.released is "true">selected</cfif>>Yes</option>
 					<option value="false" <cfif form.released is "false">selected</cfif>>No</option>
 					</select>
 				<cfelse>
 					#yesNoFormat(form.released)#
 				</cfif>
-				</td>
-			</tr>
-			<tr>
-        	    <td>&nbsp;</td>
-            	<td><input type="submit" name="cancel" value="Cancel" onClick="return confirm('Are you sure you want to cancel this entry?')"> <input type="submit" name="preview" value="Preview"> <input type="submit" name="save" value="Save"></td>
-			</tr>				
-			</table>
+			</div>
+			<div class="ctrlHolder">
+				<label for="subtitle">iTunes Subtitle: </label>
+				<input type="text" name="subtitle" id="subtitle" value="#form.subtitle#" maxlength="100" class="textInput">
+			</div>
+			<div class="ctrlHolder">
+				<label for="keywords">iTunes Keywords: </label>
+				<input type="text" name="keywords" id="keywords" value="#form.keywords#" maxlength="100" class="textInput">
+			</div>
+			<div class="ctrlHolder">
+				<label for="keywords">iTunes Keywords: </label>
+				<input type="text" name="keywords" id="keywords" value="#form.keywords#" maxlength="100" class="textInput">
+			</div>
+			<div class="ctrlHolder">
+				<label for="summary">iTunes Summary: </label>
+				</cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="summary" value="#htmlEditFormat(form.summary)#" style="min-height:250px"><cfoutput>
+			</div>
+			<div class="ctrlHolder">
+				<label for="duration">Duration: </label>
+				<input type="text" name="duration" id="duration" value="#form.duration#" maxlength="10" class="textInput">
+			</div>
+			</fieldset>
 		</div>
-		</cfoutput>
 
-		<!--- tab 3 --->
+		<div id="related">	
+			<p>
+			Use the form below to search for and add related entries to this blog entry. When you relate one blog entry to another, you automatically create a connection from that entry back to this one. 
+			To add a related entry, use either of the below filters to retrieve matching blog entries. (Note that the entries listed only contain the previous 200 blog entries posted that match your criteria.)
+			Click an entry to add it to the list of currently related entries.
+			</p>
+
+			<fieldset class="inlineLabels">
+			<div class="ctrlHolder">
+				<label for="titlefilter">Filter By Text: </label>
+				<input type="text" name="titlefilter" id="titlefilter" maxlength="100" class="textInput">
+			</div>
+			<div class="ctrlHolder">
+				<label for="categories_dropdown">Email Blog Entry: </label>
+				<select id="categories_dropdown" size="4" style="width:50%">
+				<cfloop query="allCats">
+				<option value="#categoryid#">#categoryname#</option>
+				</cfloop>
+				</select>
+			</div>
+			</fieldset>
+			<fieldset class="blockLabels">
+			<div class="ctrlHolder">
+				<label for="entries_dropdown">Entries: </label>
+				<select id="entries_dropdown" size="4" style="width:100%;cursor:pointer;">
+				</select>
+			</div>
+			<div class="ctrlHolder">
+	        	<input type="hidden" name="relatedentries" id="relatedentries" value="#form.relatedentries#">
+				<label for="cbRelatedEntries">Current Related Entries: (clicking removes an entry)</label>
+					<select id="cbRelatedEntries" name="cbRelatedEntries" multiple="multiple" size="4" style="width: 100%;cursor:pointer;" >
+					<cfif structKeyExists(variables, "relatedEntries")>
+						<cfloop query="relatedEntries">
+						<option value="#id#">#title#</option>
+						</cfloop>
+					<cfelse>
+						<cfloop list="#form.relatedentries#" index="i">
+						<option value="#i#">#application.blog.getEntry(i).title#</option>
+						</cfloop>
+					</cfif>
+					</select>
+				</div>
+			</fieldset>
+
+		</div>
+		
 		<cfif url.id neq 0>
-			<cfoutput>
-			<div class="tabbertab" title="Comments">	
+		<div id="comments">
 				<iframe
 					src="entry_comments.cfm?id=#url.id#" 
 					id="commentsFrame"
@@ -617,13 +607,16 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 					frameborder="0" 
 					marginheight="0" 
 					marginwidth="0"></iframe>
-			</div>
-			</cfoutput>
+		</div>
 		</cfif>
 		
-		<!--- end all tabs --->
-		<cfoutput>
+		<!--- closes tabs area --->
 		</div>
+
+		<p>
+		<input type="submit" name="cancel" value="Cancel" onClick="return confirm('Are you sure you want to cancel this entry?')"> <input type="submit" name="preview" value="Preview"> <input type="submit" name="save" value="Save">
+		</p>
+		
 		</form>
 		</cfoutput>
 
