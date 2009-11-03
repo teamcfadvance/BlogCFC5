@@ -12,13 +12,14 @@ body{ background: url('../images/blogcfc_195.gif') no-repeat 15px 5px;}
 	font-family: Arial;
 	background-color: #e0e0e0;
 	border: 1px solid #999;
-	width:200px;
+	width: 200px;
 }
 
 #content {
 	margin: 50px;
 	font-family: Arial;
 	margin: 20px 0 0 250px;
+	overflow:auto;
 }
 
 #menu ul {
@@ -116,3 +117,4 @@ body{ background: url('../images/blogcfc_195.gif') no-repeat 15px 5px;}
 .adminList1 {
 	background-color: #ffff99;
 }
+
