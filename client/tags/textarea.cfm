@@ -23,6 +23,8 @@
 <cfparam name="attributes.value" default="">
 <!--- CSS class of the text area --->
 <cfparam name="attributes.class" default="">
+<!--- style class of the text area --->
+<cfparam name="attributes.style" default="">
 
 <!--- 
 	NOTE: This is where you replace my code with your code. You may want to juse comment out my code
@@ -30,7 +32,7 @@
 --->
 
 <cfoutput>
-<textarea name="#attributes.fieldname#" id="#attributes.fieldname#" <cfif len(attributes.class)>class="#attributes.class#"</cfif>>#attributes.value#</textarea>
+<textarea name="#attributes.fieldname#" id="#attributes.fieldname#" <cfif len(attributes.class)>class="#attributes.class#"</cfif><cfif len(attributes.style)>style="#attributes.style#"</cfif>>#attributes.value#</textarea>
 </cfoutput>
 
 <cfsetting enablecfoutputonly=false>
