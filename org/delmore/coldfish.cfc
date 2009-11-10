@@ -282,7 +282,7 @@
 							}
 						} else {
 							if (variables.isActionscript) {
-								if (!regionMatches(thisLine, 1, i+1, "![CDATA", 0, 6)) {
+								if (not regionMatches(thisLine, 1, i+1, "![CDATA", 0, 6)) {
 									endActionscript();
 								}
 								bufferAppend("&lt;");
