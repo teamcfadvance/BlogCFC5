@@ -17,6 +17,18 @@ Copyright 2008-2009 Raymond Camden
 If you find this blog worthy, I have a Amazon wish list set up (www.amazon.com/o/registry/2TCL1D08EZEYE ). Gifts are always welcome. ;)
 Install directions may be found in BlogCFC.doc/pdf.
 
+UPGRADE NOTES:
+Find your current version in the notes below, and read 'upwards' to determine what files you have to copy. 
+Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
+This is done by adding ?reinit=1 to the URL.
+
+Last Updated: November 3, 2009 (BlogCFC 5.9.5.001) | Raymond Camden 
+/org/camden/delmore/coldfish.cfc - fix for cf7 compate
+/org/camden/blog/blog.cfc - just the version #
+/client/tags/datatable.cfm - helps support the comment viewer in the admin
+/client/tags/adminlayout.cfm - remove a CSS I wasn't using
+/client/admin/entry_comments.cfm - minor bug fix
+
 Last Updated: November 3, 2009 (BlogCFC 5.9.5) | Raymond Camden 
 /client/admin/comments.cfm - Just a simple typo fix to make the period line up next to the sentence.
 /client/admin/entry.cfm - 
@@ -37,7 +49,7 @@ Related entries changed to allow you to filter by search, and to only return, at
 /client/includes/tab.css + tabber.js - Deleted!
 /client/includes/uni-form - New folder
 /client/index.cfm - Support going backwards in pagination.
-/org/blog/blog.cfc - Version update.
+/org/camden/blog/blog.cfc - Version update.
 /client/tags/adminlayout.cfm - support for loading new jquery libraries
 /client/tags/layout.cfm - jquery always loaded
 /client/tags/textarea.cfm - support for passing in style attribute
