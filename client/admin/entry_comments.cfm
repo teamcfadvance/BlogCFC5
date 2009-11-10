@@ -53,7 +53,7 @@
 </cfoutput>
 
 <cfmodule template="../tags/datatable.cfm" data="#comments#" editlink="comment.cfm" label="Comments"
-		  linkcol="none" defaultsort="posted" defaultdir="#sSortDir#" showAdd="false" queryString="#cgi.query_string#">
+		  linkcol="none" defaultsort="posted" defaultdir="#sSortDir#" showAdd="false" queryString="id=#url.id#" perpage="10">
 	<cfmodule template="../tags/datacol.cfm" colname="name" label="Name" width="150" />
 	<cfmodule template="../tags/datacol.cfm" colname="posted" label="Posted" format="datetime" width="150" />
 	<cfmodule template="../tags/datacol.cfm" colname="comment" label="Comment" width="300"/>
