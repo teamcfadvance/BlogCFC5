@@ -25,7 +25,6 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="#application.rooturl#/includes/admin.css" media="screen" />
-<link rel="stylesheet" href="#application.rooturl#/includes/jqtransform/jqtransform.css" type="text/css" media="all" />
 <script type="text/javascript" src="#application.rooturl#/includes/jquery.min.js"></script>
 <script type="text/javascript" src="#application.rooturl#/includes/jquery.selectboxes.js"></script>
 <script type="text/javascript" src="#application.rooturl#/includes/jquery.autogrow.js"></script>
