@@ -38,7 +38,7 @@
 <!--- show add? --->
 <cfparam name="attributes.showAdd" default="true">
 
-<cfset perpage = 20>
+<cfparam name="attributes.perpage" default="20">
 <cfset colWidths = structNew()>
 <cfset formatCols = structNew()>
 <cfset leftCols = structNew()>
@@ -118,7 +118,7 @@ function checksubmit() {
 }
 </script>
 
-<cfif attributes.data.recordCount gt perpage>
+<cfif attributes.data.recordCount gt attributes.perpage>
 	<p align="right">
 	[[
 	<cfif url.page gt 1>
@@ -127,7 +127,7 @@ function checksubmit() {
 		Previous
 	</cfif>
 	--
-	<cfif url.page * perpage lt attributes.data.recordCount>
+	<cfif url.page * attributes.perpage lt attributes.data.recordCount>
 		<a href="#cgi.script_name#?page=#url.page+1#&sort=#urlEncodedFormat(url.sort)#&dir=#url.dir#&#attributes.querystring#">Next</a>
 	<cfelse>
 		Next
@@ -163,7 +163,7 @@ function checksubmit() {
 
 <cfif attributes.data.recordCount>
 	<cfset columnlist = attributes.data.columnlist>
-	<cfoutput query="attributes.data" startrow="#(url.page-1)*perpage + 1#" maxrows="#perpage#">
+	<cfoutput query="attributes.data" startrow="#(url.page-1)*attributes.perpage + 1#" maxrows="#attributes.perpage#">
 		<cfset theVal = attributes.data[attributes.linkval][currentRow]>
 		<cfset theLink = attributes.editlink & "?id=#theVal#">
 		<tr class="adminList#currentRow mod 2#">
