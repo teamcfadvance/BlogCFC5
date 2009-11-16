@@ -343,23 +343,23 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 					else relEntry.val(relEntry.val() + "," + id)
 				})
 			})
-			
-		})
 
-		
-		//for image upload
-		function imgUpload() {
-			var imgWin = window.open('#application.rooturl#/admin/imgwin.cfm','imgWin','width=400,height=100,toolbar=0,resizeable=1,menubar=0');	
-		}
+			$("##uploadImage").click(function() {
+				var imgWin = window.open('#application.rooturl#/admin/imgwin.cfm','imgWin','width=400,height=100,toolbar=0,resizeable=1,menubar=0')
+				return false
+			})			
+			
+			$("##browseImage").click(function() {
+				var imgBrowse = window.open('#application.rooturl#/admin/imgbrowse.cfm','imgBrowse','width=800,height=800,toolbar=1,resizeable=1,menubar=1,scrollbars=1')	
+				return false
+			})
+
+
+		})
 
 		function newImage(str) {
 			var imgstr = '<img src="#application.rooturl##application.utils.fixUrl("/#sImgRoot#/")#' + str + '" />';
 			$("##body").val($("##body").val() + '\n' + imgstr)
-		}
-
-		//for image browse
-		function imgBrowse() {
-			var imgBrowse = window.open('#application.rooturl#/admin/imgbrowse.cfm','imgBrowse','width=800,height=800,toolbar=1,resizeable=1,menubar=1,scrollbars=1');	
 		}
 
 		<cfif url.id eq 0>
@@ -448,6 +448,8 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<div class="ctrlHolder">
 			<label for="body">Body: </label>
 			</cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" style="width:100%;min-height:500px"><cfoutput>		
+			<br />
+			<a href="" id="uploadImage">[Upload and Insert Image]</a> / <a href="" id="browseImage">[Browse Image Library]</a>
 		</div>
 		</fieldset>
 		<fieldset class="inlineLabels">		
