@@ -344,8 +344,6 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				})
 			})
 			
-			$('.ctrlHolder textarea').autogrow()
-			
 		})
 
 		
@@ -409,7 +407,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				<li><a href="##main"><span>Main</span></a></li>
 				<li><a href="##additional"><span>Additional Settings</span></a></li>
 				<li><a href="##related"><span>Related Entries</span></a></li>				
-				<cfif url.id neq 0><li><a href="##comments"><span>Comments</span</a></li></cfif>
+				<cfif url.id neq 0><li><a href="##comments"><span>Comments</span></a></li></cfif>
 			</ul>
 			
 		<div id="main">	
@@ -449,7 +447,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<fieldset class="blockLabels">
 		<div class="ctrlHolder">
 			<label for="body">Body: </label>
-			</cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" style="width:100%;min-height:300px"><cfoutput>		
+			</cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" style="width:100%;min-height:500px"><cfoutput>		
 		</div>
 		</fieldset>
 		<fieldset class="inlineLabels">		
