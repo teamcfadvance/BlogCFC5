@@ -22,6 +22,11 @@ Find your current version in the notes below, and read 'upwards' to determine wh
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
 
+Last Updated: November 18, 2009 (BlogCFC 5.9.5.002) | Raymond Camden 
+/client/admin/entry.cfm: Removed auto-grow textarea. Slightly increased max height. Fixed broken link.
+/client/index.cfm - Fixes a bug that can occur with some wonky urls.
+/org/camden/blog/blog.cfc - limits the size of the alias when searching + version
+
 Last Updated: November 3, 2009 (BlogCFC 5.9.5.001) | Raymond Camden 
 /org/camden/delmore/coldfish.cfc - fix for cf7 compate
 /org/camden/blog/blog.cfc - just the version #
