@@ -36,7 +36,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.5.001" />
+	<cfset version = "5.9.5.002" />
 	
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1463,7 +1463,7 @@
 				and tblblogentries.id = <cfqueryparam value="#arguments.params.byEntry#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byAlias")>
-				and tblblogentries.alias = <cfqueryparam value="#arguments.params.byAlias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+				and tblblogentries.alias = <cfqueryparam value="#left(arguments.params.byAlias,100)#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 			</cfif>
 			<!--- Don't allow future posts unless logged in. --->
 			<cfif not isUserInRole("admin") or (structKeyExists(arguments.params, "releasedonly") and arguments.params.releasedonly)>
@@ -1702,7 +1702,7 @@
 				and tblblogentries.id = <cfqueryparam value="#arguments.params.byEntry#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byAlias")>
-				and tblblogentries.alias = <cfqueryparam value="#arguments.params.byAlias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+				and tblblogentries.alias = <cfqueryparam value="#left(arguments.params.byAlias,100)#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 			</cfif>
 			<!--- Don't allow future posts unless logged in. --->
 			<cfif not isUserInRole("admin") or (structKeyExists(arguments.params, "releasedonly") and arguments.params.releasedonly)>
