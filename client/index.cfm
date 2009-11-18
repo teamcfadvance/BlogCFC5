@@ -40,6 +40,8 @@
 		<cfset url.entry = articles.id>
 	</cfif>
 	<cfcatch>
+		<cfset articleData = {}>
+		<cfset articleData.totalEntries = 0>
 		<cfset articles = queryNew("id")>
 	</cfcatch>
 </cftry>
