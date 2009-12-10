@@ -2,7 +2,7 @@
 <cfprocessingdirective pageencoding="utf-8">
 <!---
 	Name         : /client/admin/page.cfm
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : 07/07/06
 	Last Updated : 07/12/06
 	History      : Mention code, textblock support (rkc 7/12/06)
@@ -23,10 +23,15 @@
 	<cfparam name="form.title" default="#page.title#">
 	<cfparam name="form.body" default="#page.body#">
 	<cfparam name="form.alias" default="#page.alias#">
+	<cfparam name="form.showlayout" default="#page.showlayout#">
+	<cfif not isBoolean(form.showlayout)>
+		<cfset form.showlayout = true>
+	</cfif>
 <cfelse>
 	<cfparam name="form.title" default="">
 	<cfparam name="form.body" default="">
 	<cfparam name="form.alias" default="">
+	<cfparam name="form.showlayout" default="1">
 </cfif>
 
 <cfif structKeyExists(form, "cancel")>
@@ -35,7 +40,7 @@
 
 <cfif structKeyExists(form, "save")>
 	<cfset errors = arrayNew(1)>
-	
+
 	<cfif not len(trim(form.title))>
 		<cfset arrayAppend(errors, "The title cannot be blank.")>
 	</cfif>
@@ -45,28 +50,29 @@
 	<cfif len(form.title) and not len(form.alias)>
 		<cfset form.alias = application.blog.makeTitle(form.title)>
 	</cfif>
-	
+
 	<cfif not arrayLen(errors)>
-		<cfset application.page.savePage(url.id, left(form.title,255), left(form.alias,50), form.body)>
+		<cfset application.page.savePage(url.id, left(form.title,255), left(form.alias,50), form.body, form.showlayout)>
 		<cflocation url="pages.cfm" addToken="false">
 	</cfif>
-	
+
 </cfif>
 
 <cfmodule template="../tags/adminlayout.cfm" title="Page Editor">
 
 	<cfoutput>
 	<p>
-	Use the form below to create a page for your blog. The alias will be auto-generated if left blank, which is recommended. 
+	Use the form below to create a page for your blog. The alias will be auto-generated if left blank, which is recommended.
 	Aliases must be unique per page. If you change your page title, you may want to remove the alias so it will be auto-generated again.
+	A page set to not show layout will be displayed "plain" with no blog UI around the content. The title of the page will <b>not</b> be displayed. Only the body.
 	</p>
-	
+
 	<p>
 	You can use &lt;code&gt;....&lt;/code&gt; to add formatting to code blocks.<br />
 	You can dynamically include textblocks using &lt;textblock label="..."&gt;.
 	</p>
 	</cfoutput>
-	
+
 	<cfif structKeyExists(variables, "errors") and arrayLen(errors)>
 		<cfoutput>
 		<div class="errors">
@@ -79,7 +85,7 @@
 		</div>
 		</cfoutput>
 	</cfif>
-	
+
 	<cfoutput>
 	<form action="page.cfm?id=#url.id#" method="post">
 	<table>
@@ -93,7 +99,7 @@
 		</tr>
 		<tr valign="top">
 			<td align="right">body:</td>
-			<td></cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" class="txtArea" /><cfoutput></td>
+			<td></cfoutput><cfmodule template="../tags/textarea.cfm" fieldname="body" value="#htmlEditFormat(form.body)#" class="txtArea" style="width:500px" /><cfoutput></td>
 		</tr>
 		<cfif len(form.alias)>
 		<tr valign="top">
@@ -101,6 +107,15 @@
 			<td><a href="#application.rooturl#/page.cfm/#form.alias#">#application.rooturl#/page.cfm/#form.alias#</a></td>
 		</tr>
 		</cfif>
+		<tr valign="top">
+			<td align="right">show layout:</td>
+			<td><select name="showlayout">
+			<option value="1" <cfif form.showlayout>selected</cfif>>Yes</option>
+			<option value="0" <cfif not form.showlayout>selected</cfif>>No</option>
+			</select>
+
+			</td>
+		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td><input type="submit" name="cancel" value="Cancel"> <input type="submit" name="save" value="Save"></td>

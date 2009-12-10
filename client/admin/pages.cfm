@@ -2,10 +2,10 @@
 <cfprocessingdirective pageencoding="utf-8">
 <!---
 	Name         : C:\projects\blogcfc5\client\admin\pages.cfm
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : 07/07/06
-	Last Updated : 
-	History      : 
+	Last Updated :
+	History      :
 --->
 
 <!--- handle deletes --->
@@ -27,14 +27,14 @@
 
 	<cfoutput>
 	<p>
-	Your blog currently has 
+	Your blog currently has
 		<cfif pages.recordCount gt 1>
 		#pages.recordcount# pages
 		<cfelseif pages.recordCount is 1>
-		1 page
+		1 page.
 		<cfelse>
-		0 pages
-		</cfif>.
+		0 pages.
+		</cfif>
 	</p>
 	</cfoutput>
 
@@ -43,7 +43,7 @@
 		<cfmodule template="../tags/datacol.cfm" colname="title" label="Title" />
 		<cfmodule template="../tags/datacol.cfm" colname="url" label="URL" format="url" />
 	</cfmodule>
-	
+
 </cfmodule>
 
 <cfsetting enablecfoutputonly=false>
