@@ -129,13 +129,13 @@ function checksubmit() {
 	<p align="right">
 	[[
 	<cfif url.start gt 1>
-		<a href="#cgi.script_name#?start=#url.start-perpage#&sort=#urlEncodedFormat(url.sort)#&dir=#url.dir#&#attributes.querystring#">Previous</a>
+		<a href="#cgi.script_name#?start=#url.start-perpage#&amp;sort=#urlEncodedFormat(url.sort)#&amp;dir=#url.dir#&amp;#attributes.querystring#">Previous</a>
 	<cfelse>
 		Previous
 	</cfif>
 	--
 	<cfif url.start + perpage lt totalRows>
-		<a href="#cgi.script_name#?start=#url.start+perpage#&sort=#urlEncodedFormat(url.sort)#&dir=#url.dir#&#attributes.querystring#">Next</a>
+		<a href="#cgi.script_name#?start=#url.start+perpage#&amp;sort=#urlEncodedFormat(url.sort)#&amp;dir=#url.dir#&amp;#attributes.querystring#">Next</a>
 	<cfelse>
 		Next
 	</cfif>
@@ -159,7 +159,7 @@ function checksubmit() {
 			</cfif>
 			<td <cfif structKeyExists(colWidths, c)>width="#colWidths[c]#"</cfif>>
 			<cfif not listFind(dontSortList, col)>
-			<a href="#cgi.script_name#?start=#url.start#&sort=#urlEncodedFormat(col)#&dir=#dir#&#attributes.querystring#">#c#</a>
+			<a href="#cgi.script_name#?start=#url.start#&amp;sort=#urlEncodedFormat(col)#&amp;dir=#dir#&amp;#attributes.querystring#">#c#</a>
 			<cfelse>
 				#c#
 			</cfif>
@@ -174,7 +174,7 @@ function checksubmit() {
 		<cfset theVal = attributes.data[attributes.linkval][currentRow]>
 		<cfset theLink = attributes.editlink & "?id=#theVal#">
 		<tr class="adminList#currentRow mod 2#">
-			<td width="20"><input type="checkbox" name="mark" value="#attributes.data[attributes.linkval][currentRow]#"></td>
+			<td width="20"><input type="checkbox" name="mark" value="#attributes.data[attributes.linkval][currentRow]#" /></td>
 			<cfloop index="c" list="#attributes.list#">
 				<cfif not structKeyExists(colData, c)>
 					<cfset value = attributes.data[c][currentRow]>
@@ -239,7 +239,7 @@ function checksubmit() {
 				
 				<td>
 				<cfif c is attributes.linkcol>
-				<a href="#attributes.editlink#?id=#attributes.data[attributes.linkval][currentRow]#&#attributes.queryString#">#value#</a>
+				<a href="#attributes.editlink#?id=#attributes.data[attributes.linkval][currentRow]#&amp;#attributes.queryString#">#value#</a>
 				<cfelse>
 				#value#
 				</cfif>
