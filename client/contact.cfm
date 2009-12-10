@@ -90,27 +90,27 @@ Created by Raymond Camden (ray@camdenfamily.com)
     <fieldset id="sendForm">
 	     <div>
 	      <label for="name">#rb("name")#:</label>
-	      <input type="text" id="name" name="name" value="#form.name#" style="width:300px;">
+	      <input type="text" id="name" name="name" value="#form.name#" style="width:300px;" />
 	    </div>
 	     <div>
 	      <label for="email">#rb("youremailaddress")#:</label>
-	      <input type="text" id="email" name="email" value="#form.email#" style="width:300px;">
+	      <input type="text" id="email" name="email" value="#form.email#" style="width:300px;" />
 	    </div>
 	     <div>
 	      <label for="comments">#rb("comments")#:</label>
-	      <textarea name="comments" id="comments" style="width: 400px; height: 300px;">#form.comments#</textarea>
+	      <textarea name="comments" id="comments" style="width: 400px; height: 300px;" rows="15" cols="45">#form.comments#</textarea>
 	    </div>
 		<cfif application.useCaptcha>
 			<cfset variables.captcha = application.captcha.createHashReference() />
 	    <div>
 				<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />
 				<label for="captchaText" class="longLabel">#rb("captchatext")#:</label>
-				<input type="text" name="captchaText" size="6" /><br>
-				<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" vspace="5"/>
+				<input type="text" name="captchaText" id="captchaText" size="6" /><br />
+				<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" alt="Captcha" vspace="5" />
 	    </div>
 		</cfif>	
 	    <div>
-	      <input type="submit" id="submit" name="send" value="#rb("sendcontact")#">
+	      <input type="submit" id="submit" name="send" value="#rb("sendcontact")#" />
 	     </div>
     </fieldset>
 
