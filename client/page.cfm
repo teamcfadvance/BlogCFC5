@@ -2,7 +2,7 @@
 <cfprocessingdirective pageencoding="utf-8">
 <!---
 	Name         : page.cfm
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : July 8, 2006
 	Last Updated : July 15, 2006
 	History      : New logic to get path (rkc 7/15/06)
@@ -21,13 +21,21 @@
 	<cflocation url="#application.rooturl#/index.cfm" addToken="false">
 </cfif>
 
-<cfmodule template="tags/layout.cfm" title="#page.title#">
+<cfif page.showlayout>
 
-	<cfoutput>
-	<div class="date"><b>#page.title#</b></div>
-	<div class="body">
-	#application.blog.renderEntry(page.body)#
-	</div>
-	</cfoutput>
+	<cfmodule template="tags/layout.cfm" title="#page.title#">
 
-</cfmodule>
+		<cfoutput>
+		<div class="date"><b>#page.title#</b></div>
+		<div class="body">
+		#application.blog.renderEntry(page.body)#
+		</div>
+		</cfoutput>
+
+	</cfmodule>
+
+<cfelse>
+
+	<cfoutput>#application.blog.renderEntry(page.body)#</cfoutput>
+
+</cfif>
