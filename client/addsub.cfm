@@ -46,15 +46,15 @@
 	<cfset errorStr = "">
 
 	<cfif not len(form.email) or not isEmail(form.email)>
-		<cfset errorStr = errorStr & rb("mustincludeemail") & "<br>">
+		<cfset errorStr = errorStr & rb("mustincludeemail") & "<br />">
 	</cfif>
 
 	<!--- captcha validation --->
 	<cfif application.useCaptcha>
 		<cfif not len(form.captchaText)>
-		   <cfset errorStr = errorStr & "Please enter the Captcha text.<br>">
+		   <cfset errorStr = errorStr & "Please enter the Captcha text.<br />">
 		<cfelseif NOT application.captcha.validateCaptcha(form.captchaHash,form.captchaText)>
-		   <cfset errorStr = errorStr & "The captcha text you have entered is incorrect.<br>">
+		   <cfset errorStr = errorStr & "The captcha text you have entered is incorrect.<br />">
 		</cfif>
 	</cfif>
 		
@@ -82,13 +82,13 @@
 	</cfif>	
 </cfif>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" />
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 	<cfoutput><title>#application.blog.getProperty("blogTitle")# : #rb("addsub")#</title></cfoutput>
-	<link rel="stylesheet" href="includes/style.css" type="text/css"/>
-	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+	<link rel="stylesheet" href="includes/style.css" type="text/css" />
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 </head>
 
 <body id="popUpFormBody">
@@ -110,23 +110,23 @@
     	<legend>#rb("addsub")#</legend>
   <div>
 		<label for="email">#rb("emailaddress")#:</label>
-		<input type="text" id="email" name="email" value="#form.email#">
+		<input type="text" id="email" name="email" value="#form.email#" />
   </div>
 	<cfif application.useCaptcha>
     <div>
 		<cfset variables.captcha = application.captcha.createHashReference() />
 		<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />
 		<label for="captchaText" class="longLabel">#rb("captchatext")#:</label>
-		<input type="text" name="captchaText" size="6" /><br>
-		<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" align="right" vspace="5"/>
+		<input type="text" name="captchaText" id="captchaText" size="6" /><br />
+		<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" align="right" alt="Captcha" vspace="5" />
   </div>
 	</cfif>
   <div>
 		<label for="rememberMe" class="longLabel">#rb("remembermyinfo")#:</label>
-		<input type="checkbox" class="checkBox" id="rememberMe" name="rememberMe" value="1" <cfif isBoolean(form.rememberMe) and form.rememberMe>checked</cfif>>
+		<input type="checkbox" class="checkBox" id="rememberMe" name="rememberMe" value="1" <cfif isBoolean(form.rememberMe) and form.rememberMe>checked="checked"</cfif> />
   </div>
   <div style="text-align:center">
-		<input type="reset" id="reset" value="#rb("cancel")#" onClick="if(confirm('#rb("cancelconfirm")#')) { window.close(); } else { return false; }"> <input type="submit" id="submit" name="addsub" value="#rb("subscribe")#">
+		<input type="reset" id="reset" value="#rb("cancel")#" onclick="if(confirm('#rb("cancelconfirm")#')) { window.close(); } else { return false; }" /> <input type="submit" id="submit" name="addsub" value="#rb("subscribe")#" />
     </div>
 </fieldset>
 	</form>
