@@ -27,19 +27,19 @@
 	<cfset errorStr = "">
 
 	<cfif not len(trim(form.blog_name))>
-		<cfset errorStr = errorStr & rb("mustincludeblogname") & "<br>">
+		<cfset errorStr = errorStr & rb("mustincludeblogname") & "<br />">
 	</cfif>
 
 	<cfif not len(trim(form.title))>
-		<cfset errorStr = errorStr & rb("mustincludeblogtitle") & "<br>">
+		<cfset errorStr = errorStr & rb("mustincludeblogtitle") & "<br />">
 	</cfif>
 
 	<cfif not len(trim(form.excerpt))>
-		<cfset errorStr = errorStr & rb("mustincludeblogexcerpt") & "<br>">
+		<cfset errorStr = errorStr & rb("mustincludeblogexcerpt") & "<br />">
 	</cfif>
 
 	<cfif not len(trim(form.url)) or not isURL(form.url)>
-		<cfset errorStr = errorStr & rb("mustincludeblogentryurl") & "<br>">
+		<cfset errorStr = errorStr & rb("mustincludeblogentryurl") & "<br />">
 	</cfif>
 
 	<cfif not len(errorStr)>
@@ -77,7 +77,7 @@
 <html>
 <head>
 	<title>#application.blog.getProperty("blogTitle")# : Trackbacks for #article.title#</title>
-	<link rel="stylesheet" href="#application.rootURL#/includes/style.css" type="text/css"/>
+	<link rel="stylesheet" href="#application.rootURL#/includes/style.css" type="text/css" />
 </head>
 
 <body style="background:##ffffff;">
