@@ -17,7 +17,7 @@
 
 <cfsavecontent variable="mail">
 <cfoutput>
-#rb("errorOccured")#:<br>
+#rb("errorOccured")#:<br />
 <table border="1" width="100%">
 	<tr>
 		<td>#rb("date")#:</td>
