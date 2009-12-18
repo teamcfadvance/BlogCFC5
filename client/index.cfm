@@ -140,15 +140,15 @@
 		<div class="byline">
 		</cfoutput>
 		
-		<cfif allowcomments or commentCount neq ""><cfoutput><img src="#application.rooturl#/images/comment.gif" align="middle" title="#rb("comments")#" height="16" width="16"> <a href="#application.blog.makeLink(id)###comments">#rb("comments")# (<cfif commentCount is "">0<cfelse>#commentCount#</cfif>)</a> | </cfoutput></cfif>
+		<cfif allowcomments or commentCount neq ""><cfoutput><img src="#application.rooturl#/images/comment.gif" align="middle" title="#rb("comments")#" alt="#rb("comments")#" height="16" width="16" /> <a href="#application.blog.makeLink(id)###comments">#rb("comments")# (<cfif commentCount is "">0<cfelse>#commentCount#</cfif>)</a> | </cfoutput></cfif>
 		<cfif application.trackbacksallowed><cfoutput><a href="#application.blog.makeLink(id)###trackbacks">Trackbacks (<cfif trackbackCount is "">0<cfelse>#trackbackCount#</cfif>)</a> | </cfoutput></cfif>
-		<cfif application.isColdFusionMX7><cfoutput><img src="#application.rooturl#/images/printer.gif" align="middle" title="#rb("print")#" height="16" width="16"> <a href="#application.rooturl#/print.cfm?id=#id#" rel="nofollow">#rb("print")#</a> | </cfoutput></cfif>
-		<cfoutput><img src="#application.rooturl#/images/email.gif" align="middle" title="#rb("send")#" height="16" width="16"> <a href="#application.rooturl#/send.cfm?id=#id#" rel="nofollow">#rb("send")#</a> | </cfoutput>
-		<cfif len(enclosure)><cfoutput><img src="#application.rooturl#/images/disk.png" align="middle" title="#rb("download")#" height="16" width="16"> <a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">#rb("download")#</a> | </cfoutput></cfif>
+		<cfif application.isColdFusionMX7><cfoutput><img src="#application.rooturl#/images/printer.gif" align="middle" title="#rb("print")#" alt="#rb("print")#" height="16" width="16" /> <a href="#application.rooturl#/print.cfm?id=#id#" rel="nofollow">#rb("print")#</a> | </cfoutput></cfif>
+		<cfoutput><img src="#application.rooturl#/images/email.gif" align="middle" title="#rb("send")#" alt="#rb("send")#" height="16" width="16" /> <a href="#application.rooturl#/send.cfm?id=#id#" rel="nofollow">#rb("send")#</a> | </cfoutput>
+		<cfif len(enclosure)><cfoutput><img src="#application.rooturl#/images/disk.png" align="middle" title="#rb("download")#" alt="#rb("download")#" height="16" width="16" /> <a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">#rb("download")#</a> | </cfoutput></cfif>
 		<cfoutput>
-    	<img src="#application.rooturl#/images/icon_delicious.gif" align="middle" title="del.ico.us" height="11" width="11"> <a href="http://del.icio.us/post?url=#application.blog.makeLink(id)#&title=#URLEncodedFormat("#application.blog.getProperty('blogTitle')#:#title#")#">del.icio.us</a>
-		| <img src="#application.rooturl#/images/digg.gif" align="middle" title="Digg It!" height="14" width="16"> <a href="http://digg.com/submit?phase=2&url=#application.blog.makeLink(id)#&title=#URLEncodedFormat("#title#")#&topic=">Digg It!</a>
-	    | <img src="#application.rooturl#/images/technorati.gif" align="middle" title="#rb("linkingblogs")#" height="16" width="16"> <a href="http://www.technorati.com/search/#application.blog.makeLink(id)#">#rb("linkingblogs")#</a> 
+    	<img src="#application.rooturl#/images/icon_delicious.gif" align="middle" title="del.ico.us" alt="del.ico.us" height="11" width="11" /> <a href="http://del.icio.us/post?url=#application.blog.makeLink(id)#&amp;title=#URLEncodedFormat("#application.blog.getProperty('blogTitle')#:#title#")#">del.icio.us</a>
+		| <img src="#application.rooturl#/images/digg.gif" align="middle" title="Digg It!" alt="Digg It!" height="14" width="16" /> <a href="http://digg.com/submit?phase=2&amp;url=#application.blog.makeLink(id)#&amp;title=#URLEncodedFormat("#title#")#&amp;topic=">Digg It!</a>
+	    | <img src="#application.rooturl#/images/technorati.gif" align="middle" title="#rb("linkingblogs")#" alt="#rb("linkingblogs")#" height="16" width="16" /> <a href="http://www.technorati.com/search/#application.blog.makeLink(id)#">#rb("linkingblogs")#</a> 
 	    | #views# #rb("views")#   
 		</div>
 		</cfoutput>
@@ -192,7 +192,7 @@
 					<cfoutput query="trackbacks">
 						<div class="trackback<cfif currentRow mod 2>Alt</cfif>">
 						<div class="trackbackBody">
-						<a href="#postURL#" target="_new" rel="nofollow" class="tbLink">#title#</a><br>
+						<a href="#postURL#" target="_new" rel="nofollow" class="tbLink">#title#</a><br />
 						#paragraphFormat2(excerpt)#
 						</div>
 						<div class="trackbackByLine">#application.resourceBundle.getResource("trackedby")# #blogname# | #application.resourceBundle.getResource("trackedon")# #application.localeUtils.dateLocaleFormat(created,"short")# #application.localeUtils.timeLocaleFormat(created)#</div>
@@ -205,7 +205,7 @@
 				<cfoutput>
 				<p>
 				<div class="body">
-				#application.resourceBundle.getResource("trackbackurl")#<br>
+				#application.resourceBundle.getResource("trackbackurl")#<br />
 				#application.rooturl#/trackback.cfm?#id#
 				</div>
 				</p>
@@ -253,7 +253,7 @@
 				<cfoutput query="comments">
 				<div id="c#id#" class="comment<cfif currentRow mod 2>Alt</cfif>">
 					<div class="commentBody">
-					<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=40&r=pg&d=#application.rooturl#/images/gravatar.gif" alt="#name#'s Gravatar" border="0"></cfif>
+					<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=40&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" alt="#name#'s Gravatar" border="0" /></cfif>
 					#paragraphFormat2(replaceLinks(comment))#
 					</div>
 					<div class="commentByLine">
@@ -325,7 +325,7 @@
 	
 		<cfset qs = reReplaceNoCase(qs, "&*startrow=[\-0-9]+", "")>
 		<cfif isDefined("form.search") and len(trim(form.search)) and not structKeyExists(url, "search")>
-			<cfset qs = qs & "&search=#htmlEditFormat(form.search)#">
+			<cfset qs = qs & "&amp;search=#htmlEditFormat(form.search)#">
 		</cfif>
 
 		<cfoutput>
@@ -334,7 +334,7 @@
 		
 		<cfif url.startRow gt 1>
 
-			<cfset prevqs = qs & "&startRow=" & (url.startRow - application.maxEntries)>
+			<cfset prevqs = qs & "&amp;startRow=" & (url.startRow - application.maxEntries)>
 	
 			<cfoutput>
 			<a href="#application.rooturl#/index.cfm#path#?#prevqs#">#rb("preventries")#</a>
@@ -348,7 +348,7 @@
 		
 		<cfif articleData.totalEntries gte url.startRow + application.maxEntries>
 			
-			<cfset nextqs = qs & "&startRow=" & (url.startRow + application.maxEntries)>
+			<cfset nextqs = qs & "&amp;startRow=" & (url.startRow + application.maxEntries)>
 	
 			<cfoutput>
 			<a href="#application.rooturl#/index.cfm#path#?#nextqs#">#rb("moreentries")#</a>
