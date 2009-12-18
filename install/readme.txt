@@ -22,6 +22,48 @@ Find your current version in the notes below, and read 'upwards' to determine wh
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
 
+=======================================================================================================================================================================================
+
+Last Updated: December 20, 2009 (BlogCFC 5.9.5.003) | Raymond Camden 
+At a high level, the changes in this version are for XHTML tuning (see below), and to support pages that don't use layout. That change requires a database change for existing users. Modify your tblBlogPages
+table to add a "showlayout" column. This is a boolean type (used tinyint for mysql). For existing pages, don't worry. If the value for them is null, it is assumed to be a true value.
+
+Note - this version includes many XHTML tuning fixes. Thanks for these go to Andreas Schuldhaus.
+
+/client/addsub.cfm - XHTML
+/client/admin/pages.cfm - Typo
+/client/admin/page.cfm - Support layout-less pages.
+/client/contact.cfm - XHTML
+/client/loadtweetbacks.cfm - ditto
+/client/admin/page.cfm - Support layout-less pages.
+/client/tags/datatablenew.cfm - XHTML
+/client/trackbacks.cfm - ditto
+/org/camden/blog/page.cfc - Support layout-less pages.
+/client/addcomment.cfm - XHTML, typo
+/client/error.cfm - XHTML
+/client/tags/simplecontenteditor.cfm - REMOVED!
+/client/includes/pods/archive.cfm - XHTML
+/client/includes/pods/calendar.cfm - XHTML
+/client/includes/pods/feed.cfm - XHTML
+/client/includes/pods/recent.cfm - XHTML
+/client/includes/pods/recentcomments.cfm - XHTML, we now cache the recent comments
+/client/includes/pods/rss.cfm - XHTML (and removed empty alt)
+/client/includes/pods/search.cfm - XHTML
+/client/includes/pods/subscribe.cfm - XHTML
+/client/includes/pods/tagcloud.cfm - XHTML, notice- CSS for tag clouds moved to style.css
+/client/includes/styles.css - tag cloud styles
+/client/statsbyyear.cfm - XHTML
+/client/stats.cfm - XHTML
+/client/slideshow.cfm - XHTML
+/client/send.cfm - XHTML
+/client/search.cfm - XHTML, style moved to styles.css
+/client/rss.cfm - XHTML
+/client/index.cfm - XHTML
+/client/tags/datatable.cfm - XHTML
+/client/tags/layout.cfm - XHTML
+
+Install scripts for all but MS Access updated to include showlayout for pages table.
+
 Last Updated: November 18, 2009 (BlogCFC 5.9.5.002) | Raymond Camden 
 /client/admin/entry.cfm: Removed auto-grow textarea. Slightly increased max height. Fixed broken link.
 /client/index.cfm - Fixes a bug that can occur with some wonky urls.
