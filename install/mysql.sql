@@ -116,6 +116,7 @@ CREATE TABLE `tblblogpages` (
   `alias` varchar(100) NOT NULL default '',
   `body` text NOT NULL,
   `blog` varchar(50) default NULL,
+   `showlayout` tinyint(1) NOT NULL default '0',  
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
