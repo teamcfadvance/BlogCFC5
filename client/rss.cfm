@@ -112,9 +112,9 @@
 	<cfcatch>
 		<cfmail to="#application.blog.getProperty("ownerEmail")#" from="#application.blog.getProperty("ownerEmail")#" subject="rss bug" type="html">
 		#application.resourceBundle.getResource("type")#=#cfcatch.type#
-		<hr>
+		<hr />
 		#application.resourceBundle.getResource("message")#=#cfcatch.message#
-		<hr>
+		<hr />
 		#application.resourceBundle.getResource("detail")#=#cfcatch.detail#
 		<cfdump var="#cfcatch#">
 		</cfmail>
