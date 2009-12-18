@@ -36,15 +36,6 @@
    
    <!--- optionally add a range of colors in the CSS color property for each class --->
    <cfoutput>
-      <style>
-         .smallestTag { font-size: 9px; }
-         .smallTag { font-size: 11px; }
-         .mediumTag { font-size: 13px; }
-         .largeTag { font-size: 16px; }
-         .largestTag { font-size: 20px; }
-      </style>
-      
-      
       <cfloop query="tags">
          <cfsilent>
             <cfif tags.tagCount EQ min>
