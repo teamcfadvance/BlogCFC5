@@ -105,6 +105,33 @@ input, select, textarea {
 	background-color: yellow;
 }
 
+/* tagcloud */
+ 
+.smallestTag { 
+	font-size: 9px; 
+}
+
+.smallTag { 
+	font-size: 11px; 
+}
+
+.mediumTag { 
+	font-size: 13px; 
+}
+
+.largeTag { 
+	font-size: 16px; 
+}
+
+.largestTag { 
+ 	font-size: 20px; 
+}
+
+/* search */
+.highlight { 
+	background-color: yellow; 
+}
+
 .menuBody {
 	font-family: verdana, arial, sans-serif; 
 	font-size: .65em;
