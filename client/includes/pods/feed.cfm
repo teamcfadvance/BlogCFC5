@@ -28,7 +28,7 @@
 		<cfloop index="x" from="1" to="#min(arrayLen(items),5)#">
 			<cfset item = items[x]>
 			<cfoutput>
-			<a href="#item.link.xmlText#">#item.title.xmlText#</a><br>
+			<a href="#item.link.xmlText#">#item.title.xmlText#</a><br />
 			</cfoutput>
 		</cfloop>
 		<cfcatch>
