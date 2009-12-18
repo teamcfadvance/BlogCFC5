@@ -187,13 +187,13 @@
 	<cfoutput>
 	<div class="date"><b>Stats for #statsYear#</b></div>
 	<div class="body">
-	<a href="##generalstats">#rb("generalstats")#</a><br>
-	<a href="##topviews">#rb("topviews")#</a><br>
-	<a href="##categorystats">#rb("categorystats")#</a><br>
-	<a href="##topentriesbycomments">#rb("topentriesbycomments")#</a><br>
-	<a href="##topcategoriesbycomments">#rb("topcategoriesbycomments")#</a><br>
-	<cfif application.blog.getProperty("allowtrackbacks")><a href="##topentriesbytrackbacks">#rb("topentriesbytrackbacks")#</a><br></cfif>
-	<a href="##topsearchterms">#rb("topsearchterms")#</a><br>
+	<a href="##generalstats">#rb("generalstats")#</a><br />
+	<a href="##topviews">#rb("topviews")#</a><br />
+	<a href="##categorystats">#rb("categorystats")#</a><br />
+	<a href="##topentriesbycomments">#rb("topentriesbycomments")#</a><br />
+	<a href="##topcategoriesbycomments">#rb("topcategoriesbycomments")#</a><br />
+	<cfif application.blog.getProperty("allowtrackbacks")><a href="##topentriesbytrackbacks">#rb("topentriesbytrackbacks")#</a><br /></cfif>
+	<a href="##topsearchterms">#rb("topsearchterms")#</a><br />
 	</div>
 	
 	<p />
