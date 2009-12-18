@@ -42,9 +42,9 @@
 	<!--- captcha validation --->
 	<cfif application.useCaptcha>
 		<cfif not len(form.captchaText)>
-		   <cfset errorStr = errorStr & "Please enter the Captcha text.<br>">
+		   <cfset errorStr = errorStr & "Please enter the Captcha text.<br />">
 		<cfelseif NOT application.captcha.validateCaptcha(form.captchaHash,form.captchaText)>
-		   <cfset errorStr = errorStr & "The captcha text you have entered is incorrect.<br>">
+		   <cfset errorStr = errorStr & "The captcha text you have entered is incorrect.<br />">
 		</cfif>
 	</cfif>
 	
@@ -65,7 +65,7 @@
 			<b>#form.notes#</b>
 			</p>
 			<p>
-			<hr>
+			<hr />
 			</p>
 			</cfif>
 			#application.blog.renderEntry(entry.body)#
@@ -113,11 +113,11 @@
     <fieldset id="sendForm">
 	     <div>
 	      <label for="email">#rb("youremailaddress")#:</label>
-	      <input type="text" id="email" name="email" value="#form.email#" style="width:300px;">
+	      <input type="text" id="email" name="email" value="#form.email#" style="width:300px;" />
 	    </div>
 	     <div>
 	      <label for="remail">#rb("receiveremailaddress")#:</label>
-	      <input type="text" id="remail" name="remail" value="#form.remail#" style="width:300px;">
+	      <input type="text" id="remail" name="remail" value="#form.remail#" style="width:300px;" />
 	    </div>
 	     <div>
 	      <label for="remail">#rb("optionalnotes")#:</label>
@@ -128,12 +128,12 @@
 	    <div>
 				<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />
 				<label for="captchaText" class="longLabel">#rb("captchatext")#:</label>
-				<input type="text" name="captchaText" size="6" /><br>
-				<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" vspace="5"/>
+				<input type="text" name="captchaText" size="6" /><br />
+				<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" vspace="5" />
 	    </div>
 		</cfif>	
 	    <div>
-	      <input type="submit" id="submit" name="send" value="#rb("sendentry")#">
+	      <input type="submit" id="submit" name="send" value="#rb("sendentry")#" />
 	     </div>
     </fieldset>
 
