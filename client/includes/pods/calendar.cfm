@@ -70,7 +70,7 @@
 	</div>
 </cfoutput>
 <cfoutput>
-<table border=0 class="calendarTable" id="calendar">
+<table border="0" class="calendarTable" id="calendar">
 <thead>
 <tr>
 	<!--- emit localized days in proper week start order --->
