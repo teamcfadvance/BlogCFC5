@@ -108,7 +108,7 @@
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.alias#" maxlength="100">,
 			<cfqueryparam cfsqltype="cf_sql_longvarchar" value="#arguments.body#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="35">,
-			<cfqueryparam cfsqltype="cf_sql_tinyint" value="#variables.showlayout#">
+			<cfqueryparam cfsqltype="cf_sql_tinyint" value="#arguments.showlayout#">
 			)
 		</cfquery>
 
