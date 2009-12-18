@@ -215,7 +215,9 @@ CREATE TABLE [dbo].[tblblogpages] (
 	[blog] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
 	[title] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
 	[alias] [nvarchar] (100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
-	[body] [ntext] COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL 
+	[body] [ntext] COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	[showlayout] [bit] NULL
+	 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
