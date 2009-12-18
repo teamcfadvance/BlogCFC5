@@ -21,7 +21,7 @@
 	<cfset entryData = application.blog.getEntries(duplicate(params))>
 	<cfset entries = entryData.entries>
 	<cfloop query="entries">
-		<cfoutput><a href="#application.blog.makeLink(id)#">#title#</a><br></cfoutput>
+		<cfoutput><a href="#application.blog.makeLink(id)#">#title#</a><br /></cfoutput>
 	</cfloop>
 	<cfif not entries.recordCount>
 		<cfoutput>#application.resourceBundle.getResource("norecententries")#</cfoutput>
