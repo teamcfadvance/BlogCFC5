@@ -55,21 +55,18 @@
 	<div class="body">
 	<form action="#application.rooturl#/search.cfm" method="post">
 	<p>
-	You searched for <input type="text" name="search" value="#form.search#"> in 
+	You searched for <input type="text" name="search" value="#form.search#" /> in 
 	<select name="category">
-	<option value="" <cfif form.category is "">selected</cfif>>all categories</option>
+	<option value="" <cfif form.category is "">selected="selected"</cfif>>all categories</option>
 	<cfloop query="cats">
-	<option value="#categoryid#" <cfif form.category is categoryid>selected</cfif>>#categoryname#</option>
+	<option value="#categoryid#" <cfif form.category is categoryid>selected="selected"</cfif>>#categoryname#</option>
 	</cfloop>
 	</select><br/>
 	There  
-		<cfif results.totalEntries is 1>was one result<cfelse>were #results.totalEntries# results</a></cfif>.
-	<input type="submit" value="Search Again"> 	
+		<cfif results.totalEntries is 1>was one result<cfelse>were #results.totalEntries# results</cfif>.
+	<input type="submit" value="Search Again" /> 	
 	</p>
 	</form>
-	<style>
-	.highlight { background-color: yellow; }
-	</style>
 	<cfif results.entries.recordCount>
 		<cfloop query="results.entries">
 			<!--- remove html from result. --->
@@ -115,20 +112,20 @@
 			<br />
 			#excerpt#
 			<cfif currentRow neq recordCount>
-			<hr/>
+			<hr />
 			</cfif>
 		</p>
 		</cfloop>
 		<cfif results.totalEntries gte url.start + application.maxEntries>
 			<p align="right">
 			<cfif url.start gt 1>
-				<a href="search.cfm?search=#urlEncodedFormat(form.search)#&category=#form.category#&start=#url.start-application.maxEntries#">Previous Results</a>
+				<a href="search.cfm?search=#urlEncodedFormat(form.search)#&amp;category=#form.category#&amp;start=#url.start-application.maxEntries#">Previous Results</a>
 			<cfelse>
 				Previous Entries
 			</cfif>
 			-
 			<cfif (url.start + application.maxEntries-1) lt results.totalEntries>
-				<a href="search.cfm?search=#urlEncodedFormat(form.search)#&category=#form.category#&start=#url.start+application.maxEntries#">Next Results</a>
+				<a href="search.cfm?search=#urlEncodedFormat(form.search)#&amp;category=#form.category#&amp;start=#url.start+application.maxEntries#">Next Results</a>
 			<cfelse>
 				Next Entries
 			</cfif>
