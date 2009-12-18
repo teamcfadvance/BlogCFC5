@@ -75,7 +75,7 @@
 	<cfset form.website = trim(form.website)>
 	<cfset form.comments = trim(form.comments)>
 
-	<!-- if website is just http://, remove it --->
+	<!--- if website is just http://, remove it --->
 	<cfif form.website is "http://">
 		<cfset form.website = "">
 	</cfif>
