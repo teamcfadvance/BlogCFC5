@@ -17,7 +17,7 @@
 
 	<cfset cats = application.blog.getCategories()>
 	<cfloop query="cats">
-		<cfoutput><a href="#application.blog.makeCategoryLink(categoryid)#">#categoryName# (#entryCount#)</a> [<a href="#application.rootURL#/rss.cfm?mode=full&mode2=cat&catid=#categoryid#" rel="noindex,nofollow">RSS</a>]<br></cfoutput>
+		<cfoutput><a href="#application.blog.makeCategoryLink(categoryid)#" title="#categoryName# RSS">#categoryName# (#entryCount#)</a> [<a href="#application.rootURL#/rss.cfm?mode=full&amp;mode2=cat&amp;catid=#categoryid#" rel="noindex,nofollow">RSS</a>]<br /></cfoutput>
 	</cfloop>
 	
 </cfmodule>
