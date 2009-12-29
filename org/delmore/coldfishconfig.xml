@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coldfish>
+	<settings showLineNumbers="Yes" showToolbar="Yes" cachesize="100" defaultparser=""/>
+	<types>
+	 	<type name="TEXT" style="color:#000"/>
+		<type name="TOOLBAR" style="width:100%;color:#FFF;background-color:#ccc;text-decoration:none;border: 1px solid #99a;margin:0;padding:0;height:1em;"/>
+		<type name="TOOLBARLINK" style="color:#FFF;text-decoration:none;"/>
+		
+		<!-- Comments -->
+		<type name="HTMLCOMMENT" style="color:#AAA"/>
+		<type name="CFCOMMENT" style="color:#333;background-color:#FF0"/>
+		<type name="LINENUMBER" style="display:block;float:left;clear:left;width:2em;color:#999;background-color:#fffff6;text-align:right;border-width:0 1px 0 1px;border-color:#faf0e6;border-style:solid;"/>
+		
+		<!-- CF Tags -->
+		<type name="CFTAG" style="color:#990033"/>
+		<type name="CFSET" style="color:#000000"/>
+		<type name="CFSCRIPT" style="color:#000000"/>
+		<!-- I need to improve keyword lookup performance
+		<type name="CFSCRIPTFUNCTIONS" style="color:blue" parser="cfscript" keywords="Abs,ACos,AddSOAPRequestHeader,AddSOAPResponseHeader,AjaxLink,AjaxOnLoad,ApplicationStop,ArrayAppend,ArrayAvg,ArrayClear,ArrayContains,ArrayDelete,ArrayDeleteAt,ArrayFind,ArrayFindNoCase,ArrayInsertAt,ArrayIsDefined,ArrayIsEmpty,ArrayLen,ArrayMax,ArrayMin,ArrayNew,ArrayPrepend,ArrayResize,ArraySet,ArraySort,ArraySum,ArraySwap,ArrayToList,Asc,ASin,Atn,AuthenticatedContext,AuthenticatedUser,BinaryDecode,BinaryEncode,BitAnd,BitMaskClear,BitMaskRead,BitMaskSet,BitNot,BitOr,BitSHLN,BitSHRN,BitXor,CacheGet,CacheGetAllIds,CacheGetMetadata,CacheGetProperties,CachePut,CacheRemove,CacheSetProperties,Ceiling,CharsetDecode,CharsetEncode,Chr,CJustify,Compare,CompareNoCase,Cos,CreateDate,CreateDateTime,CreateObject,CreateODBCDate,CreateODBCDateTime,CreateODBCTime,CreateTime,CreateTimeSpan,CreateUUID,DateAdd,DateCompare,DateConvert,DateDiff,DateFormat,DatePart,Day,DayOfWeek,DayOfWeekAsString,DayOfYear,DaysInMonth,DaysInYear,DE,DecimalFormat,DecrementValue,Decrypt,DecryptBinary,DeleteClientVariable,DeserializeJSON,DirectoryCreate,DirectoryDelete,DirectoryExists,DirectoryList,DirectoryRename,DollarFormat,DotNetToCFType,Duplicate,Encrypt,EncryptBinary,EntityDelete,EntityLoad,EntityLoadByExample,EntityLoadByPK,EntityMerge,EntityNew,EntityReload,EntitySave,EntitytoQuery,Evaluate,Exp,ExpandPath,FileClose,FileCopy,FileDelete,FileExists,FileIsEOF,FileMove,FileOpen,FileRead,FileReadBinary,FileReadLine,FileSeek,FileSetAccessMode,FileSetAttribute,FileSetLastModified,FileSkipBytes,FileWrite,FileWriteLine,Find,FindNoCase,FindOneOf,FirstDayOfMonth,Fix,FormatBaseN,GenerateSecretKey,GetAuthUser,GetBaseTagData,GetBaseTagList,GetBaseTemplatePath,GetClientVariablesList,GetComponentMetaData,GetContextRoot,GetCurrentTemplatePath,GetDirectoryFromPath,GetEncoding,GetException,GetFileFromPath,GetFileInfo,GetFunctionCalledName,GetFunctionList ,GetGatewayHelper,GetHttpRequestData,GetHttpTimeString,GetK2ServerDocCount,GetK2ServerDocCountLimit,GetLocale,GetLocaleDisplayName,GetLocalHostIP,GetMetaData,GetMetricData,GetPageContext,GetPrinterInfo,GetPrinterList,GetProfileSections,GetProfileString,GetReadableImageFormats,GetSOAPRequest,GetSOAPRequestHeader,GetSOAPResponse,GetSOAPResponseHeader,GetTempDirectory,GetTempFile,GetTemplatePath,GetTickCount,GetTimeZoneInfo,GetToken,GetUserRoles,GetVFSMetaData,GetWriteableImageFormats,Hash,HQL Methods,Hour,HTMLCodeFormat,HTMLEditFormat,IIf,ImageAddBorder,ImageBlur,ImageClearRect,ImageCopy,ImageCrop,ImageDrawArc,ImageDrawBeveledRect,ImageDrawCubicCurve,ImageDrawLine,ImageDrawLines,ImageDrawOval,ImageDrawPoint,ImageDrawQuadraticCurve,ImageDrawRect,ImageDrawRoundRect,ImageDrawText,ImageFlip,ImageGetBlob,ImageGetBufferedImage,ImageGetEXIFMetadata,ImageGetEXIFTag,ImageGetHeight,ImageGetIPTCMetadata,ImageGetIPTCTag,ImageGetWidth,ImageGrayscale,ImageInfo,ImageNegative,ImageNew,ImageOverlay,ImagePaste,ImageRead,ImageReadBase64,ImageResize,ImageRotate,ImageRotateDrawingAxis,ImageScaleToFit,ImageSetAntialiasing,ImageSetBackgroundColor,ImageSetDrawingColor,ImageSetDrawingStroke,ImageSetDrawingTransparency,ImageSharpen,ImageShear,ImageShearDrawingAxis,ImageTranslate,ImageTranslateDrawingAxis,ImageWrite,ImageWriteBase64,ImageXORDrawingMode,IncrementValue,InputBaseN,Insert,Int,IsArray,IsAuthenticated,IsAuthorized,IsBinary,IsBoolean,IsCustomFunction,IsDate,IsDDX,IsDebugMode,IsDefined,IsImage,IsImageFile,IsInstanceOf,IsIPv6,IsJSON,IsK2ServerABroker,IsK2ServerDocCountExceeded,IsK2ServerOnline,IsLeapYear,IsLocalHost,IsNull,IsNumeric,IsNumericDate,IsObject,IsPDFFile,IsPDFObject,IsProtected,IsQuery,IsSimpleValue,IsSOAPRequest,IsSpreadsheetFile,IsSpreadsheetObject,IsStruct,IsUserInAnyRole,IsUserInRole,IsUserLoggedIn,IsValid,IsWDDX,IsXML,IsXmlAttribute,IsXmlDoc,IsXmlElem,IsXmlNode,IsXmlRoot,JavaCast,JSStringFormat,LCase,Left,Len,ListAppend,ListChangeDelims,ListContains,ListContainsNoCase,ListDeleteAt,ListFind,ListFindNoCase,ListFirst,ListGetAt,ListInsertAt,ListLast,ListLen,ListPrepend,ListQualify,ListRest,ListSetAt,ListSort,ListToArray,ListValueCount,ListValueCountNoCase,LJustify,Location,Log,Log10,LSCurrencyFormat,LSDateFormat,LSEuroCurrencyFormat,LSIsCurrency,LSIsDate,LSIsNumeric,LSNumberFormat,LSParseCurrency,LSParseDateTime,LSParseEuroCurrency,LSParseNumber,LSTimeFormat,LTrim,Max,Mid,Min,Minute,Month,MonthAsString,Now,NumberFormat,ObjectEquals,ObjectLoad,ObjectSave,ORMClearSession,ORMCloseSession,ORMEvictCollection,ORMEvictEntity,ORMEvictQueries,ORMExecuteQuery,ORMFlush,ORMGetSession,ORMGetSessionFactory,ORMReload,ParagraphFormat,ParameterExists,ParseDateTime,Pi,PrecisionEvaluate,PreserveSingleQuotes,Quarter,QueryAddColumn,QueryAddRow,QueryConvertForGrid,QueryNew,QuerySetCell,QuotedValueList,Rand,Randomize,RandRange,REFind,REFindNoCase,REMatch,REMatchNoCase,ReleaseComObject,RemoveChars,RepeatString,Replace,ReplaceList,ReplaceNoCase,REReplace,REReplaceNoCase,Reverse,Right,RJustify,Round,RTrim,Second,SendGatewayMessage,SerializeJSON,SetEncoding,SetLocale,SetProfileString,SetVariable,Sgn,Sin,Sleep,SpanExcluding,SpanIncluding,SpreadsheetAddColumn,SpreadsheetAddImage,SpreadsheetAddFreezePane,SpreadsheetAddInfo,SpreadsheetAddRow,SpreadsheetAddRows,SpreadsheetAddSplitPane,SpreadsheetCreateSheet,SpreadsheetDeleteColumn,SpreadsheetDeleteColumns,SpreadsheetDeleteRow,SpreadsheetDeleteRows,SpreadsheetFormatCell,SpreadsheetFormatColumn,SpreadsheetFormatColumns,SpreadsheetFormatRow,SpreadsheetFormatRows,SpreadsheetGetCellComment,SpreadsheetGetCellFormula,SpreadsheetGetCellValue,SpreadsheetInfo,SpreadsheetMergeCells,SpreadsheetNew,SpreadsheetRead,SpreadsheetReadBinary,SpreadsheetSetActiveSheet,SpreadsheetSetActiveSheetNumber,SpreadsheetSetCellComment,SpreadsheetSetCellFormula,SpreadsheetSetCellValue,SpreadsheetSetColumnWidth,SpreadsheetSetFooter,SpreadsheetSetHeader,SpreadsheetSetRowHeight,SpreadsheetShiftColumns,SpreadsheetShiftRows,SpreadsheetWrite,Sqr,StripCR,StructAppend,StructClear,StructCopy,StructCount,StructDelete,StructFind,StructFindKey,StructFindValue,StructGet,StructInsert,StructIsEmpty,StructKeyArray,StructKeyExists,StructKeyList,StructNew,StructSort,StructUpdate,Tan,ThreadJoin,ThreadTerminate,Throw,TimeFormat,ToBase64,ToBinary,ToScript,ToString,Trace,TransactionCommit,TransactionRollback,TransactionSetSavePoint,Trim,UCase,URLDecode,URLEncodedFormat,URLSessionFormat,Val,ValueList,VerifyClient,Week,Wrap,Writedump,Writelog,WriteOutput,XmlChildPos,XmlElemNew,XmlFormat,XmlGetNodeType,XmlNew,XmlParse,XmlSearch,XmlTransform,XmlValidate,Year,YesNoFormat"/>
+		<type name="CFSCRIPTKEYWORDS" style="color:blue" parser="cfscript" keywords="for,do,try,catch,function,while,if,else,break,return,case,switch,default,continue,import,finally,interface,abort,exit,include,throw,rethrow"/>
+		<type name="CFSCRIPTOPERATORS" style="color:blue" parser="cfscript" keywords="and,not,eq,neq,gt,lt,lte,gte"/>
+		-->
+		<!-- HTML Tags -->
+		<type name="HTML" style="color:#000099"/>
+		<type name="HTMLSTYLES" style="color:#990099"/>
+		<type name="HTMLTABLES" style="color:#009999"/>
+		<type name="HTMLFORMS" style="color:#FF9900"/>
+		
+		<!-- HTML Tags -->
+		<type name="MXML" style="color:#00F"/>
+		<type name="MXMLCOMMENT" style="color:#093"/>
+		<type name="MXMLATTRIBUTES" style="color:#000000"/>
+		<type name="MXMLVALUE" style="color:#900"/>
+		
+		<!-- ACTIONSCRIPT Tags -->
+		<type name="ACTIONSCRIPT" style="color:#000"/>
+		<type name="ACTIONSCRIPTTAG" style="color:#093"/>
+		<type name="ACTIONSCRIPTVALUE" style="color:#900"/>
+		<type name="ACTIONSCRIPTKEYWORD1" style="color:#00F" parser="actionscript" keywords="as,break,case,catch,class,const,continue,default,delete,do,else,extends,false,finally,for,if,implements,import,in,instanceof,interface,internal,is,native,new,null,package,private,protected,public,return,super,switch,this,throw,to,true,try,typeof,use,void,while,with,each,get,set,namespace,include,dynamic,final,native,override,static,abstract,boolean,byte,cast,char,debugger,double,enum,export,float,goto,intrinsic,long,prototype,short,synchronized,throws,to,transient,type,virtual,volatile"/>
+		<type name="ACTIONSCRIPTKEYWORD2" style="color:#093" parser="actionscript" keywords="function"/>
+		<type name="ACTIONSCRIPTKEYWORD3" style="color:#69C" parser="actionscript" keywords="var"/>
+		
+		<!-- VALUE Tags -->
+		<type name="VALUE" style="color:#0000CC"/>
+		<type name="SCRIPTVALUE" style="color:#006600"/>
+		
+		<!-- Bindings -->
+		<type name="BIND" style="color:#000099"/>
+	</types>
+</coldfish>
