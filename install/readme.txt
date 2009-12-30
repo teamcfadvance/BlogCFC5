@@ -68,7 +68,7 @@ Notice - Gary Funk did some big optimization to the MySQL install script. Folks 
 Notice - Gary Funk did the same for mysql.sql.
 
 /org/delmore/* - Updated ColdFish library.
-/org/camden/blog/blog.cfc - New version #
+/org/camden/blog/blog.cfc - Performance fix on mailEntry - will be significant for folks with large subscriber lists. Version #
 
 Last Updated: November 18, 2009 (BlogCFC 5.9.5.002) | Raymond Camden 
 /client/admin/entry.cfm: Removed auto-grow textarea. Slightly increased max height. Fixed broken link.
