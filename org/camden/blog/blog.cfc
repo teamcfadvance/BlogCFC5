@@ -2314,22 +2314,25 @@
 		<cfset var subscribers = getSubscribers(true)>
 		<cfset var theMessage = "">
 		<cfset var mailBody = "">
+		<cfset var renderedText = renderEntry(entry.body,false,entry.enclosure)>
+		<cfset var theLink = makeLink(entry.id)>
+		<cfset var rootURL = getRootURL()>
 
 		<cfloop query="subscribers">
 
 			<cfsavecontent variable="theMessage">
 			<cfoutput>
 <h2>#entry.title#</h2>
-<b>URL:</b> <a href="#makeLink(entry.id)#">#makeLink(entry.id)#</a><br />
+<b>URL:</b> <a href="#theLink#">#theLink#</a><br />
 <b>Author:</b> #entry.name#<br />
 
-#renderEntry(entry.body,false,entry.enclosure)#<cfif len(entry.morebody)>
-<a href="#makeLink(entry.id)#">[Continued at Blog]</a></cfif>
+#renderedText#<cfif len(entry.morebody)>
+<a href="#theLink#">[Continued at Blog]</a></cfif>
 
 <p>
 You are receiving this email because you have subscribed to this blog.<br />
 To unsubscribe, please go to this URL:
-<a href="#getRootURL()#unsubscribe.cfm?email=#email#&token=#token#">#getRootURL()#unsubscribe.cfm?email=#email#&token=#token#</a>
+<a href="#rooturl#unsubscribe.cfm?email=#email#&token=#token#">#rooturl#unsubscribe.cfm?email=#email#&token=#token#</a>
 </p>
 			</cfoutput>
 			</cfsavecontent>
