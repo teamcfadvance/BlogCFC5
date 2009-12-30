@@ -225,7 +225,8 @@ INSERT INTO `tblblogroles` VALUES  ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC
  ('ManageUsers','7F26DA6C-9F03-567F-ACFD34F62FB77199','The ability to manage blog users.'),
  ('ReleaseEntries','800CA7AA-0190-5329-D3C7753A59EA2589','The ability to both release a new entry and edit any released entry.');
 
-m
+INSERT INTO `tbluserroles` VALUES ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default')
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
