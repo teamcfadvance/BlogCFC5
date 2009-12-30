@@ -65,6 +65,7 @@ Note - this version includes many XHTML tuning fixes. Thanks for these go to And
 Install scripts for all but MS Access updated to include showlayout for pages table.
 
 Notice - Gary Funk did some big optimization to the MySQL install script. Folks may want to look it over and compare. This was in direct result to performance issues I had with my own blog.
+Notice - Gary Funk did the same for mysql.sql.
 
 /org/delmore/* - Updated ColdFish library.
 /org/camden/blog/blog.cfc - New version #
