@@ -1,7 +1,7 @@
 <!---
 	Copyright 2008 Jason Delmore
     All rights reserved.
-    jason@cfinsider.com
+    jason@delmore.info
 	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License (LGPL) as published by
@@ -15,22 +15,6 @@
 
     You should have received a copy of the GNU Lesser General Public License	
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	--->
-<!---
-	
-	History		Build	Notes
-	2/24/2008	1.0		Created by Jason Delmore
-	2/27/2008	1.0.1	Fixed defect when trying to append special characters
-						Fixed issues with form elements and simplified some of the logic
-	5/4/2008	1.0.6	Changed to use a StringBuilder (performance)
-	5/23/2008	1.0.7	Fixed bug with end-of-line directly after html comments
-	5/23/2008	1.0.8	Fixed bug when using multiple formatted strings in the same template
-	5/27/2008	1.0.9	Made it works with older version of CF... not very happy about implementing the old syntax... may rewrite to use native CF functions...
-	
-	6/4/2008	1.0.12	Fixed cfsetting coloring defect, also replaced use of CharAt function as it throws if there is no character at that reference
-	6/5/2009	2.0		ColdFiSH 2.0 with ActionScript and MXML support.
-	11/10/2009	2.0.1	Changed ! to not for backwards compatibility
-	12/15/2009	2.1		Added config file, separated parser to keep transient API clean and handle singleton use of coldfish component
 	--->
 <cfcomponent output="false">
 	<cffunction name="init" access="public" hint="This function initializes all of the variables needed for the component." output="false">
@@ -124,7 +108,7 @@
 		<cfargument name="initialparser" type="string"/>
 		<cfreturn getConfig().setInitialParser(initialparser)/>
     </cffunction>
-	<cffunction name="getKeywordmap" access="private" hint="You can set the keywordmap with this." output="false">
+	<cffunction name="getKeywordmap" access="public" hint="You can set the keywordmap with this." output="false">
 		<cfreturn getConfig().getKeywordMap()/>
     </cffunction>
 	<cffunction name="setUseLineNumbers" access="public" hint="Sets whether or not to use line numbers" output="false">

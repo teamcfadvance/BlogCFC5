@@ -1,3 +1,21 @@
+<!---
+	Copyright 2009 Jason Delmore
+    All rights reserved.
+    jason@delmore.info
+	
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License (LGPL) as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License	
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	--->
 <cfcomponent output="false">
 	<cffunction name="init" access="public" hint="This function initializes all of the variables needed for the component." output="false">
 		<cfargument name="file" default="#getDirectoryFromPath(getCurrentTemplatePath()) & "coldfishconfig.xml"#" required="false"/><!--- assumes config file is in same directory --->
@@ -38,13 +56,10 @@
     	<cfargument name="parser" type="string"/>
         <cfargument name="typename" type="string"/>
 		<cfargument name="keywordlist" type="string"/>
-		<cfif not StructKeyExists(variables.instance.keywordmap, arguments.parser)>
-			<cfset variables.instance.keywordmap[arguments.parser] = structnew()/>
-			<cfset variables.instance.keywordmap[arguments.parser].keywordlist = arraynew(1)/>
-       		<cfset variables.instance.keywordmap[arguments.parser].typename = arraynew(1)/>
-		</cfif>
-		<cfset arrayappend(variables.instance.keywordmap[arguments.parser].keywordlist,arguments.keywordlist)/>
-		<cfset arrayappend(variables.instance.keywordmap[arguments.parser].typename,arguments.typename)/>
+		<cfset var keyword=""/>
+		<cfloop list="#arguments.keywordlist#" index="keyword">
+			<cfset variables.instance.keywordmap[arguments.parser][keyword]=arguments.typename/>
+		</cfloop>
     </cffunction>
 	<cffunction name="getKeywordmap" access="public" hint="This function returns the keyword map." output="false">
 		<cfreturn variables.instance.keywordmap/>

@@ -1,5 +1,5 @@
 <!---
-	Copyright 2008 Jason Delmore
+	Copyright 2009 Jason Delmore
     All rights reserved.
     jason@cfinsider.com
 	
@@ -15,22 +15,6 @@
 
     You should have received a copy of the GNU Lesser General Public License	
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	--->
-<!---
-	
-	History		Build	Notes
-	2/24/2008	1.0		Created by Jason Delmore
-	2/27/2008	1.0.1	Fixed defect when trying to append special characters
-						Fixed issues with form elements and simplified some of the logic
-	5/4/2008	1.0.6	Changed to use a StringBuilder (performance)
-	5/23/2008	1.0.7	Fixed bug with end-of-line directly after html comments
-	5/23/2008	1.0.8	Fixed bug when using multiple formatted strings in the same template
-	5/27/2008	1.0.9	Made it works with older version of CF... not very happy about implementing the old syntax... may rewrite to use native CF functions...
-	
-	6/4/2008	1.0.12	Fixed cfsetting coloring defect, also replaced use of CharAt function as it throws if there is no character at that reference
-	6/5/2009	2.0		ColdFiSH 2.0 with ActionScript and MXML support.
-	11/10/2009	2.0.1	Changed ! to not for backwards compatibility
-	12/15/2009	2.1		Added config file, separated parser to keep transient API clean and handle singleton use of coldfish component
 	--->
 <cfcomponent output="false">
 	<cffunction name="init" access="public" hint="This function initializes all of the variables needed for the component." output="false">
@@ -51,6 +35,8 @@
 			variables.isOneLineComment=false;
 			variables.isMXML=false;
 			variables.isActionscript=false;
+			variables.isSQL=false;
+			variables.isSQLValue=false;
 			variables.initialparser="";
 			variables.spansOpened = 0;
 			variables.spansClosed = 0;
@@ -81,17 +67,17 @@
 				
 				// Toggle code view
 				variables.buffer.append("<script>function toggle_view_" & arguments.codesig & "() {var temp = document.getElementById('htmlencoded_plain_" & arguments.codesig & "').style.display;document.getElementById('htmlencoded_plain_" & arguments.codesig & "').style.display=document.getElementById('formatted_code_" & arguments.codesig & "').style.display;document.getElementById('formatted_code_" & arguments.codesig & "').style.display=temp;if (temp=='none') {document.getElementById('view_" & arguments.codesig & "').innerHTML='view formatted';} else {document.getElementById('view_" & arguments.codesig & "').innerHTML='view plain';}}</script>");
-				variables.buffer.append("<a href='javascript:toggle_view_" & arguments.codesig & "()' style='width:6em;" & getStyle("TOOLBARLINK") & "' id='view_" & arguments.codesig & "'>view plain</a>&nbsp;&nbsp;&nbsp");
+				variables.buffer.append("<a href='javascript:toggle_view_" & arguments.codesig & "()' style='width:6em;" & getStyle("TOOLBARLINK") & "' id='view_" & arguments.codesig & "'>view plain</a>");
 				
 				// Copy to clipboard
 				variables.buffer.append("<script>function copy_to_clipboard_" & arguments.codesig & "() {var code=unescape(document.getElementById('htmlencoded_plain_" & arguments.codesig & "').innerHTML).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');code=code.substring(5,code.length-6);window.clipboardData.setData('text',code);}</script>");
-				variables.buffer.append("<a href='javascript:copy_to_clipboard_" & arguments.codesig & "()' style='width:9em;display:none;" & getStyle("TOOLBARLINK") & "' id='view_copy_to_clipboard_link_" & arguments.codesig & "'>copy to clipboard</a>&nbsp;&nbsp;&nbsp");
+				variables.buffer.append("<a href='javascript:copy_to_clipboard_" & arguments.codesig & "()' style='width:9em;display:none;" & getStyle("TOOLBARLINK") & "' id='view_copy_to_clipboard_link_" & arguments.codesig & "'>copy to clipboard</a>");
 				// The cross-browser copy to clipboard methods out there are hacky and only work on certain browsers... if the browser handles it, then the link show up...
 				variables.buffer.append("<script>if(window.clipboardData) { document.getElementById('view_copy_to_clipboard_link_" & arguments.codesig & "').style.display='inline';}</script>");
 				
 				// Print
 				variables.buffer.append("<script>function print_" & arguments.codesig & "() {window.frames['print_frame_" & arguments.codesig & "'].document.body.innerHTML = document.getElementById('formatted_code_" & arguments.codesig & "').innerHTML;window.frames['print_frame_" & arguments.codesig & "'].focus();window.frames['print_frame_" & arguments.codesig & "'].print();}</script>");
-				variables.buffer.append("<a href='javascript:print_" & arguments.codesig & "()' style='width:4em;" & getStyle("TOOLBARLINK") & "'>print</a>&nbsp;&nbsp;&nbsp");
+				variables.buffer.append("<a href='javascript:print_" & arguments.codesig & "()' style='width:4em;" & getStyle("TOOLBARLINK") & "'>print</a>");
 				
 				// About
 				variables.buffer.append("<script>function show_about_" & arguments.codesig & "() {document.getElementById('about_" & arguments.codesig & "').style.display='inline';window.setTimeout('hide_about_" & arguments.codesig & "();', 4000);}function hide_about_" & arguments.codesig & "() {document.getElementById('about_" & arguments.codesig & "').style.display='none';}</script>");
@@ -168,6 +154,13 @@
 								variables.buffer.append(thisLine.substring(javacast('int',i+1), javacast('int',i+9)) & "&gt;");
 								i=i+9;
 								startCFScript();
+							}
+							else if (regionMatches(thisLine, 1, i+3, "QUERY", 0, 5)) // START CFQUERY TAG
+							{	// TODO: This sets the value color immediately to match SQL values including the CFQuery tag...
+								startSQL();
+							} else if (regionMatches(thisLine, 1, i+4, "QUERY", 0, 5)) // END CFQUERY TAG
+							{
+								endSQL();
 							}
 						}
 						else if	(
@@ -307,28 +300,50 @@
 					{
 						if (variables.isActionscript) {
 							startOneLineComment("MXMLCOMMENT");
+							variables.buffer.append("/");
 						} else {
 							startOneLineComment("HTMLCOMMENT");
+							variables.buffer.append("/");
 						}
 					}
 					else if (variables.isCommented)
 					{
 						if (regionMatches(thisLine, 1, i-1, "*", 0, 1))
 						{
-							endComment("CFSCRIPT");
+							endComment("SCRIPT");
 						} else {
 							variables.buffer.append("/");
 						}
 					} else {
 						if (regionMatches(thisLine, 1, i+1, "*", 0, 1))
 						{
-							startComment("CFSCRIPT");
+							startComment("SCRIPT");
 						} else {
 							variables.buffer.append("/");
 						}
 					}
 				}
-				
+				else if (variables.isSQL AND character EQ '-')
+				{
+					if (regionMatches(thisLine, 1, i+1, "-", 0, 1) AND NOT variables.isCommented)
+					{
+						startOneLineComment("SQLCOMMENT");
+						variables.buffer.append("-");
+					} else {
+						variables.buffer.append("-");
+					}
+				}
+				else if (variables.isSQL AND character EQ "'" AND NOT variables.isCommented)
+				{
+					if (NOT variables.isValue) {
+						startValue();
+						variables.buffer.append("'");
+					} else {
+						variables.buffer.append("'");
+						endValue();
+					}
+				}
+
 				// straight up replacements
 				else if (character EQ '\t' OR character EQ '	')
 				{
@@ -338,8 +353,16 @@
 				{
 					 variables.buffer.append("&##32;");
 				} else {
-					if (not variables.isCommented AND not variables.isValue) {
-						keywordskip = keywordsearch(thisLine,i);
+					if (not variables.isCommented AND not variables.isValue and (i eq 0 OR NOT listcontainsnocase('a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,@', thisLine.substring(javacast('int',i-1),javacast('int',i))))) {
+						keywordskip = 0;
+						// would like this to be much more generic rather than checking "is"
+						if (variables.isActionscript) {
+							keywordskip = keywordsearch(thisLine,i,"Actionscript");
+						} else if (variables.isCFscript or variables.isCFSetTag) {
+							keywordskip = keywordsearch(thisLine,i,"CFscript");
+						} else if (variables.isSQL) {
+							keywordskip = keywordsearch(thisLine,i,"sql");
+						}
 						if (keywordskip) {
 							i = i + keywordskip;
 						} else {
@@ -353,16 +376,7 @@
 			variables.buffer.append("<br />");
 		</cfscript>
     </cffunction>
-    <cffunction name="regionMatches" access="private" hint="This function checks if a regionMatches." output="false">
-		<cfargument name="string1" type="any"/>
-        <cfargument name="caseInsensitive" type="boolean" default="true"/>
-        <cfargument name="startPosition1" type="numeric"/>
-        <cfargument name="string2" type="any"/>
-        <cfargument name="startPosition2" type="numeric"/>
-        <cfargument name="endPosition2" type="numeric"/>
-		<cfreturn arguments.string1.regionMatches(arguments.caseInsensitive, javacast('int',arguments.startPosition1), arguments.string2, javacast('int',arguments.startPosition2), javacast('int',arguments.endPosition2))/>
-    </cffunction>
-    <cffunction name="keywordsearch" access="private" hint="This function searches for keywords." output="false">
+    <cffunction name="keywordsearch_old" access="private" hint="This function searches for keywords." output="false">
     	<cfargument name="thisLine" type="any"/>
         <cfargument name="i" type="numeric"/>
         <cfset var keywordmap = ""/>
@@ -385,6 +399,32 @@
 		</cfloop>
         <cfreturn 0/>
     </cffunction>
+	<cffunction name="keywordsearch" access="private" hint="This function searches for keywords." output="false">
+    	<cfargument name="thisLine" type="any"/>
+        <cfargument name="i" type="numeric"/>
+		<cfargument name="parser" type="string"/>
+        <cfset var keywordmap = getConfig().getKeywordmap()/>
+		<cfset var keyword = listfirst(thisLine.substring(javacast('int',i)),' (')/> <!--- search starting from current position --->
+		<cfset var findkey = StructFindKey(keywordmap[parser], keyword)/>
+		<cfset var keywordtype = ""/>
+		
+		<cfif arraylen(findkey)>
+			<cfset keywordtype = findkey[1].value/>
+			<cfset variables.buffer.append("<span id='keyword_DEBUG' style='" & getStyle(keywordtype) & "'>" & keyword & "</span>")/>
+			 <cfreturn keyword.length()-1/>
+		</cfif>
+        <cfreturn 0/>
+    </cffunction>
+	<cffunction name="regionMatches" access="private" hint="This function checks if a regionMatches." output="false">
+		<cfargument name="string1" type="any"/>
+        <cfargument name="caseInsensitive" type="boolean" default="true"/>
+        <cfargument name="startPosition1" type="numeric"/>
+        <cfargument name="string2" type="any"/>
+        <cfargument name="startPosition2" type="numeric"/>
+        <cfargument name="endPosition2" type="numeric"/>
+		<cfreturn arguments.string1.regionMatches(arguments.caseInsensitive, javacast('int',arguments.startPosition1), arguments.string2, javacast('int',arguments.startPosition2), javacast('int',arguments.endPosition2))/>
+    </cffunction>
+    
     <cffunction name="startHighlight" access="private" hint="" output="false">
     	<cfargument name="element" type="string"/>
 		<cfset variables.spansOpened = variables.spansOpened + 1/>
@@ -399,7 +439,6 @@
     	<cfargument name="type" type="string"/>
 		<cfscript>
 		startHighlight(type);
-		variables.buffer.append("/");
 		variables.isOneLineComment=true;
 		variables.isCommented=true;
 		</cfscript>	
@@ -418,10 +457,20 @@
 			startHighlight("CFCOMMENT");
 			variables.buffer.append("&lt;");
 		} else if (type  EQ  "HTML") {
-			startHighlight("HTMLCOMMENT");
+			if (variables.isMXML) {
+				startHighlight("MXMLCOMMENT");
+			} else {
+				startHighlight("HTMLCOMMENT");
+			}
 			variables.buffer.append("&lt;");
-		} else if (type  EQ  "CFSCRIPT") {
-			startHighlight("HTMLCOMMENT");
+		} else {
+			if (variables.isActionscript) {
+				startHighlight("ACTIONSCRIPTCOMMENT");
+			} else if (variables.isSQL) {
+				startHighlight("SQLCOMMENT");
+			} else {
+				startHighlight("CFSCRIPTCOMMENT");
+			}
 			variables.buffer.append("/");
 		}
 		variables.isCommented=true;
@@ -430,7 +479,7 @@
 	<cffunction name="endComment" access="private" output="false">
     	<cfargument name="type" type="string"/>
         <cfscript>
-		if (type  EQ  "CFSCRIPT") {
+		if (type  EQ  "SCRIPT") {
 			variables.buffer.append("/");
 		} else {
 			variables.buffer.append("&gt;");
@@ -476,11 +525,13 @@
     	<cfscript>
 		if (NOT variables.isCommented) {
 			if (variables.isCFSETTag OR variables.isCFScript) {
-				startHighlight("SCRIPTVALUE");
+				startHighlight("CFSCRIPTVALUE");
 			} else if (variables.isActionscript) {
 				startHighlight("ACTIONSCRIPTVALUE");
 			} else if (variables.isMXML) {
 				startHighlight("MXMLVALUE");
+			} else if (variables.isSQL) {
+				startHighlight("SQLVALUE");
 			} else {
 				startHighlight("VALUE");
 			}
@@ -584,6 +635,20 @@
 		<cfscript>
 		if (NOT variables.isCommented) {
 			variables.isActionscript=false;
+		}
+		</cfscript>
+	</cffunction>
+	<cffunction name="startSQL" access="private" output="false">
+		<cfscript>
+		if (NOT variables.isCommented) {
+			variables.isSQL=true;
+		}
+		</cfscript>
+	</cffunction>
+	<cffunction name="endSQL" access="private" output="false">
+		<cfscript>
+		if (NOT variables.isCommented) {
+			variables.isSQL=false;
 		}
 		</cfscript>
 	</cffunction>
