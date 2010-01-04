@@ -2726,7 +2726,7 @@ To unsubscribe, please go to this URL:
 
 		<!---// check to see if we should paragraph format this string //--->
 		<cfif not structKeyExists(arguments, "ignoreParagraphFormat")>
-			<cfset arguments.ignoreParagraphFormat = yesNoFormat(reFindNoCase('<p[^>]*>', arguments.string, 0, false))>
+			<cfset arguments.ignoreParagraphFormat = yesNoFormat(reFindNoCase('<p[^e>]*>', arguments.string, 0, false))>
 		</cfif>
 		<cfif not arguments.ignoreParagraphFormat>
 			<cfset arguments.string = xhtmlParagraphFormat(arguments.string) />
