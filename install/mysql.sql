@@ -219,13 +219,13 @@ CREATE TABLE `tblusers` (
 insert into tblusers(username,password,name,blog) values('admin','admin','Admin','Default');
 
 /*!40000 ALTER TABLE `tblblogroles` DISABLE KEYS */;
-INSERT INTO `tblblogroles` VALUES  ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.'),
+INSERT INTO `tblblogroles` (role,id,description) VALUES  ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.'),
  ('ManageCategories','7F197F53-CFF7-18C8-53D0C85FCC2CA3F9','The ability to manage blog categories.'),
  ('Admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','A special role for the admin. Allows all functionality.'),
  ('ManageUsers','7F26DA6C-9F03-567F-ACFD34F62FB77199','The ability to manage blog users.'),
  ('ReleaseEntries','800CA7AA-0190-5329-D3C7753A59EA2589','The ability to both release a new entry and edit any released entry.');
 
-INSERT INTO `tbluserroles` VALUES ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default')
+INSERT INTO `tbluserroles`(username,roleidfk,blog) VALUES ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
