@@ -2,17 +2,17 @@
 LICENSE INFORMATION:
 
 Copyright 2008, Adam Tuttle
- 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not 
-use this file except in compliance with the License. 
 
-You may obtain a copy of the License at 
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License.
 
-	http://www.apache.org/licenses/LICENSE-2.0 
-	
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
 Unless required by applicable law or agreed to in writing, software distributed
-under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
-CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
 VERSION INFORMATION:
@@ -26,11 +26,11 @@ http://sweettweetscfc.riaforge.org/
 	Instructions: See example.cfm (and other examples) for usage
 --->
 <cfcomponent output="false">
-	
+
 	<cfset variables.urlService = ""/>
 	<cfset variables.jsonService = ""/>
 	<cfset variables.cacheLocation = "application"/>
-	
+
 	<cffunction name="init" output="false">
 		<cfargument name="useLocalCache" type="boolean" default="true"/>
 		<!--- save cache location --->
@@ -45,25 +45,25 @@ http://sweettweetscfc.riaforge.org/
 		<cfset variables.jsonService = createObject("component","JSONUtil").init()/>
 		<cfreturn this/>
 	</cffunction>
-	
+
 	<!--- public functions --->
 	<cffunction name="getTweetbacks" access="public" output="false" returntype="array">
 		<cfargument name="uri" type="string" required="true"/>
 		<cfscript>
 			var local = structNew();
 			var cacheKey = '';
-			
+
 			//first some business -- if being called remotely (ajax), jsonService and urlService will be blank! :(
 			if (isSimpleValue(variables.urlService)){variables.urlService = createObject("component", "shrinkURL").init();}
 			if (isSimpleValue(variables.jsonService)){variables.jsonService = createObject("component", "JSONUtil").init();}
 
 			//strip any bookmarks from the url
 			arguments.uri = listFirst(arguments.uri,'##');
-			
+
 			//setup cache
 			cacheKey = hash(arguments.uri);
 			setupCache(cacheKey);
-			
+
 			//check tweetback cache, updates every 5 minutes at most
 			if (not tweetCacheExpired(cacheKey)){
 				local.tweets = getTweetCache(cacheKey);
@@ -90,7 +90,7 @@ http://sweettweetscfc.riaforge.org/
 
 			//strip any bookmarks from the url
 			arguments.uri = listFirst(arguments.uri,'##');
-			
+
 			//setup cache
 			cacheKey = hash(arguments.uri);
 			setupCache(cacheKey);
@@ -117,7 +117,7 @@ http://sweettweetscfc.riaforge.org/
 			local.tweetCount = arrayLen(local.tweets);
 			local.limit = min(arguments.limit, local.tweetcount);
 			if (local.limit eq 0){local.limit=local.tweetcount;}
-			
+
 			//define header
 			if (local.tweetcount eq 0){
 				local.dsp.header = "<h3>No Tweetbacks</h3>";
@@ -136,7 +136,7 @@ http://sweettweetscfc.riaforge.org/
 		<cfsavecontent variable="local.tweetbackHTML"><cfoutput><div id="tweetbacks">#local.dsp.header##local.dsp.allLink#<ul><cfloop from="1" to="#local.limit#" index="local.t"><li style="clear:left;"><img src="#local.tweets[local.t].profile_image_url#" align="left" vspace="2" hspace="4"/> <a href="http://twitter.com/#local.tweets[local.t].from_user#" style="background:none;"><strong>#local.tweets[local.t].from_user#</strong></a> <span class="tweetback_tweet">#local.tweets[local.t].text#</span> <span class="tweetback_timestamp"><a href="http://twitter.com/#local.tweets[local.t].from_user#/statuses/#local.tweets[local.t].id#">#local.tweets[local.t].created_at#</a></span></li></cfloop></ul></div></cfoutput></cfsavecontent>
 		<cfreturn local.tweetbackHTML/>
 	</cffunction>
-	
+
 	<!--- data functions --->
 	<cffunction name="getShortUrls" access="public" output="false" returnType="struct">
 		<cfargument name="uri" type="string" required="true"/>
@@ -144,7 +144,7 @@ http://sweettweetscfc.riaforge.org/
 			var local = StructNew();
 			local.shortened = structNew();
 			local.params = StructNew();
-			
+
 			//cli.gs
 			local.params['appid'] = 'http://sweettweetscfc.riaforge.org';
 			local.params['url'] = arguments.uri;
@@ -153,7 +153,7 @@ http://sweettweetscfc.riaforge.org/
 			}catch (any e){
 				local.shortened.cligs = '';
 			}
-			
+
 			//is.gd
 			structClear(local.params);
 			local.params['longurl'] = arguments.uri;
@@ -162,7 +162,7 @@ http://sweettweetscfc.riaforge.org/
 			}catch (any e){
 				local.shortened.cligs = '';
 			}
-			
+
 			//tinyurl.com
 			structClear(local.params);
 			local.params['url'] = arguments.uri;
@@ -171,8 +171,9 @@ http://sweettweetscfc.riaforge.org/
 			}catch (any e){
 				local.shortened.cligs = '';
 			}
-			
+
 			//hex.io
+			/*
 			structClear(local.params);
 			local.params['url'] = arguments.uri;
 			try {
@@ -180,8 +181,10 @@ http://sweettweetscfc.riaforge.org/
 			}catch (any e){
 				local.shortened.cligs = '';
 			}
-			
+			*/
+
 			//urlzen.com
+			/*
 			structClear(local.params);
 			local.params['url'] = arguments.uri;
 			try {
@@ -189,8 +192,10 @@ http://sweettweetscfc.riaforge.org/
 			}catch (any e){
 				local.shortened.cligs = '';
 			}
-			
+			*/
+
 			//budurl.com
+			/*
 			structClear(local.params);
 			local.params['myurl'] = arguments.uri;
 			try {
@@ -198,7 +203,9 @@ http://sweettweetscfc.riaforge.org/
 			}catch (any e){
 				local.shortened.cligs = '';
 			}
-			
+			*/
+
+			/*
 			//MooURL.com
 			structClear(local.params);
 			local.params['source'] = arguments.uri;
@@ -207,14 +214,15 @@ http://sweettweetscfc.riaforge.org/
 			}catch (any e){
 				local.shortened.cligs = '';
 			}
-			
+			*/
+
 			//remove blank items
 			for (local.service in local.shortened){
 				if (len(trim(local.shortened[local.service])) eq 0 or find(" ",trim(local.shortened[local.service]))){
 					structDelete(local.shortened, local.service);
 				}
 			}
-			
+
 			return local.shortened;
 		</cfscript>
 	</cffunction>
@@ -239,7 +247,7 @@ http://sweettweetscfc.riaforge.org/
 				local.thisSearch = local.thisSearch & urlEncodedFormat(local.shortened[local.svc]) & "+";
 			}
 			local.thisSearch = left(local.thisSearch,len(local.thisSearch)-1);//drop the last "+"
-			
+
 			return local.thisSearch;
 		</cfscript>
 	</cffunction>
@@ -247,12 +255,12 @@ http://sweettweetscfc.riaforge.org/
 		<cfargument name="req" type="String" required="true"/>
 		<cfset var result = ""/>
 		<cfhttp url="#arguments.req#" method="get" result="result" useragent="SweetTweetsCFC | http://fusiongrokker.com"></cfhttp>
-		<!--- <cflog application="false" file="SweetTweets" text="Twitter Search Result: #result.fileContent#"/> --->
+		<cflog application="false" file="SweetTweets" text="Twitter Search Result:req was #arguments.req# -  #result.fileContent#"/>
 		<cftry>
 			<cfset result = jsonService.deserialize(result.fileContent.toString())/>
 			<cfcatch type="any"><!--- catch errors thrown by jsonService (likely problem w/twitter search - down,etc), return empty set --->
 				<cfset result = StructNew()/>
-				<cfset result.results = arrayNew(1)/> 
+				<cfset result.results = arrayNew(1)/>
 			</cfcatch>
 		</cftry>
 		<cfreturn result />
@@ -273,7 +281,7 @@ http://sweettweetscfc.riaforge.org/
 				//remove ugly stuff from timestamp
 				arguments.tweets[i].created_at = Replace(arguments.tweets[i].created_at, "+0000", "");
 			}
-			return arguments.tweets; 
+			return arguments.tweets;
 		</cfscript>
 	</cffunction>
 	<cffunction name="killImpostors" access="private" output="false" returnType="array">
@@ -396,5 +404,5 @@ http://sweettweetscfc.riaforge.org/
 			<cfabort>
 		</cfif>
 	</cffunction>
-	
+
 </cfcomponent>
