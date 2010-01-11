@@ -36,7 +36,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.5.003" />
+	<cfset version = "5.9.5.004" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1639,6 +1639,8 @@
 			where		1=1
 						and tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 						and tblblogentries.username = tblusers.username
+						<!--- fix suggested by William Steiner --->
+						and	tblblogentries.blog = tblusers.blog
 			<cfif structKeyExists(arguments.params,"lastXDays")>
 				and tblblogentries.posted >= <cfqueryparam value="#dateAdd("d",-1*arguments.params.lastXDays,blogNow())#" cfsqltype="CF_SQL_DATE">
 			</cfif>
