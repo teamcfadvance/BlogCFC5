@@ -24,6 +24,15 @@ This is done by adding ?reinit=1 to the URL.
 
 =======================================================================================================================================================================================
 
+Last Updated: January 18, 2010 (BlogCFC 5.9.5.004) | Raymond Camden 
+/org/sweettweets/SweetTweets.cfc - two small fixes. Note - this feature will most likely be going away in a future update.
+/org/camden/blog/blog.cfc - fixes an issue where users w/ the same name in 2-N blogs would create multiple entries, also version update
+/install/mysql.sql - fixes multiple typos
+/client/includes/pod.cfm - XHTML fix (Gary)
+/client/stats.cfm - XHTML fix (Gary)
+/org/delmore/formatter.cfc, /org/delmore/coldfishconfig.xml - (Gary)
+/client/tags/layout.cfm - Gary
+
 Last Updated: December 20, 2009 (BlogCFC 5.9.5.003) | Raymond Camden 
 At a high level, the changes in this version are for XHTML tuning (see below), and to support pages that don't use layout. That change requires a database change for existing users. Modify your tblBlogPages
 table to add a "showlayout" column. This is a boolean type (used tinyint for mysql). For existing pages, don't worry. If the value for them is null, it is assumed to be a true value.
