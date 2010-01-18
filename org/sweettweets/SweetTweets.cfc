@@ -69,6 +69,7 @@ http://sweettweetscfc.riaforge.org/
 				local.tweets = getTweetCache(cacheKey);
 			}else{
 				local.thisSearch = getTweetSearchUrl(arguments.uri);
+				local.thisSearch = left( local.thisSearch, 140 );
 				local.shortened = getShortUrls(arguments.uri);
 
 				local.tweets = makeTwitterSearchRequest(local.thisSearch).results;
