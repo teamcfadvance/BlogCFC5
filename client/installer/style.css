@@ -1,0 +1,14 @@
+body {
+	background-color: #c0c0c0;
+	padding: 5px;	
+}
+
+h1, p, b {
+	font-family: Arial, Helvetica, sans-serif;	
+}
+
+h1, #content { 
+	background-color: #ffffff;
+	padding: 10px;
+}
+
