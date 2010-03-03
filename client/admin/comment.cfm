@@ -2,7 +2,7 @@
 <cfprocessingdirective pageencoding="utf-8">
 <!---
 	Name         : comment.cfm
-	Author       : Raymond Camden 
+	Author       : Raymond Camden
 	Created      : 04/07/06
 	Last Updated : 12/07/06
 	History      : Support for moderation (tr 12/7/06)
@@ -24,7 +24,7 @@
 
 <cfif structKeyExists(form, "save")>
 	<cfset errors = arrayNew(1)>
-	
+
 	<cfif not len(trim(form.name))>
 		<cfset arrayAppend(errors, "The name cannot be blank.")>
 	</cfif>
@@ -37,12 +37,12 @@
 	<cfif not len(trim(form.comment))>
 		<cfset arrayAppend(errors, "The comment cannot be blank.")>
 	</cfif>
-	
+
 	<cfif not arrayLen(errors)>
 		<cfset application.blog.saveComment(url.id, left(form.name,50), left(form.email,50), left(form.website,255), form.comment, form.subscribe, form.moderated)>
 		<cflocation url="comments.cfm" addToken="false">
 	</cfif>
-	
+
 </cfif>
 
 <cfparam name="form.name" default="#comment.name#">
@@ -66,7 +66,7 @@
 		</div>
 		</cfoutput>
 	</cfif>
-	
+
 	<cfoutput>
 	<form action="comment.cfm?id=#comment.id#" method="post">
 	<table>
@@ -110,7 +110,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" name="cancel" value="Cancel"> <input type="submit" name="save" value="Save"></td>
+			<td><input type="submit" name="cancel" value="Cancel"> <input type="submit" name="save" value="Save"> <input type="button" name="approve" value="Approve" onclick="location.href='#application.rooturl#/admin/moderate.cfm?approve=#comment.id#'" /></td>
 		</tr>
 	</table>
 	</form>
