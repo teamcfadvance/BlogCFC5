@@ -38,6 +38,11 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- load and init blog --->
 	<cfset application.blog = createObject("component","org.camden.blog.blog").init(blogname)>
 
+	<!--- Do we need to run the installer? --->
+	<cfif not application.blog.getProperty("installed") is 0>
+		<cflocation url="./installer/index.cfm?blog=#urlEncodedFormat(blogname)#" addToken="false">
+	</cfif>
+
 	<!--- Root folder for uploaded images, used under images folder --->
 	<cfset application.imageroot = application.blog.getProperty("imageroot")>
 
