@@ -36,7 +36,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.5.004" />
+	<cfset version = "5.9.5.005" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -99,6 +99,7 @@
 			<cfset instance.itunesImage = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesImage")>
 			<cfset instance.itunesExplicit = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesExplicit")>
 			<cfset instance.usetweetbacks = variables.utils.configParam(variables.cfgFile, arguments.name, "usetweetbacks")>
+			<cfset instance.installed = variables.utils.configParam(variables.cfgFile, arguments.name, "installed")>
 
 		</cfif>
 
@@ -2316,7 +2317,7 @@
 		<cfset var subscribers = getSubscribers(true)>
 		<cfset var theMessage = "">
 		<cfset var mailBody = "">
-		<cfset var renderedText = renderEntry(entry.body,false,entry.enclosure)>
+		<cfset var renderedText = renderEntry(entry.body,true,entry.enclosure)>
 		<cfset var theLink = makeLink(entry.id)>
 		<cfset var rootURL = getRootURL()>
 
@@ -2664,6 +2665,11 @@ To unsubscribe, please go to this URL:
 		<cfset var cfc = "">
 		<cfset var newstring = "">
 
+		<!---// check to see if we should paragraph format this string //--->
+		<cfif not structKeyExists(arguments, "ignoreParagraphFormat")>
+			<cfset arguments.ignoreParagraphFormat = yesNoFormat(reFindNoCase('<p[^e>]*>', arguments.string, 0, false))>
+		</cfif>
+
 		<!--- Check for code blocks --->
 		<cfif findNoCase("<code>",arguments.string) and findNoCase("</code>",arguments.string)>
 			<cfset counter = findNoCase("<code>",arguments.string)>
@@ -2672,10 +2678,10 @@ To unsubscribe, please go to this URL:
 				<cfif arrayLen(codeblock.len) gte 6>
                     <cfset codeportion = mid(arguments.string, codeblock.pos[4], codeblock.len[4])>
                     <cfif len(trim(codeportion))>
-						<cfset result = variables.codeRenderer.formatString(trim(codeportion))>
 						<cfif arguments.printformat>
-							<cfset result = "<div class='codePrint'>#result#</div>">
+							<cfset result = "<br/><pre class='codePrint'>#trim(htmlEditFormat(codeportion))#</pre><br/>">
 						<cfelse>
+							<cfset result = variables.codeRenderer.formatString(trim(codeportion))>
 							<cfset result = "<div class='code'>#result#</div>">
 						</cfif>
 					<cfelse>
@@ -2726,10 +2732,6 @@ To unsubscribe, please go to this URL:
 			</cfloop>
 		</cfif>
 
-		<!---// check to see if we should paragraph format this string //--->
-		<cfif not structKeyExists(arguments, "ignoreParagraphFormat")>
-			<cfset arguments.ignoreParagraphFormat = yesNoFormat(reFindNoCase('<p[^e>]*>', arguments.string, 0, false))>
-		</cfif>
 		<cfif not arguments.ignoreParagraphFormat>
 			<cfset arguments.string = xhtmlParagraphFormat(arguments.string) />
 		</cfif>
