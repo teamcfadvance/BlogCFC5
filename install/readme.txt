@@ -24,8 +24,21 @@ This is done by adding ?reinit=1 to the URL.
 
 =======================================================================================================================================================================================
 
-Last Updated: January 3, 2010 (BlogCFC 5.9.5.004) | Brian Kotek 
+Last Updated: March 3, 2010 (BlogCFC 5.9.5.005) | Brian Kotek, Raymond Camden
 /client/tags/scopecache.cfm - Update scope cache to latest version
+/client/index.cfm - removed use of {} which broke cf6 compat
+/client/admin/comments.cfm - Support for Approving comments - I forget who wrote this. Sorry!
+/org/camden/blog/blog.cfc -> From mailEntry, tell RenderEntry not to add Ps. Also, we won't run coldfish on code blocks for mail entries. 
+/org/sweetweets/* -> Updated to 2.0
+/client/admin/latestversioncheck.cfm - try/catch the http hit
+
+/client/Application.cfm - support for Installer
+
+NOTES TO EXISTING USERS:
+This version includes Installer support. Since your blog is already running, you don't need this folder. You can skip copying it. However, you MUST set up this property in your blog.ini.cfm:
+installed=yes
+That flags BlogCFC to say you already have run the installer.
+
 
 Last Updated: January 18, 2010 (BlogCFC 5.9.5.004) | Raymond Camden 
 /org/sweettweets/SweetTweets.cfc - two small fixes. Note - this feature will most likely be going away in a future update.
