@@ -12,7 +12,7 @@
 		<cfoutput>
 		<div class="tweetback<cfif x mod 2>Alt</cfif>">
 		<div class="tweetbackBody">
-		<img src="#tb.profile_image_url#" alt="#tb.from_user#'s Profile" border="0" />
+		<img src="#tb.author.photo_url#" title="#tb.author.name#'s Profile" border="0" />
 		#paragraphFormat2(tb.text)#
 		</div>
 		<div class="tweetbackByLine">

@@ -27,7 +27,7 @@
 <cfparam name="form.search" default="#searchAlias#">
 <cfparam name="form.category" default="">
 
-<cfif not len(trim(form.search)) or not isNumeric(url.start) or url.start lt 1 or round(url.start) neq url.start>
+<cfif not isNumeric(url.start) or url.start lt 1 or round(url.start) neq url.start>
 	<cflocation url="#application.rooturl#/index.cfm" addToken="false">
 </cfif>
 
