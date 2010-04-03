@@ -36,7 +36,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.5.005" />
+	<cfset version = "5.9.5.006" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1762,6 +1762,9 @@
 				tblblogentries.id in (<cfqueryparam cfsqltype="cf_sql_varchar" list="true" value="#pageIdList#">)
 						and tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 						and tblblogentries.username = tblusers.username
+						<!--- fix by Amy Wilson --->
+						and	tblblogentries.blog = tblusers.blog
+
 			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
 		</cfquery>
 
