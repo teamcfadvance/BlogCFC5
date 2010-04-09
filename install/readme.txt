@@ -30,6 +30,16 @@ Note - if your blog is running RIGHT now, you will want to ensure your first hit
 This is done by adding ?reinit=1 to the URL.
 
 =======================================================================================================================================================================================
+Last Updated: April 8, 2010 (BlogCFC 5.9.5.007)
+Fixes by Ken Gladden
+
+Note - looks like I screwed the pooch on readme.old2.txt. If folks really need something from the old history, I can grab it
+from SVN, but for now, I assume it isn't critical.
+
+/org/camden/blog/blog.cfc - just the version #
+/client/installer/Application.cfm - bug fix
+/client/Application.cfm - another bug fix
+
 Last Updated: April 3, 2010 (BlogCFC 5.9.5.006)
 /client/search.cfm - I now allow the search field to be blank. This was a recommendation by someone who
 was trying to use search.cfm as a way to browse content. I thought it was a good change.
