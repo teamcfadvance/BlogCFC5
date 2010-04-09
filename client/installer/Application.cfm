@@ -1,4 +1,4 @@
-<cfset prefix = hash(getCurrentTemplatePath())>
+Installer has been disabled.<cfabort> <cfset prefix = hash(getCurrentTemplatePath())>
 <cfset prefix = reReplace(prefix, "[^a-zA-Z]","","all")>
 <cfset prefix = right(prefix, 64)>
 <cfapplication name="#prefix#" sessionManagement="true" loginStorage="session">
@@ -33,7 +33,7 @@
 <!--- Store and remember blog name --->
 <cfif structKeyExists(url, "blog")>
 	<cfset session.blogname = url.blog>
-<cfelse>
+<cfelseif not structKeyExists(session,"blogname")>
 	<cfoutput>
 	<p>
 	It appears as if this installer wasn't run correctly. 
@@ -42,3 +42,4 @@
 	</cfoutput>
 	<cfabort>
 </cfif>
+
