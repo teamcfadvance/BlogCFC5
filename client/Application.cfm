@@ -39,7 +39,7 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<cfset application.blog = createObject("component","org.camden.blog.blog").init(blogname)>
 
 	<!--- Do we need to run the installer? --->
-	<cfif not application.blog.getProperty("installed") is 0>
+	<cfif application.blog.getProperty("installed") is 0>
 		<cflocation url="./installer/index.cfm?blog=#urlEncodedFormat(blogname)#" addToken="false">
 	</cfif>
 
