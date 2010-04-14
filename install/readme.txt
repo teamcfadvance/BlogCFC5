@@ -29,7 +29,21 @@ Find your current version in the notes below, and read 'upwards' to determine wh
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
 
+
 =======================================================================================================================================================================================
+Last Updated: April 14, 2010 (BlogCFC 5.9.5.008)
+/client/admin/entry.cfm - I had the wrong label in the related entries tab.
+/client/installer/Application.cfm - I accidentally checked it in blocked.
+/client/tags/datatablenew.cfm - edge case fix
+/client/tags/scopecache.cfm - fix for cases when CF may not have file access
+/client/install/accessblog.mdb - missing col
+/org/camden/blog/blog.cfc - version
+/org/camden/blog/render/render.cfc - perf fix
+
+=======================================================================================================================================================================================
+
+
+
 Last Updated: April 8, 2010 (BlogCFC 5.9.5.007)
 Fixes by Ken Gladden
 
