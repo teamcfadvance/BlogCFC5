@@ -5,13 +5,14 @@
 	<cfset var md = getMetaData(this)>
 	<cfset var x = "">
 	
-	<cfloop index="x" from="1" to="#arrayLen(md.functions)#">
-		<cfif md.functions[x].name is "display">
-			<cfset arguments.string = processTags(arguments.string, listLast(md.name,"."), "display")>
-			<cfreturn arguments.string>
-		</cfif>
-	</cfloop>
-	<!--- do nothing --->
+	<cfif findNoCase( '<#listLast(md.name,".")#', arguments.string )>
+		<cfloop index="x" from="1" to="#arrayLen(md.functions)#">
+			<cfif md.functions[x].name is "display">
+				<cfset arguments.string = processTags(arguments.string, listLast(md.name,"."), "display")>
+				<cfreturn arguments.string>
+			</cfif>
+		</cfloop>
+	</cfif>
 	<cfreturn arguments.string>	
 </cffunction>
 
