@@ -563,7 +563,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				<input type="text" name="titlefilter" id="titlefilter" maxlength="100" class="textInput">
 			</div>
 			<div class="ctrlHolder">
-				<label for="categories_dropdown">Email Blog Entry: </label>
+				<label for="categories_dropdown">Filter by Category: </label>
 				<select id="categories_dropdown" size="4" style="width:50%">
 				<cfloop query="allCats">
 				<option value="#categoryid#">#categoryname#</option>
