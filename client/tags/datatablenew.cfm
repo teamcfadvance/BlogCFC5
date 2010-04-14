@@ -134,7 +134,7 @@ function checksubmit() {
 		Previous
 	</cfif>
 	--
-	<cfif url.start + perpage lt totalRows>
+	<cfif url.start + perpage lte totalRows>
 		<a href="#cgi.script_name#?start=#url.start+perpage#&amp;sort=#urlEncodedFormat(url.sort)#&amp;dir=#url.dir#&amp;#attributes.querystring#">Next</a>
 	<cfelse>
 		Next

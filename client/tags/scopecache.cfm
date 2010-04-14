@@ -148,7 +148,8 @@
 				</cfif>
 				<cfexit method="exitTag">
 			</cfif>
-		<cfelseif fileExists(attributes.file)>
+		<!--- Fix by Ken Gladden --->	
+		<cfelseif (attributes.file is not "") and fileExists(attributes.file)>
 			<!--- read the file in to check metadata --->
 			<cflock name="#attributes.file#" type="readonly" timeout="30">			
 				<cffile action="read" file="#attributes.file#" variable="contents" charset="UTF-8">
