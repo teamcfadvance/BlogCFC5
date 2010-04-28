@@ -32,6 +32,15 @@ function parseMySES() {
 			r.categoryName = urlVars;	
 			return r;
 	}
+	
+	//BEGIN BRAUNSTEIN MOD 2/5/2010
+	//handles users (aka posters, authors)
+	if(theLen is 2 and urlVars contains "postedby") {
+			urlVars = replace(urlVars, "/postedby/","");
+			r.postedby = urlVars;	
+			return r;
+	}
+	//END BRAUNSTEIN MOD 2/5/2010
 
 	r.year = listFirst(urlVars,"/");
 	if(theLen gte 2) r.month = listGetAt(urlVars,2,"/");
@@ -63,6 +72,21 @@ function parseMySES() {
 			<cfset url.catid = categoryID>
 		</cfif>
 	</cfif>
+	
+<!--- BEGIN BRAUNSTEIN MOD 2/5/2010 --->
+<!--- else if we have a blog poster/user/author --->
+<cfelseif structKeyExists(sesInfo, "postedby")>
+
+	<cfif len(trim(sesInfo.postedby)) and len(trim(sesInfo.postedby)) lte 50>
+		<!--- translate back - get username based on name --->
+		<cfset username = application.blog.getUserByName(sesInfo.postedby)>
+		<cfif len(username)>
+			<cfset url.mode = "postedby">
+			<cfset url.postedby = username>
+		</cfif>
+	</cfif>
+
+<!--- END BRAUNSTEIN MOD 2/5/2010 --->
 
 <!--- By month --->
 <cfelseif not structKeyExists(sesInfo, "title")>

@@ -47,7 +47,20 @@
 </cftry>
 
 <!--- Call layout custom tag. --->
-<cfmodule template="tags/layout.cfm">
+<cfset data = structNew()>
+<!--- 
+I already know what I'm doing - I got it from getMode, so let me bypass the work done normally for by Entry, it is the most
+popular view
+--->
+<cfif url.mode is "entry" and articleData.totalEntries is 1>
+	<cfset data.title = articles.title[1]>
+	<cfif not structKeyExists(session.viewedpages, url.entry)>
+		<cfset session.viewedpages[url.entry] = 1>
+		<cfset application.blog.logView(url.entry)>
+	</cfif>
+</cfif>
+
+<cfmodule template="tags/layout.cfm" attributecollection="#data#">
 
 	<!--- load up swfobject --->
 	<cfoutput>
@@ -80,7 +93,7 @@
 		<h1><a href="#application.blog.makeLink(id)#">#title#</a></h1>
 		
 		<div class="byline">#rb("postedat")# : #application.localeUtils.dateLocaleFormat(posted)# #application.localeUtils.timeLocaleFormat(posted)# 
-		<cfif len(name)>| #rb("postedby")# : #name#</cfif><br />
+		<cfif len(name)>| #rb("postedby")# : <a href="#application.blog.makeUserLink(name)#">#name#</a></cfif><br />
 		#rb("relatedcategories")#:
 		</cfoutput>
 		<cfset lastid = listLast(structKeyList(categories))>
@@ -94,7 +107,7 @@
 		<cfoutput>		
 		<div class="body">
 		#application.blog.renderEntry(body,false,enclosure)#
-		
+
 		<!--- STICK IN THE MP3 PLAYER --->
 		<cfif enclosure contains "mp3">
 			<cfset alternative=replace(getFileFromPath(enclosure),".mp3","") />
@@ -123,7 +136,6 @@
 			// ]]>
 			</script>
 		</cfif>
-
 		
 		<cfif len(morebody) and url.mode is not "entry">
 		<p align="right">
@@ -139,17 +151,17 @@
 		<cfoutput>
 		<div class="byline">
 		</cfoutput>
-		
+
 		<cfif allowcomments or commentCount neq ""><cfoutput><img src="#application.rooturl#/images/comment.gif" align="middle" title="#rb("comments")#" alt="#rb("comments")#" height="16" width="16" /> <a href="#application.blog.makeLink(id)###comments">#rb("comments")# (<cfif commentCount is "">0<cfelse>#commentCount#</cfif>)</a> | </cfoutput></cfif>
 		<cfif application.trackbacksallowed><cfoutput><a href="#application.blog.makeLink(id)###trackbacks">Trackbacks (<cfif trackbackCount is "">0<cfelse>#trackbackCount#</cfif>)</a> | </cfoutput></cfif>
 		<cfif application.isColdFusionMX7><cfoutput><img src="#application.rooturl#/images/printer.gif" align="middle" title="#rb("print")#" alt="#rb("print")#" height="16" width="16" /> <a href="#application.rooturl#/print.cfm?id=#id#" rel="nofollow">#rb("print")#</a> | </cfoutput></cfif>
 		<cfoutput><img src="#application.rooturl#/images/email.gif" align="middle" title="#rb("send")#" alt="#rb("send")#" height="16" width="16" /> <a href="#application.rooturl#/send.cfm?id=#id#" rel="nofollow">#rb("send")#</a> | </cfoutput>
 		<cfif len(enclosure)><cfoutput><img src="#application.rooturl#/images/disk.png" align="middle" title="#rb("download")#" alt="#rb("download")#" height="16" width="16" /> <a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">#rb("download")#</a> | </cfoutput></cfif>
 		<cfoutput>
-    	<img src="#application.rooturl#/images/icon_delicious.gif" align="middle" title="del.ico.us" alt="del.ico.us" height="11" width="11" /> <a href="http://del.icio.us/post?url=#application.blog.makeLink(id)#&amp;title=#URLEncodedFormat("#application.blog.getProperty('blogTitle')#:#title#")#">del.icio.us</a>
-		| <img src="#application.rooturl#/images/digg.gif" align="middle" title="Digg It!" alt="Digg It!" height="14" width="16" /> <a href="http://digg.com/submit?phase=2&amp;url=#application.blog.makeLink(id)#&amp;title=#URLEncodedFormat("#title#")#&amp;topic=">Digg It!</a>
-	    | <img src="#application.rooturl#/images/technorati.gif" align="middle" title="#rb("linkingblogs")#" alt="#rb("linkingblogs")#" height="16" width="16" /> <a href="http://www.technorati.com/search/#application.blog.makeLink(id)#">#rb("linkingblogs")#</a> 
-	    | #views# #rb("views")#   
+    	#views# #rb("views")# |  
+		<!-- AddThis Button BEGIN -->
+		<a href="http://www.addthis.com/bookmark.php?v=250" onmouseover="return addthis_open(this, '', '#URLEncodedFormat(application.blog.makeLink(id))#', '#URLEncodedFormat(application.blog.getProperty('blogTitle'))#')" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img src="http://s7.addthis.com/static/btn/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a20091556eefead"></script>
+		<!-- AddThis Button END -->
 		</div>
 		</cfoutput>
 
@@ -235,8 +247,8 @@
 			<div id="comments">
 			<div class="commentHeader">#rb("comments")# <cfif application.commentmoderation>(#rb("moderation")#)</cfif></div>
 			</cfoutput>
-			
 			<cfset comments = application.blog.getComments(id)>
+
 			<cfif comments.recordCount>
 
 				<cfif allowComments>
@@ -361,7 +373,6 @@
 		</cfoutput>
 		
 	</cfif>		
-	
 
 </cfmodule>
 </cfmodule>

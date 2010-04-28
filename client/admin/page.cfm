@@ -53,6 +53,8 @@
 
 	<cfif not arrayLen(errors)>
 		<cfset application.page.savePage(url.id, left(form.title,255), left(form.alias,50), form.body, form.showlayout)>
+		<!--- I could make this more specific, but for now it should be acceptable --->
+		<cfmodule template="../tags/scopecache.cfm" scope="application" clearall="true">		
 		<cflocation url="pages.cfm" addToken="false">
 	</cfif>
 

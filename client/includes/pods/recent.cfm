@@ -14,7 +14,6 @@
 <cfmodule template="../../tags/scopecache.cfm" cachename="pod_recententries" scope="application" timeout="#application.timeout#">
 
 <cfmodule template="../../tags/podlayout.cfm" title="#application.resourceBundle.getResource("recententries")#">
-
 	<cfset params = structNew()>
 	<cfset params.maxEntries = 5>
 	<cfset params.releasedonly = true>

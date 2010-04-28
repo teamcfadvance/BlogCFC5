@@ -270,6 +270,9 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 		<cfmodule template="../tags/scopecache.cfm" scope="application" clearall="true">
 		<cfcookie name="savedtitle" expires="now">
 		<cfcookie name="savedbody" expires="now">
+		<!--- force category cache refresh --->
+		<cfset application.blog.getCategories(false)>
+
 		<cflocation url="entries.cfm" addToken="false">
 	<cfelse>
 		<!--- restore body, since it loses more body --->

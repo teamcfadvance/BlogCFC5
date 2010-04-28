@@ -11,11 +11,13 @@
 	Purpose		 : Handles blog calendar
 --->
 
+
 <cfset offset = application.blog.getProperty("offset")>
 <cfset now = dateAdd("h", offset, now())>
-
 <cfparam name="month" default="#month(now)#">
 <cfparam name="year" default="#year(now)#">
+
+<cfmodule template="../../tags/scopecache.cfm" cachename="pod_calendar_#month#_#year#" scope="application" timeout="#application.timeout#">
 
 <cfmodule template="../../tags/podlayout.cfm" title="#application.resourceBundle.getResource("calendar")#">
 
@@ -121,6 +123,8 @@
 </tbody>
 </table>
 </cfoutput>
+
+</cfmodule>
 
 </cfmodule>
 

@@ -56,6 +56,11 @@
 	<cfset year = val(url.year)>
 <cfelseif url.mode is "cat" and isDefined("url.catid")>
 	<cfset params.byCat = url.catid>
+<!--- BEGIN BRAUNSTEIN MOD 2/5/2010 --->
+<cfelseif url.mode is "postedby" and isDefined("url.postedby")>
+	<cfset params.byPosted = url.postedby>
+<!--- END BRAUNSTEIN MOD 2/5/2010 --->
+
 <cfelseif url.mode is "search" and (isDefined("form.search") or isDefined("url.search"))>
 	<cfif isDefined("url.search")>
 		<cfset form.search = url.search>

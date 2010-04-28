@@ -8,6 +8,9 @@
    History :
 --->
 
+
+<cfmodule template="../../tags/scopecache.cfm" cachename="pod_pages" scope="application" timeout="#application.timeout#">
+
 <cfset pages_qry = application.page.getPages() />
 
    
@@ -20,4 +23,6 @@
       
 </cfmodule>
       
+</cfmodule>
+
 <cfsetting enablecfoutputonly=false />

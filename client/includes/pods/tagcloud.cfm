@@ -10,6 +10,8 @@
    Purpose : 		Display archives as sized tags
 --->
 
+<cfmodule template="../../tags/scopecache.cfm" cachename="#application.applicationname#_tc" scope="application" timeout="#application.timeout#">
+
 <cfmodule template="../../tags/podlayout.cfm" title="Tags">
 
    <cfset cats = application.blog.getCategories()>
@@ -55,6 +57,8 @@
    </cfoutput>
    
    
+</cfmodule>
+
 </cfmodule>
    
 <cfsetting enablecfoutputonly=false>
