@@ -54,6 +54,8 @@ popular view
 --->
 <cfif url.mode is "entry" and articleData.totalEntries is 1>
 	<cfset data.title = articles.title[1]>
+	<cfset data.entrymode = true>
+	<cfset data.entryid = articles.id[1]>
 	<cfif not structKeyExists(session.viewedpages, url.entry)>
 		<cfset session.viewedpages[url.entry] = 1>
 		<cfset application.blog.logView(url.entry)>

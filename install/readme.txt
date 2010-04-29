@@ -24,7 +24,12 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
-Last Updated: April 14, 2010 (BlogCFC 5.9.6)
+Last Updated: April 29, 2010 (BlogCFC 5.9.6.001)
+/client/index.cfm and /client/tags/layout.cfm - slight fix for TweetBacks
+
+=======================================================================================================================================================================================
+
+Last Updated: April 28, 2010 (BlogCFC 5.9.6)
 
 Jeff Braunstein added the "Browse by Author" feature, along with the new Add It bar.
 
@@ -41,7 +46,6 @@ M	/client/includes/pods/pages.cfm
 M	/client/includes/pods/recent.cfm
 M	/org/camden/blog/blog.cfc
 M	/client/includes/pods/tagcloud.cfm
-=======================================================================================================================================================================================
 
 Last Updated: April 14, 2010 (BlogCFC 5.9.5.008)
 /client/admin/entry.cfm - I had the wrong label in the related entries tab.
