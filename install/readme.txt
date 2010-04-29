@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 LICENSE 
 Copyright 2008-2010 Raymond Camden
 
@@ -31,6 +24,25 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: April 14, 2010 (BlogCFC 5.9.6)
+
+Jeff Braunstein added the "Browse by Author" feature, along with the new Add It bar.
+
+Lots of database optimizations (mostly caches)
+
+Modified files:
+M	/client/tags/getmode.cfm
+M	/client/tags/parseses.cfm
+M	/client/admin/page.cfm
+M	/client/includes/pods/calendar.cfm
+M	/client/index.cfm
+M	/client/admin/entry.cfm
+M	/client/includes/pods/pages.cfm
+M	/client/includes/pods/recent.cfm
+M	/org/camden/blog/blog.cfc
+M	/client/includes/pods/tagcloud.cfm
+=======================================================================================================================================================================================
+
 Last Updated: April 14, 2010 (BlogCFC 5.9.5.008)
 /client/admin/entry.cfm - I had the wrong label in the related entries tab.
 /client/installer/Application.cfm - I accidentally checked it in blocked.
@@ -39,9 +51,6 @@ Last Updated: April 14, 2010 (BlogCFC 5.9.5.008)
 /client/install/accessblog.mdb - missing col
 /org/camden/blog/blog.cfc - version
 /org/camden/blog/render/render.cfc - perf fix
-
-=======================================================================================================================================================================================
-
 
 
 Last Updated: April 8, 2010 (BlogCFC 5.9.5.007)
