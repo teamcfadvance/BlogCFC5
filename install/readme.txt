@@ -24,10 +24,22 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: May 18, 2010 (BlogCFC 5.9.6.002)
+Security updates. The following fixes were done after a review of BlogCFC by ProCheckup. (www.procheckup.com) This was done by 
+them free of charge and I want to send them a huge thank you for sharing these vulnerbilities with me and helping me test the fixes.
+
+/client/includes/Application.cfm - new file, blocks access
+/client/tags/Application.cfm - ditto
+/client/includes/pods/subscribe.cfm - prevent XSS
+/client/stats.cfm - ditto
+
+/org/camden/blog/blog.cfc - Just the version #.
+
+=======================================================================================================================================================================================
+
 Last Updated: April 29, 2010 (BlogCFC 5.9.6.001)
 /client/index.cfm and /client/tags/layout.cfm - slight fix for TweetBacks
 /org/sweettweets/sweettweets.cfc, shrinkURL.cfc - new files
-=======================================================================================================================================================================================
 
 Last Updated: April 28, 2010 (BlogCFC 5.9.6)
 
