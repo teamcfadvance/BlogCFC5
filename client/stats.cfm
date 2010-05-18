@@ -249,7 +249,7 @@
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("bloggingfor")#:</b></td>
-			<td align="right"><cfif isDefined("dur")>#numberFormat(dur)# #rb("days")#<cfelse>&nbsp;</cfif></td>
+			<td align="right"><cfif structKeyExists(variables, "dur")>#numberFormat(variables.dur)# #rb("days")#<cfelse>&nbsp;</cfif></td>
 		</tr>
 		<tr>
 			<td width="50%"><b>#rb("totalcomments")#:</b></td>
