@@ -20,8 +20,8 @@ I'm making it dynamic in case folks to want to change it quickly on their own bl
 <cfset formField = "user_register">
 
 <!--- confirmation vars --->
-<cfparam name="errorMessage" default="">
-<cfparam name="successMessage" default="">
+<cfparam name="variables.errorMessage" default="">
+<cfparam name="variables.successMessage" default="">
 
 <!--- 
 	  I know. The caller. syntax is icky. This should be safe since all pods work in the same context. 
@@ -56,11 +56,11 @@ I'm making it dynamic in case folks to want to change it quickly on their own bl
 					mailusername=application.blog.getProperty("mailusername"),
 					mailpassword=application.blog.getProperty("mailpassword")
 					)>
-		<cfset successMessage = "We have received your request.  Please keep an eye on your email; we will send you a link to confirm your subscription.">
+		<cfset variables.successMessage = "We have received your request.  Please keep an eye on your email; we will send you a link to confirm your subscription.">
 		</cfif>								
 						
 	<cfelse> <!--- bad email syntax --->
-		<cfset errorMessage = "Whoops! The email you entered is not valid syntax.">
+		<cfset variables.errorMessage = "Whoops! The email you entered is not valid syntax.">
 	</cfif>
 	
 </cfif>
@@ -79,9 +79,9 @@ I'm making it dynamic in case folks to want to change it quickly on their own bl
 	<p><input type="text" name="#formField#" size="15" /> <input type="submit" value="#application.resourceBundle.getResource("subscribe")#" /></p>
 	</form>
 	<cfif len(successMessage)>
-		<span style="color:##00ee00">#successMessage#</span>
+		<span style="color:##00ee00">#variables.successMessage#</span>
 	<cfelseif len(errorMessage)>
-		<span style="color:##ee0000">#errorMessage#</span>
+		<span style="color:##ee0000">#variables.errorMessage#</span>
 	</cfif>
 	</div>
 	</cfoutput>
