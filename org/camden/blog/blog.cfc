@@ -1,19 +1,3 @@
-<!---
-	Name         : blog
-	Author       : Raymond Camden
-	Created      : February 10, 2003
-	Last Updated : 1/14/08
-	History      : Reset history for version 5.7
-				 : delete enclosure on delete entry
-				 : generateRSS fix for utc strings
-				 : hide future/unreleased entries based on argument
-				 : notifyentry has filters now to suppress email
-				 : oracle fix in savecomment
-				 : saveEntry will correctly schedule task
-				 : approveComment, category can be list, version (rkc 5/18/07)
-				 : some additional xmlformtting (rkc 1/14/08)
-	Purpose		 : Blog CFC
---->
 <cfcomponent displayName="Blog" output="false" hint="BlogCFC by Raymond Camden">
 
 	<!--- Load utils immidiately. --->
@@ -36,7 +20,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.6.002" />
+	<cfset version = "5.9.6.003" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -1320,7 +1304,7 @@
 		<cfset var getComments = "">
 		<cfset var getCategories = "">
 		<cfset var getTrackbacks = "">
-		<cfset var validOrderBy = "posted,title">
+		<cfset var validOrderBy = "posted,title,views">
 		<cfset var validOrderByDir = "asc,desc">
 		<cfset var validMode = "short,full">
 		<cfset var pos = "">
