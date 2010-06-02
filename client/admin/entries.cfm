@@ -22,6 +22,9 @@
 <cfparam name="form.keywords" default="#url.keywords#">
 <cfparam name="url.start" default="1">
 
+<cfparam name="url.sort" default="posted">
+<cfparam name="url.dir" default="desc">
+
 <cfset params = structNew()>
 <cfset params.mode = "short">
 <cfif len(trim(form.keywords))>
@@ -33,6 +36,8 @@
 <cfif not application.blog.isBlogAuthorized('ReleaseEntries')>
 	<cfset params.released = false>
 </cfif>
+<cfset params.orderby = url.sort>
+<cfset params.orderbydir = url.dir>
 <cfset entryData = application.blog.getEntries(params)>
 <cfset entries = entryData.entries>
 
