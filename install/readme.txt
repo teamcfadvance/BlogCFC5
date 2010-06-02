@@ -24,6 +24,15 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+
+Last Updated: June 2, 2010 (BlogCFC 5.9.6.003)
+/client/admin/categories.cfm - small layout fix
+/client/admin/entries.cfm - sorting works right now
+/client/includes/pods/subscribe.cfm - I think I forgot to check in the XSS fix.
+/client/tags/datatablenew.cfm - support sorting fix
+/org/camden/blog/blog.cfc - support sorting fix, and version #
+
+=======================================================================================================================================================================================
 Last Updated: May 18, 2010 (BlogCFC 5.9.6.002)
 Security updates. The following fixes were done after a review of BlogCFC by ProCheckup. (www.procheckup.com) This was done by 
 them free of charge and I want to send them a huge thank you for sharing these vulnerbilities with me and helping me test the fixes.
@@ -34,8 +43,6 @@ them free of charge and I want to send them a huge thank you for sharing these v
 /client/stats.cfm - ditto
 
 /org/camden/blog/blog.cfc - Just the version #.
-
-=======================================================================================================================================================================================
 
 Last Updated: April 29, 2010 (BlogCFC 5.9.6.001)
 /client/index.cfm and /client/tags/layout.cfm - slight fix for TweetBacks
