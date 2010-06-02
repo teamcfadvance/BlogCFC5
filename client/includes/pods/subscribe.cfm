@@ -78,9 +78,9 @@ I'm making it dynamic in case folks to want to change it quickly on their own bl
 	<form action="#application.blog.getProperty("blogurl")#?#qs#" method="post" onsubmit="return(this.#formField#.value.length != 0)">
 	<p><input type="text" name="#formField#" size="15" /> <input type="submit" value="#application.resourceBundle.getResource("subscribe")#" /></p>
 	</form>
-	<cfif len(successMessage)>
+	<cfif len(variables.successMessage)>
 		<span style="color:##00ee00">#variables.successMessage#</span>
-	<cfelseif len(errorMessage)>
+	<cfelseif len(variables.errorMessage)>
 		<span style="color:##ee0000">#variables.errorMessage#</span>
 	</cfif>
 	</div>
