@@ -89,13 +89,6 @@
 	<cfset url.dir = "asc">
 </cfif>
 
-<cfif len(trim(url.sort)) and len(trim(url.dir))>
-	<cfquery name="attributes.data" dbtype="query">
-	select 	*
-	from	attributes.data
-	order by 	#url.sort# #url.dir#
-	</cfquery>
-</cfif>
 
 <cfif not isNumeric(url.start) or url.start lte 0>
 	<cfset url.start = 1>
