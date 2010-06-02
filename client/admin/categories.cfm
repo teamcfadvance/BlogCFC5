@@ -28,12 +28,12 @@
 	<p>
 	Your blog currently has 
 		<cfif categories.recordCount>
-		#categories.recordcount# categories
+		#categories.recordcount# categories.
 		<cfelseif categories.recordCount is 1>
-		1 category
+		1 category.
 		<cfelse>
-		0 categories
-		</cfif>.
+		0 categories.
+		</cfif>
 	</p>
 	</cfoutput>
 
