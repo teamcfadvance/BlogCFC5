@@ -24,7 +24,14 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: August 3, 2010 (BlogCFC 5.9.6.004)
 
+/install/oracle.sql - updated by Chad Armond
+/client/cfformrotect/cfftpVerify.cfc - minor bug fix
+/client/addcomment.cfm - If logged in, no need for captcha (thanks to Ryan V for idea)
+/org/camden/blog/blog.cfc - Support for above, + version #
+
+=======================================================================================================================================================================================
 Last Updated: June 2, 2010 (BlogCFC 5.9.6.003)
 /client/admin/categories.cfm - small layout fix
 /client/admin/entries.cfm - sorting works right now
@@ -32,7 +39,7 @@ Last Updated: June 2, 2010 (BlogCFC 5.9.6.003)
 /client/tags/datatablenew.cfm - support sorting fix
 /org/camden/blog/blog.cfc - support sorting fix, and version #
 
-=======================================================================================================================================================================================
+
 Last Updated: May 18, 2010 (BlogCFC 5.9.6.002)
 Security updates. The following fixes were done after a review of BlogCFC by ProCheckup. (www.procheckup.com) This was done by 
 them free of charge and I want to send them a huge thank you for sharing these vulnerbilities with me and helping me test the fixes.

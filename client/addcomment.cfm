@@ -97,7 +97,7 @@
 	</cfif>
 		
 	<!--- captcha validation --->
-	<cfif application.useCaptcha>
+	<cfif application.useCaptcha and not isLoggedIn()>
 		<cfif not len(form.captchaText)>
 			<cfset arrayAppend(aErrors, "Please enter the Captcha text.") />
 		<cfelseif NOT application.captcha.validateCaptcha(form.captchaHash,form.captchaText)>
@@ -105,7 +105,7 @@
 		</cfif>
 	</cfif>
 	<!--- cfformprotect --->
-	<cfif application.usecfp>
+	<cfif application.usecfp and not isLoggedIn()>
 		<cfset cffp = createObject("component","cfformprotect.cffpVerify").init() />
 		<!--- now we can test the form submission --->
 		<cfif not cffp.testSubmission(form)>
@@ -116,7 +116,18 @@
 	<cfif not arrayLen(aErrors)>
 	  <!--- RBB 11/02/2005: added website to commentID --->
 	  	<cftry>
-			<cfset commentID = application.blog.addComment(url.id,left(form.name,50), left(form.email,50), left(form.website,255), form.comments, form.subscribe)>
+			<cfinvoke component="#application.blog#" method="addComment" returnVariable="commentID">
+				<cfinvokeargument name="entryid" value="#url.id#">
+				<cfinvokeargument name="name" value="#left(form.name, 50)#">
+				<cfinvokeargument name="email" value="#left(form.email,50)#">
+				<cfinvokeargument name="website" value="#left(form.website, 255)#">
+				<cfinvokeargument name="comments" value="#form.comments#">
+				<cfinvokeargument name="subscribe" value="#form.subscribe#">
+				<cfif isLoggedIn()>
+					<cfinvokeargument name="overridemoderation" value="true">
+				</cfif>
+			</cfinvoke>								
+
 			<!--- Form a message about the comment --->
 			<cfset subject = rb("commentaddedtoblog") & ": " & application.blog.getProperty("blogTitle") & " / " & rb("entry") & ": " & entry.title>
 			<cfset commentTime = dateAdd("h", application.blog.getProperty("offset"), now())>
@@ -240,7 +251,7 @@ Created by Raymond Camden (http://www.coldfusionjedi.com)
 		<label for="comments">#rb("comments")#:</label>
 		<textarea name="comments" id="comments" rows="5" cols="45">#form.comments#</textarea>
   </div>
-	<cfif application.useCaptcha>
+	<cfif application.useCaptcha and not isLoggedIn()>
     <div>
 		<cfset variables.captcha = application.captcha.createHashReference() />
 		<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />

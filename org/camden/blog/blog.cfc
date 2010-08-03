@@ -20,7 +20,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.6.003" />
+	<cfset version = "5.9.6.004" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -169,6 +169,7 @@
 		<cfargument name="comments" type="string" required="true">
 		<cfargument name="subscribe" type="boolean" required="true">
 		<cfargument name="subscribeonly" type="boolean" required="false" default="false">
+		<cfargument name="overridemoderation" type="boolean" required="false" default="false">
 
 		<cfset var newID = createUUID()>
 		<cfset var entry = "">
@@ -218,8 +219,8 @@
 			   <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 			   <cfqueryparam value="#arguments.name#" maxlength="50">,
 			   <cfqueryparam value="#arguments.email#" maxlength="50">,
-				 <!--- RBB 11/02/2005:  Added website element --->
-         <cfqueryparam value="#arguments.website#" maxlength="255">,
+			   <!--- RBB 11/02/2005:  Added website element --->
+		       <cfqueryparam value="#arguments.website#" maxlength="255">,
 		 	<cfif instance.blogDBType is "ORACLE">
 				<cfqueryparam value="#arguments.comments#" cfsqltype="CF_SQL_CLOB">,
 			<cfelse>
@@ -237,7 +238,7 @@
 			   		</cfif>
 				   <cfqueryparam value="#arguments.subscribe#" cfsqltype="CF_SQL_TINYINT">
 			   </cfif>
-			   ,<cfif instance.moderate>0<cfelse>1</cfif>,
+			   ,<cfif instance.moderate and not arguments.overridemoderation>0<cfelse>1</cfif>,
 			   <cfqueryparam value="#kill#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 			   <cfqueryparam value="#arguments.subscribeonly#" cfsqltype="CF_SQL_TINYINT">
 			   )

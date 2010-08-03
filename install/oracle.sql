@@ -1,279 +1,351 @@
+--
+-- Dropping table tblblogcategories : 
+--
 
-CREATE TABLE TBLBLOGCATEGORIES
-(
-  CATEGORYID     VARCHAR2(35 BYTE)              NOT NULL,
-  CATEGORYNAME   VARCHAR2(50 BYTE)              NOT NULL,
-  CATEGORYALIAS  VARCHAR2(50 BYTE),
-  BLOG           VARCHAR2(50 BYTE)
-);
-
-
-CREATE TABLE TBLBLOGCOMMENTS
-(
-  ID         VARCHAR2(35 BYTE)                  NOT NULL,
-  ENTRYIDFK  VARCHAR2(35 BYTE),
-  NAME       VARCHAR2(50 BYTE),
-  EMAIL      VARCHAR2(50 BYTE),
-  COMMENTS   CLOB,
-  POSTED     DATE,
-  SUBSCRIBE  INTEGER                            DEFAULT 0,
-  MODERATED  INTEGER                            DEFAULT 0,  
-  WEBSITE    VARCHAR2(255 BYTE),
-  KILLCOMMENT  VARCHAR2(35 BYTE),
-  SUBSCRIBEONLY INTEGER DEFAULT 0
-);
-
-
-CREATE TABLE TBLBLOGENTRIES
-(
-  ID             VARCHAR2(35 BYTE)              NOT NULL,
-  TITLE          VARCHAR2(100 BYTE),
-  BODY           CLOB,
-  POSTED         DATE                           DEFAULT sysdate,
-  MOREBODY       CLOB,
-  ALIAS          VARCHAR2(100 BYTE),
-  USERNAME       VARCHAR2(50 BYTE),
-  BLOG           VARCHAR2(50 BYTE),
-  ALLOWCOMMENTS  NUMBER(1)                      DEFAULT 0,
-  ENCLOSURE      VARCHAR2(255 BYTE),
-  FILESIZE       NUMBER(11),
-  MIMETYPE       VARCHAR2(255 BYTE),
-  VIEWS          NUMBER(11)                     DEFAULT 0,
-  RELEASED       NUMBER(1)                      DEFAULT 0,
-  MAILED         NUMBER(1)                      DEFAULT 0,
-  SUMMARY          VARCHAR2(255 BYTE),
-  SUBTITLE          VARCHAR2(100 BYTE),
-  KEYWORDS          VARCHAR2(100 BYTE),
-  DURATION          VARCHAR2(10 BYTE)
-);
-
-
-CREATE TABLE TBLBLOGENTRIESCATEGORIES
-(
-  CATEGORYIDFK  VARCHAR2(35 BYTE)               NOT NULL,
-  ENTRYIDFK     VARCHAR2(35 BYTE)               NOT NULL
-);
-
-
-CREATE TABLE TBLBLOGENTRIESRELATED
-(
-  ID         NUMBER(11),
-  ENTRYID    VARCHAR2(35 BYTE)                  NOT NULL,
-  RELATEDID  VARCHAR2(35 BYTE)
-);
-
-
-CREATE TABLE TBLBLOGPAGES
-(
-  ID     VARCHAR2(35 BYTE)                      NOT NULL,
-  TITLE  VARCHAR2(255 BYTE),
-  ALIAS  VARCHAR2(100 BYTE),
-  BODY   CLOB,
-  BLOG   VARCHAR2(50 BYTE),
-  SHOWLAYOUT         NUMBER(1)                      DEFAULT 0 
-);
-
-
-CREATE TABLE TBLBLOGSEARCHSTATS
-(
-  SEARCHTERM  VARCHAR2(255 BYTE),
-  SEARCHED    DATE                              DEFAULT sysdate,
-  BLOG        VARCHAR2(50 BYTE)
-);
-
-
-CREATE TABLE TBLBLOGSUBSCRIBERS
-(
-  EMAIL     VARCHAR2(50 BYTE),
-  TOKEN     VARCHAR2(35 BYTE),
-  BLOG      VARCHAR2(50 BYTE),
-  VERIFIED  NUMBER(1)                           DEFAULT 0
-);
-
-
-CREATE TABLE TBLBLOGTEXTBLOCKS
-(
-  ID     VARCHAR2(35 BYTE)                      NOT NULL,
-  LABEL  VARCHAR2(255 BYTE),
-  BODY   CLOB,
-  BLOG   VARCHAR2(50 BYTE)
-);
-
+DROP TABLE tblblogcategories;
 
-CREATE TABLE TBLBLOGTRACKBACKS
-(
-  ID        VARCHAR2(35 BYTE)                   NOT NULL,
-  TITLE     VARCHAR2(255 BYTE),
-  BLOGNAME  VARCHAR2(255 BYTE),
-  POSTURL   VARCHAR2(255 BYTE),
-  EXCERPT   CLOB,
-  CREATED   DATE                                DEFAULT sysdate,
-  ENTRYID   VARCHAR2(35 BYTE),
-  BLOG      VARCHAR2(50 BYTE)
-);
+--
+-- Dropping table tblblogcomments : 
+--
 
+DROP TABLE tblblogcomments;
 
-CREATE TABLE TBLUSERS
-(
-  USERNAME  VARCHAR2(50 BYTE),
-  PASSWORD  VARCHAR2(50 BYTE),
-  NAME      VARCHAR2(50 BYTE)
-);
+--
+-- Dropping table tblblogentries : 
+--
 
+DROP TABLE tblblogentries;
 
-CREATE UNIQUE INDEX PK_TBLBLOGCATEGORIES ON TBLBLOGCATEGORIES
-(CATEGORYID);
+--
+-- Dropping table tblblogentriescategories : 
+--
 
+DROP TABLE tblblogentriescategories;
 
-CREATE UNIQUE INDEX PK_TBLBLOGCOMMENTS ON TBLBLOGCOMMENTS
-(ID);
+--
+-- Dropping table tblblogentriesrelated : 
+--
+
+DROP TABLE tblblogentriesrelated;
+
+--
+-- Dropping table tblblogpages : 
+--
+
+DROP TABLE tblblogpages;
+
+--
+-- Dropping table tblblogroles : 
+--
+
+DROP TABLE tblblogroles;
+
+--
+-- Dropping table tblblogsearchstats : 
+--
+
+DROP TABLE tblblogsearchstats;
+
+--
+-- Dropping table tblblogsubscribers : 
+--
+
+DROP TABLE tblblogsubscribers;
+
+--
+-- Dropping table tblblogtextblocks : 
+--
+
+DROP TABLE tblblogtextblocks;
+
+--
+-- Dropping table tblblogtrackbacks : 
+--
+
+DROP TABLE tblblogtrackbacks;
+
+--
+-- Dropping table tbluserroles : 
+--
+
+DROP TABLE tbluserroles;
+
+--
+-- Dropping table tblusers : 
+--
+
+DROP TABLE tblusers;
+
+--
+-- Definition for table tblblogcategories : 
+--
+
+CREATE TABLE tblblogcategories (
+  categoryid VARCHAR2(35) NOT NULL,
+  categoryname VARCHAR2(50) NULL,
+  categoryalias VARCHAR2(50) NULL,
+  blog VARCHAR2(50) NULL
+)
+;
+
+--
+-- Definition for table tblblogcomments : 
+--
+
+CREATE TABLE tblblogcomments (
+  id VARCHAR2(35) NOT NULL,
+  entryidfk VARCHAR2(35) NULL,
+  name VARCHAR2(50) NULL,
+  email VARCHAR2(50) NULL,
+  comments VARCHAR2(2000) NULL,
+  posted DATE NULL,
+  subscribe NUMBER(10) NULL,
+  website VARCHAR2(255) NULL,
+  moderated NUMBER(3) NULL,
+  subscribeonly NUMBER(3) NULL,
+  killcomment VARCHAR2(35) NULL
+)
+;
+
+--
+-- Definition for table tblblogentries : 
+--
+
+CREATE TABLE tblblogentries (
+  id VARCHAR2(35) NOT NULL,
+  title VARCHAR2(100) NULL,
+  body VARCHAR2(2000) NULL,
+  posted DATE NULL,
+  morebody VARCHAR2(2000) NULL,
+  alias VARCHAR2(100) NULL,
+  username VARCHAR2(50) NULL,
+  blog VARCHAR2(50) NULL,
+  allowcomments NUMBER(3) NULL,
+  enclosure VARCHAR2(255) NULL,
+  filesize NUMBER(10) NULL,
+  mimetype VARCHAR2(255) NULL,
+  views NUMBER(10) NULL,
+  released NUMBER(3) NULL,
+  mailed NUMBER(3) NULL,
+  summary VARCHAR2(255) NULL,
+  subtitle VARCHAR2(100) NULL,
+  keywords VARCHAR2(100) NULL,
+  duration VARCHAR2(10) NULL
+)
+;
+
+--
+-- Definition for table tblblogentriescategories : 
+--
+
+CREATE TABLE tblblogentriescategories (
+  categoryidfk VARCHAR2(35) NULL,
+  entryidfk VARCHAR2(35) NULL
+)
+;
+
+--
+-- Definition for table tblblogentriesrelated : 
+--
+
+CREATE TABLE tblblogentriesrelated (
+  entryid VARCHAR2(35) NULL,
+  relatedid VARCHAR2(35) NULL
+)
+;
+
+--
+-- Definition for table tblblogpages : 
+--
+
+CREATE TABLE tblblogpages (
+  id VARCHAR2(35) NOT NULL,
+  blog VARCHAR2(50) NULL,
+  title VARCHAR2(255) NULL,
+  alias VARCHAR2(100) NULL,
+  body VARCHAR2(2000) NULL,
+  showlayout NUMBER(3) NULL
+)
+;
+
+--
+-- Definition for table tblblogroles : 
+--
+
+CREATE TABLE tblblogroles (
+  id VARCHAR2(35) NOT NULL,
+  role VARCHAR2(50) NULL,
+  description VARCHAR2(255) NULL
+)
+;
+
+--
+-- Definition for table tblblogsearchstats : 
+--
+
+CREATE TABLE tblblogsearchstats (
+  searchterm VARCHAR2(255) NULL,
+  searched DATE NULL,
+  blog VARCHAR2(50) NULL
+)
+;
+
+--
+-- Definition for table tblblogsubscribers : 
+--
+
+CREATE TABLE tblblogsubscribers (
+  email VARCHAR2(50) NULL,
+  token VARCHAR2(35) NULL,
+  blog VARCHAR2(50) NULL,
+  verified NUMBER(3) NULL
+)
+;
+
+--
+-- Definition for table tblblogtextblocks : 
+--
+
+CREATE TABLE tblblogtextblocks (
+  id VARCHAR2(35) NULL,
+  label VARCHAR2(255) NULL,
+  body VARCHAR2(2000) NULL,
+  blog VARCHAR2(50) NULL
+)
+;
+
+--
+-- Definition for table tblblogtrackbacks : 
+--
+
+CREATE TABLE tblblogtrackbacks (
+  id VARCHAR2(35) NULL,
+  title VARCHAR2(255) NULL,
+  blogname VARCHAR2(255) NULL,
+  posturl VARCHAR2(255) NULL,
+  excerpt VARCHAR2(2000) NULL,
+  created DATE NULL,
+  entryid VARCHAR2(35) NULL,
+  blog VARCHAR2(50) NULL
+)
+;
 
+--
+-- Definition for table tbluserroles : 
+--
 
-CREATE UNIQUE INDEX PK_TBLBLOGENTRIES ON TBLBLOGENTRIES
-(ID);
+CREATE TABLE tbluserroles (
+  username VARCHAR2(50) NULL,
+  roleidfk VARCHAR2(35) NULL,
+  blog VARCHAR2(50) NULL
+)
+;
 
+--
+-- Definition for table tblusers : 
+--
 
-CREATE UNIQUE INDEX PK_TBLBLOGENTRIESCATEGORIES ON TBLBLOGENTRIESCATEGORIES
-(CATEGORYIDFK, ENTRYIDFK);
+CREATE TABLE tblusers (
+  username VARCHAR2(50) NULL,
+  password VARCHAR2(50) NULL,
+  name VARCHAR2(50) NULL,
+  blog VARCHAR2(255) NULL
+)
+;
 
+--
+-- Definition for indices : 
+--
 
-CREATE UNIQUE INDEX PK_TBLBLOGPAGES ON TBLBLOGPAGES
-(ID);
+ALTER TABLE tblblogcategories ADD CONSTRAINT tblblogcategories_pk PRIMARY KEY (categoryid);
 
+CREATE INDEX blogCategories_blog ON tblblogcategories (blog);
 
-CREATE UNIQUE INDEX PK_TBLBLOGTEXTBLOCKS ON TBLBLOGTEXTBLOCKS
-(ID);
+CREATE INDEX blogCategories_categoryalias ON tblblogcategories (categoryalias);
 
+CREATE INDEX blogCategories_categoryname ON tblblogcategories (categoryname);
 
-CREATE UNIQUE INDEX PK_TBLBLOGTRACKBACKS ON TBLBLOGTRACKBACKS
-(ID);
+ALTER TABLE tblblogcomments ADD CONSTRAINT tblblogcomments_pk PRIMARY KEY (id);
 
+CREATE INDEX blogComments_email ON tblblogcomments (email);
 
-ALTER TABLE TBLBLOGCATEGORIES ADD (
-  CONSTRAINT PK_TBLBLOGCATEGORIES
- PRIMARY KEY
- (CATEGORYID));
+CREATE INDEX blogComments_entryid ON tblblogcomments (entryidfk);
 
-ALTER TABLE TBLBLOGCOMMENTS ADD (
-  CONSTRAINT PK_TBLBLOGCOMMENTS
- PRIMARY KEY
- (ID));
+CREATE INDEX blogComments_moderated ON tblblogcomments (moderated);
 
-ALTER TABLE TBLBLOGENTRIES ADD (
-  CONSTRAINT PK_TBLBLOGENTRIES
- PRIMARY KEY
- (ID));
+CREATE INDEX blogComments_name ON tblblogcomments (name);
 
-ALTER TABLE TBLBLOGENTRIESCATEGORIES ADD (
-  CONSTRAINT PK_TBLBLOGENTRIESCATEGORIES
- PRIMARY KEY
- (CATEGORYIDFK, ENTRYIDFK));
+CREATE INDEX blogComments_posted ON tblblogcomments (posted);
 
-ALTER TABLE TBLBLOGPAGES ADD (
-  CONSTRAINT PK_TBLBLOGPAGES
- PRIMARY KEY
- (ID));
+ALTER TABLE tblblogentries ADD CONSTRAINT tblblogentries_pk PRIMARY KEY (id);
 
-ALTER TABLE TBLBLOGTEXTBLOCKS ADD (
-  CONSTRAINT PK_TBLBLOGTEXTBLOCKS
- PRIMARY KEY
- (ID));
+CREATE INDEX blogEntries_alias ON tblblogentries (alias);
 
-ALTER TABLE TBLBLOGTRACKBACKS ADD (
-  CONSTRAINT PK_TBLBLOGTRACKBACKS
- PRIMARY KEY
- (ID));
+CREATE INDEX blogEntries_blog ON tblblogentries (blog);
 
- 
-insert into TBLUSERS (username, password, name)
-values ('admin', 'admin', 'Admin');
- 
-GRANT DELETE ON  TBLBLOGCATEGORIES TO $yourschema;
+CREATE INDEX blogEntries_posted ON tblblogentries (posted);
 
-GRANT DELETE ON  TBLBLOGCOMMENTS TO $yourschema;
+CREATE INDEX blogEntries_released ON tblblogentries (released);
 
-GRANT DELETE ON  TBLBLOGENTRIESCATEGORIES TO $yourschema;
+CREATE INDEX blogEntries_title ON tblblogentries (title);
 
-GRANT DELETE ON  TBLBLOGPAGES TO $yourschema;
+CREATE INDEX blogEntries_username ON tblblogentries (username);
 
-GRANT DELETE ON  TBLBLOGSUBSCRIBERS TO $yourschema;
+CREATE INDEX blogEntriesCats_entryidfk ON tblblogentriescategories (entryidfk, categoryidfk);
 
-GRANT DELETE ON  TBLBLOGTRACKBACKS TO $yourschema;
+CREATE INDEX blogEntriesRelated_entryid ON tblblogentriesrelated (entryid);
 
-GRANT DELETE ON  TBLUSERS TO $yourschema;
+CREATE INDEX blogEntriesRelated_relatedid ON tblblogentriesrelated (relatedid);
 
-GRANT DELETE ON  TBLBLOGTEXTBLOCKS TO $yourschema;
+CREATE INDEX blogPages_alias ON tblblogpages (alias);
 
-GRANT DELETE ON  TBLBLOGSEARCHSTATS TO $yourschema;
+CREATE INDEX blogPages_blog ON tblblogpages (blog);
 
-GRANT DELETE ON  TBLBLOGENTRIESRELATED TO $yourschema;
+CREATE INDEX blogPages_title ON tblblogpages (title);
 
-GRANT DELETE ON  TBLBLOGENTRIES TO $yourschema;
+ALTER TABLE tblblogroles ADD CONSTRAINT tblblogroles_pk PRIMARY KEY (id);
 
-GRANT INSERT ON  TBLBLOGCATEGORIES TO $yourschema;
+CREATE INDEX blogRoles_role ON tblblogroles (role);
 
-GRANT INSERT ON  TBLUSERS TO $yourschema;
+CREATE INDEX blogSubscribers_blog ON tblblogsubscribers (blog);
 
-GRANT INSERT ON  TBLBLOGTRACKBACKS TO $yourschema;
+CREATE INDEX blogSubscribers_email ON tblblogsubscribers (email);
 
-GRANT INSERT ON  TBLBLOGTEXTBLOCKS TO $yourschema;
+CREATE INDEX blogSubscribers_token ON tblblogsubscribers (token);
 
-GRANT INSERT ON  TBLBLOGCOMMENTS TO $yourschema;
+CREATE INDEX blogSubscribers_verified ON tblblogsubscribers (verified);
 
-GRANT INSERT ON  TBLBLOGENTRIES TO $yourschema;
+CREATE INDEX blogTextBlocks_blog ON tblblogtextblocks (blog);
 
-GRANT INSERT ON  TBLBLOGPAGES TO $yourschema;
+CREATE INDEX blogTextBlocks_label ON tblblogtextblocks (label);
 
-GRANT INSERT ON  TBLBLOGSUBSCRIBERS TO $yourschema;
+CREATE INDEX blogTrackBacks_blog ON tblblogtrackbacks (blog);
 
-GRANT INSERT ON  TBLBLOGSEARCHSTATS TO $yourschema;
+CREATE INDEX blogTrackBacks_entryid ON tblblogtrackbacks (entryid);
 
-GRANT INSERT ON  TBLBLOGENTRIESRELATED TO $yourschema;
+CREATE INDEX blogUserRoles_blog ON tbluserroles (blog);
 
-GRANT INSERT ON  TBLBLOGENTRIESCATEGORIES TO $yourschema;
+CREATE INDEX blogUserRoles_roleidfk ON tbluserroles (roleidfk);
 
-GRANT SELECT ON  TBLBLOGCATEGORIES TO $yourschema;
+CREATE INDEX blogUserRoles_username ON tbluserroles (username);
 
-GRANT SELECT ON  TBLUSERS TO $yourschema;
+CREATE INDEX blogUsers_blog ON tblusers (blog);
 
-GRANT SELECT ON  TBLBLOGTRACKBACKS TO $yourschema;
+CREATE INDEX blogUsers_username ON tblusers (username);
 
-GRANT SELECT ON  TBLBLOGTEXTBLOCKS TO $yourschema;
+--
+-- Seed tables
+--
 
-GRANT SELECT ON  TBLBLOGSUBSCRIBERS TO $yourschema;
+INSERT INTO tblblogroles(role,id,description) VALUES ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.');
+INSERT INTO tblblogroles(role,id,description) VALUES('ManageCategories','7F197F53-CFF7-18C8-53D0C85FCC2CA3F9','The ability to manage blog categories.');
+INSERT INTO tblblogroles(role,id,description) VALUES('Admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','A special role for the admin. Allows all functionality.');
+INSERT INTO tblblogroles(role,id,description) VALUES('ManageUsers','7F26DA6C-9F03-567F-ACFD34F62FB77199','The ability to manage blog users.');
+INSERT INTO tblblogroles(role,id,description) VALUES('ReleaseEntries','800CA7AA-0190-5329-D3C7753A59EA2589','The ability to both release a new entry and edit any released entry.');
 
-GRANT SELECT ON  TBLBLOGSEARCHSTATS TO $yourschema;
+INSERT INTO tbluserroles VALUES ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default');
 
-GRANT SELECT ON  TBLBLOGPAGES TO $yourschema;
+INSERT INTO tblUsers (username,password,name,blog) VALUES ('admin','admin','name','Default');
 
-GRANT SELECT ON  TBLBLOGENTRIESRELATED TO $yourschema;
-
-GRANT SELECT ON  TBLBLOGCOMMENTS TO $yourschema;
-
-GRANT SELECT ON  TBLBLOGENTRIESCATEGORIES TO $yourschema;
-
-GRANT SELECT ON  TBLBLOGENTRIES TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGCATEGORIES TO $yourschema;
-
-GRANT UPDATE ON  TBLUSERS TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGTRACKBACKS TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGTEXTBLOCKS TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGCOMMENTS TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGENTRIESCATEGORIES TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGPAGES TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGSUBSCRIBERS TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGSEARCHSTATS TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGENTRIESRELATED TO $yourschema;
-
-GRANT UPDATE ON  TBLBLOGENTRIES TO $yourschema;
-
+COMMIT;
 

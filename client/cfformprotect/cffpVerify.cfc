@@ -321,9 +321,11 @@ NOTES       : Dave Shuck - created
 				</cfcatch>
 			</cftry>
 				<!--- check Akismet results --->
-				<cfif AkismetHTTPRequest AND Trim(cfhttp.FileContent)>
-					<!--- Akismet says this form submission is spam --->
-					<cfset Result.Pass = false />
+				<cfif isBoolean(cfhttp.filecontent)>
+					<cfif AkismetHTTPRequest AND Trim(cfhttp.FileContent)>
+						<!--- Akismet says this form submission is spam --->
+						<cfset Result.Pass = false />
+					</cfif>
 				</cfif>
 		<cfelse>
 			<cflog file="#logfile#" text="Akismet API Key is invalid" />
