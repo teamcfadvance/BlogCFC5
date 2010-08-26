@@ -79,6 +79,12 @@ function sortForm(f) {
 
 		<!--- update metadata --->
 		<cfset application.pod.updateInfo(dir, metadata)>
+<cfelse>
+
+		<cfset metadata = structNew()>
+		<cfset metadata.pods = structNew()>
+		<cfset application.pod.updateInfo(dir, metadata)>
+
 </cfif>
 
 <cflocation url="pods.cfm" addtoken="no">
