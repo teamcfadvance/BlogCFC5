@@ -24,6 +24,13 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: August 26, 2010 (BlogCFC 5.9.6.005)
+
+/client/admin/pods.cfm - Added text to make it more clear how it works.
+/client/admin/pod.cfm - if you cleared the checkboxes, we weren't storing that.
+/org/camden/blog/blog.cfc - version #
+
+=======================================================================================================================================================================================
 Last Updated: August 3, 2010 (BlogCFC 5.9.6.004)
 
 /install/oracle.sql - updated by Chad Armond
@@ -31,7 +38,6 @@ Last Updated: August 3, 2010 (BlogCFC 5.9.6.004)
 /client/addcomment.cfm - If logged in, no need for captcha (thanks to Ryan V for idea)
 /org/camden/blog/blog.cfc - Support for above, + version #
 
-=======================================================================================================================================================================================
 Last Updated: June 2, 2010 (BlogCFC 5.9.6.003)
 /client/admin/categories.cfm - small layout fix
 /client/admin/entries.cfm - sorting works right now

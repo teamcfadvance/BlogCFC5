@@ -35,6 +35,11 @@
 <cfmodule template="../tags/adminlayout.cfm" title="Pods">
 
 	<cfoutput>
+	<p>
+	The Pod Manager allows you to edit and organize the pods on your site. If none of the pods below are selected,
+	then the default behavior (show all of them) will be used. In order to specify a particular set of pods, you must <b>both</b>
+	select the pod and enter a numeric sort order.
+	</p>
 	<p>Total Available Pods: #pods.recordcount# Total Active: #StructCount(podMetaData.pods)# </p>
 	Select the Pods you want to display, and enter a numeric value for the sort order.<br />
 	
