@@ -19,6 +19,7 @@
 		
 		<style type="text/css" media="screen">@import "./jqtouch/jqtouch.min.css";</style>
         <style type="text/css" media="screen">@import "./themes/<cfoutput>#application.blogMobile.getProperty("theme")#</cfoutput>/theme.min.css";</style>
+		<style type="text/css" media="screen">@import "./themes/main.css";</style>
 		
 		<script type="text/javascript" charset="utf-8">
             var jQT = new $.jQTouch({
@@ -52,38 +53,62 @@
 	                    return false;
 	                }
 	            });
+				
 				$('#homeBtn').click(function(){
-					curPage = 1;										
-					$('#backtn').show();	
-					$('#fwdBtn').hide();
-					$('#blogList').load('./posts.cfm?page=1');
+					curPage = 1;
+					$('#blogList').load('./posts.cfm?page=1', function(){										
+						btnShow(1);
+					});
 					return false;	
-				});				              
-			   	$('#backtn').click(function(){
+				});				 
+				             
+			   	$('#moreBtn').click(function(){
 					curPage = curPage+1;
-					$('#fwdBtn').show();
-					if (curPage == maxPage){											
-						$('#backtn').hide();
-					}
-					$('#blogList').load('./posts.cfm?page=' + curPage);
-					return false;		
-				});
-				
-			   	$('#fwdBtn').click(function(){
-					curPage = curPage-1;
-					if (curPage == 1){
-						$('#fwdBtn').hide();						
-					}
-					if (curPage != maxPage){											
-						$('#backtn').show();
-					}
 					
-					$('#blogList').load('./posts.cfm?page=' + curPage);
+					
+					$('#blogList').load('./posts.cfm?page=' + curPage, function(){						
+						if (curPage == maxPage){											
+							btnShow(3);
+						} else {																
+							btnShow(2);						
+						}
+					});
 					return false;		
 				});
 				
+			   	$('#prevBtn').click(function(){
+					curPage = curPage-1;					
+					$('#blogList').load('./posts.cfm?page=' + curPage, function(){						
+						if (curPage == 1){						
+							btnShow(1);						
+						} else if (curPage != maxPage){										
+							btnShow(2);
+						}						
+					});
+					return false;		
+				});
+				
+				// hide prev on load					
+				btnShow(1);		
 
             });
+			
+			btnShow = function(view){				
+				if (view == 1) { // more only
+					$('#moreBtn').show();
+					$('#prevBtn').hide();
+				} else if (view == 2){ // more & prev
+					$('#moreBtn').show();
+					$('#prevBtn').show();
+				} else if (view == 3){ // prev only
+					$('#moreBtn').hide();
+					$('#prevBtn').show();					
+				} else { // unknown.. hide all
+					$('#moreBtn').hide();
+					$('#prevBtn').hide();
+				}
+				
+			}
 			
         </script>
 		<!---
@@ -153,8 +178,8 @@
 			 
 			 
 			 <ul class="individual">
-                <li class="grayButton" id="backtn">&#60;&#60; Previous</li>
-                <li class="grayButton" id="fwdBtn">Next &#62;&#62;</li>
+                <li class="grayButton" id="prevBtn">&#60;&#60; Previous</li>
+                <li class="grayButton" id="moreBtn">More &#62;&#62;</li>
             </ul>
 		
 
