@@ -30,7 +30,9 @@ and <a href="http://www.blogcfc.com">http://www.blogcfc.com</a>.
 
 <div class="toc">
 <a href="#license">Licence</a> | <a href="#contrib">Contributors</a> | <a href="#req">Requirements</a> |
-<a href="#install">Installation</a> | <a href="#ini">The Blog INI File</a> | <a href="#working">Working with Your Blog</a>
+<a href="#install">Installation</a> | <a href="#ini">The Blog INI File</a> | <a href="#working">Working with Your Blog</a> |
+<a href="#editing">Blog Entry Editing Options</a> | <a href="#publishing">Publishing Non-Blog Content</a> | 
+<a href="#security">Security</a> | <a href="#misc">Miscellaneous</a>
 </div>
 
 <hr/>
@@ -107,7 +109,7 @@ to BlogCFC.</p>
 <hr/>
 
 <a name="req"></a>
-<h3>Requirements</h3>
+<h2>Requirements</h2>
 
 <p>BlogCFC requires ColdFusion 7 or compatible CFML engine.</p>
 
@@ -252,7 +254,7 @@ the client folder and modify these lines:</p>
 
 <hr/>
 
-<h3>INI Settings and Descriptions</h3>
+<h2>INI Settings and Descriptions</h2>
 
 <table border="1" cellpadding="5">
 <tr>
@@ -408,7 +410,8 @@ comment form, not the 'Send Blog' form.</td>
 </tr>
 <tr>
 	<td><code>moderate</code></td>
-	<td>The <code>moderate</code> setting determines if comment moderation is turned on.</td>
+	<td>The <code>moderate</code> setting determines if comment moderation is turned on. When moderation is on, comments will
+	not show up on your blog until you approve them. You can approve them in one click via the email sent to you or via the Administrator.</td>
 </tr>
 <tr>
 	<td><code>filebrowse</code></td>
@@ -467,7 +470,7 @@ podcasting. Please see the section on podcasting for more information.
 <hr/>
 
 <a name="working"></a>
-<h3>Working with Your Blog</h3>
+<h2>Working with Your Blog</h2>
 
 <p>To begin working with your blog, you will want to enter the administrator (found at: yourblogurl/admin). In the left hand menu you will see
 various options:</p>
@@ -502,68 +505,52 @@ subscribers.</li>
 You must have at least one blog category before writing an entry. After you
 have created a category, you may start writing blog entries.</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Blog Editing Options</h3>
+<hr/>
+
+<a name="editing"></a>
+<h2>Blog Entry Editing Options</h2>
 
 <p>When working with blog entries, there are a few special tags
 and features that you can use to enhance your entries:</p>
 
-<p>&nbsp;</p>
 
-<p>&lt;more/&gt;: Sometimes a blog entry may be very long. It
+<p><code>&lt;more/&gt;</code>: Sometimes a blog entry may be very long. It
 is preferable to show only a portion of the entry on the main blog and have the
-detailed link contain the entire entry. By using the &lt;more/&gt; tag in your
-blog entry, any text after the &lt;more/&gt; tag will only show up on the
+detailed link contain the entire entry. By using the <code>&lt;more/&gt;</code> tag in your
+blog entry, any text after the <code>&lt;more/&gt;</code> tag will only show up on the
 individual entry display. You <b>must</b> include the closing / in the tag.
-When blog entries are emailed, only the text before the &lt;more/&gt; tag is
+When blog entries are emailed, only the text before the <code>&lt;more/&gt;</code> tag is
 included. </p>
 
-<p>&nbsp;</p>
-
-<p>&lt;code&gt;: The code tag allows you to wrap sets of code
+<p><code>&lt;code&gt;</code>: The code tag allows you to wrap sets of code
 that you want to show up in your entry. For example:</p>
 
-<p>&nbsp;</p>
+<blockquote>
+<p>
+This is a sample entry. Blah blah blah. Here is some code
+</p>
 
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>This
-is a sample entry. Blah blah blah. Here is some code�</span></p>
+<p>
+&lt;code&gt;<br/>
+&lt;cfset x = 1&gt;<br/>
+&lt;/code&gt;
+</p>
 
-<p><i>&nbsp;</i></p>
+<p>
+This is more text.
+</p>
+</blockquote>
 
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;code&gt;</span></p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;cfif
-thisTag.exectutionMode is &quot;end&quot;&gt;</span></p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>����� &lt;cfexit&gt;</span></p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;/cfif&gt;</span></p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;/code&gt;</span></p>
-
-<p>&nbsp;</p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>This
-is more text in the entry.</span></p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
-
-<p>Any code inside the &lt;code&gt; block will be escaped (&lt;
+<p>Any code inside the <code>&lt;code&gt;</code> block will be escaped (&lt;
 and &gt; tags changed to &amp;lt; and &amp;gt;), color coded, and will have
-line breaks changed to &lt;br&gt; tags. </p>
+line breaks changed to &lt;br&gt; tags.</p>
 
-<p>&nbsp;</p>
+<p><code>&lt;textblock label=&quot;&quot;&gt;</code>:  A textblock is simply a block of text with a label. You can
+include textblocks dynamically in your blog entries by using the <code>&lt;textblock&gt;</code> tag:</p>
 
-<p>&lt;textblock label=&quot;&quot;&gt;: BlogCFC 5.1 added
-textblock support. A textblock is simply a block of text with a label. You can
-include textblocks dynamically in your blog entries by using the
-&lt;textblock&gt; tag:</p>
-
-<p>&nbsp;</p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>Here
-is my standard footer: &lt;textblock label=&quot;footer&quot;&gt;</span></p>
-
-<p>&nbsp;</p>
+<blockquote>
+<p>Here is my standard footer: &lt;textblock label=&quot;footer&quot;&gt;</p>
+</blockquote>
 
 <p>Entries can have &quot;enclosures&quot;, which are simply
 attached files. This is a handy way to attach a resource to a blog entry. One
@@ -571,23 +558,21 @@ of the features of BlogCFC is that if you attach an image, the file will also
 be included at the top of the blog entry. This is a handy and simple way to
 display an image with a entry. </p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Scheduled Releases</h3>
+<h4>Scheduled Releases</h4>
 
 <p>BlogCFC supports delayed entries. This means you can write
 an entry now that won't be displayed until later in the day. Subscribers will
 not get an email on the entry until the entry is published. BlogCFC will
 automatically add a scheduled event to handle the entry release.</p>
 
-<p>&nbsp;</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Draft Mode</h3>
+<h4>Draft Mode</h4>
 
 <p>BlogCFC technically doesn't support a draft mode, but an
 entry can be saved with the Released setting to false. This means that the entry
 will not be shown on the blog. If you want to write an entry and save it
 without publishing it, simply set the Released value to false.</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>HTML/XML-RPC Editors</h3>
+<h4>HTML/XML-RPC Editors</h4>
 
 <p>BlogCFC uses a simple text area to handle entry editing. If
 you want fancier editing, you have two options. One is to simply use an XML-RPC
@@ -596,58 +581,35 @@ tinyMCE. I've made this easier by abstracting the textarea field out of the
 blog editor. You can find this in the tags folder. The filename is
 textarea.cfm. </p>
 
-<p>&nbsp;</p>
+<hr/>
 
-<p>For an example of how to use tinyMCE, see this blog entry:
-http://www.succor.co.uk/index.cfm/2006/10/10/Adding-TinyMCE-to-blogCFC-admin-area</p>
+<a name="publishing"></a>
+<h2>Publishing Non-Blog Content</h2>
 
-<p>&nbsp;</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Handling Users and Security</h3>
-
-<p>BlogCFC 5.9.4 added new features in regards to blog users
-and security. You can now add, edit, and delete blog users. (Note � you should
-not delete users who have written articles.) For each user you edit you can now
-specify roles. A special role, �Admin� allows for everything. You can supply
-specific permissions though if you want to prevent users from changing
-categories for example. BlogCFC 5.9.4 ships with a small set of permissions but
-these will be expanded in the future.</p>
-
-<p>&nbsp;</p>
-
-<h3 style='margin-left:0in;text-indent:0in;page-break-before:always'><span
-style='font-size:20.0pt'>Working with Pages and Textblocks</span></h3>
-
-<p>&nbsp;</p>
-
-<p>The 5.1 version of BlogCFC added basic CMS (content management
-system) capabilities to the blogging package. While the basic blog application
+<p>
+BlogCFC has basic CMS (content management system) capabilities. While the basic blog application
 works great for diary style entries, there was no way to create basic content
-outside of the blog. BlogCFC 5.1 changes that with the pages and textblock
-options.</p>
+outside of the blog. BlogCFC provides additional publishing capabalities with by prodiving support for Pages, Textblocks, and Slide Shows.
+</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Pages</h3>
+<h4>Pages</h4>
 
 <p>Pages are exactly what they sound like - complete pages of
 content. So imagine you wanted to add a &quot;About Me&quot; page to your blog.
 By using the pages feature, you could create a page that describes you. Once
 you give it a title, BlogCFC will automatically creates a SES (search engine
 safe URL) for the page and display it in the administrator. All pages live off
-the page.cfm file. So your &quot;About Me&quot; page might have this url:</p>
+the page.cfm file. So your &quot;About Me&quot; page might have this url: http://www.yourblog.com/page.cfm/About-Me
+</p>
 
-<p>&nbsp;</p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>http://www.yourblog.com/page.cfm/About-Me</span></p>
-
-<p>&nbsp;</p>
 
 <p>You can add any number of pages you want. To link to a blog
 page, simply use the URL displayed in the administrator. Pages follow the same
 editing rules that blog entries do. This means you can include code and
 textblocks directly in the content. The only tag not supported is the
-&lt;more/&gt; tag.</p>
+<code>&lt;more/&gt;</code> tag.</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Textblocks</h3>
+<h4>Textblocks</h4>
 
 <p>A textblock acts much like a page. However, these are used
 for smaller pieces of content. For example, imagine you have a pod with your
@@ -655,84 +617,87 @@ favorite links. Normally to update this you would need to edit the file and FTP
 it to the server. Textblocks lets you store the link pod data in the database.
 To use textblocks, simply use the textBlock application control:</p>
 
-<p>&nbsp;</p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&lt;cfoutput&gt;<br>
+<blockquote>
+<p>
+&lt;cfoutput&gt;<br>
 #application.textblock.getTextblockContent(&quot;links&quot;)#<br>
-&lt;/cfoutput&gt;</span></p>
+&lt;/cfoutput&gt;</p>
+</blockquote>
 
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
-
-<p>Textblocks are identified by their labels so ensure that you
+<p>
+Textblocks are identified by their labels so ensure that you
 do not duplicate two textblock labels. You can include the content of a
-textblock inside a blog entry by using the &lt;textblock&gt; tag. Please see
-the blog editing section for more information.</p>
+textblock inside a blog entry by using the <code>&lt;textblock&gt;</code> tag. Please see
+the blog editing section for more information.
+</p>
 
-<h3 style='margin-left:0in;text-indent:0in;page-break-before:always'><span
-style='font-size:20.0pt'>Working with Slide Shows</span></h3>
+<h4>Working with Slide Shows</h4>
 
-<p><span style='font-size:20.0pt'>&nbsp;</span></p>
 
-<p>BlogCFC 5.2 added a new feature: Slide Shows. There are two
-ways to create slide shows.� One way to create a slide show is to� simply
+<p>
+There are two ways to create slide shows. One way to create a slide show is to simply
 upload a folder of images underneath your blog's images/slideshows folder. If
 your folder was named &quot;foo&quot;, you have created a slide show named foo.
-To view the slide show, simply go to:</p>
+To view the slide show, simply go to: http://www.yourblog.com/slideshow.cfm/foo
+</p>
 
-<p><span style='font-size:20.0pt'>&nbsp;</span></p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>http://www.yourblog.com/slideshow.cfm/foo</span></p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
-
-<p>BlogCFC will automatically discover all GIF and JPG files in
+<p>
+BlogCFC will automatically discover all GIF and JPG files in
 the folder and will create a slide show based on those images. You should do
 your best to size your images beforehand as BlogCFC will not do any automatic
-sizing. </p>
+sizing.
+</p>
 
-<p>&nbsp;</p>
 
-<p>The second way to create slide shows is via the
-administrator. The administrator lets you add, edit, and delete slide shows. It
+<p>The second way to create slide shows is via the administrator. The administrator lets you add, edit, and delete slide shows. It
 also lets you add titles to your shows as well as captions to your pictures. </p>
 
-<p style='page-break-before:always'><b><span style='font-size:
-20.0pt;font-family:"Arial","sans-serif"'>Podcasting</span></b></p>
+<h4>Podcasting</h4>
 
-<p>&nbsp;</p>
 
-<p>Podcasting support was added to BlogCFC 5.9.1. The major
-work for this was provided by Brian Meloche. Podcasting is a large topic so
-I�ll just cover how BlogCFC handles it. I assume you�ve got your MP3 files
-already prepared and ready to go. </p>
-
-<p>&nbsp;</p>
+<p>Podcasting for BlogCFC was added by Brian Meloche. Podcasting is a large topic so we'll just cover how BlogCFC handles it. 
+We will also assume you've got your MP3 files already prepared and ready to go.
+</p>
 
 <p>The first thing you need to do is add the MP3 to the blog
 entry. You can do this either by uploading the MP3 when editing the blog entry,
 or by using another program (like an FTP client) to upload the MP3 file. You
 can then manually type in the name of the file in the blog entry.</p>
 
-<p>&nbsp;</p>
-
 <p>As soon as you have used an MP3 file for a blog entry, a
 simple, Flash based audio player will be rendered with the blog entry. Even if
 you have no plans of being a podcaster, this could be useful for folks who want
 to attach songs or other sounds to a blog entry.</p>
 
-<p>&nbsp;</p>
 
-<p>BlogCFC now supports new settings for podcasting. They are:
+<p>
+BlogCFC supports settings for podcasting. They are:
 itunesSubtitle, itunesSummary, itunesKeywords, itunesAuthor, itunesImage, and
 itunesExplicit. These settings are used in the RSS feed and are used by various
-feed readers to help flag blogs with podcasts attached to them. </p>
+feed readers to help flag blogs with podcasts attached to them.
+</p>
 
-<h3 style='margin-left:0in;text-indent:0in;page-break-before:always'><span
-style='font-size:20.0pt'>Miscellaneous</span></h3>
+<hr/>
 
-<h3 style='margin-left:0in;text-indent:0in'>Layout Options</h3>
+<a name="security"></a>
+<h2>Security</h2>
 
-<p>The look and feel of your blog is controlled by files in the
+<p>
+BlogCFC handles security via a simple username/password mechanism. Out of the box, the admin
+user has the ability to do anything. However, you can create new users and givem them specific roles.
+Currently BlogCFC ships with a set of roles that allow for control over who can write and publish
+content as well as manage categories. Who you give access to these features is entirely up to you.
+</p>
+
+<hr/>
+
+<a name="misc"></a>
+<h2>Miscellaneous</h2>
+
+<h4>Layout Options</h4>
+
+<p>
+The look and feel of your blog is controlled by files in the
 client directory. The main file you will want to examine is /tags/layout.cfm.
 This, along with /includes/styles.css and /includes/layout.css, control most of
 the look and feel of the blog. Other files you may want to look at: index.cfm
@@ -740,43 +705,30 @@ controls the display of entries. If you wanted to modify how an entry is shown,
 you would modify this file. The file /tags/podlayout.cfm controls the display
 of pods (right hand content). Do not forget that caching is used to speed up
 the display of the blog. If you modify the layout, hit your blog with ?reinit=1
-in the URL to force a refresh of the cache. </p>
+in the URL to force a refresh of the cache.
+</p>
 
-<p>&nbsp;</p>
-
-<p>The installation folder contins a &quot;skins&quot; folder
+<p>
+The installation folder contins a &quot;skins&quot; folder
 that has a few other files you can use to change the layout of your blog. There
 are four options: Fixed versus Liquid (liquid means the content stretches with
-the window) and an option to place the pods on the left.</p>
+the window) and an option to place the pods on the left.
+</p>
 
-<p><b><span style='font-size:13.0pt'>&nbsp;</span></b></p>
-
-<p><b><span style='font-size:13.0pt;font-family:"Arial","sans-serif"'>Comment
-Moderation</span></b></p>
-
-<p><span style='font-size:13.0pt'>&nbsp;</span></p>
-
-<p><span style='font-size:13.0pt'>You can enable comment
-moderation by editing the blog.ini.cfm file or by using the Admin settings
-page. If comment moderation is enabled, comments will not show up until you
-approve them. You can use the footer of the comment email to approve comments
-with one click.</span></p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Pods</h3>
+<h4>Pods</h4>
 
 <p>&quot;Pods&quot; is simply my term for the blocks of content
 in the right hand column. These tags are loaded by the /tags/layout.cfm file.
 To ensure a common look and feel, each pod file should use the /tags/podlayout.cfm
 file. This controls the size and tabular look of the pods. There are multiple
-pods included in the zip. You can modify/add/delete these to suit your tastes.</p>
-
-<p>&nbsp;</p>
+pods included in the zip. You can modify/add/delete these to suit your tastes.
+</p>
 
 <p>Please note that some pods included with BlogCFC are not
 actually used out of the box. I encourage you to take a look at the pods and
 see which ones you would like to use.</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Caching</h3>
+<h4>Caching</h4>
 
 <p>The blog makes use of scopeCache, a custom tag I developed
 to enable easy RAM caching. You should be aware, however, that this caching
@@ -786,16 +738,8 @@ using the Administrator. Caching will be automatically refreshed whenever you
 add, edit, or delete an entry. Basically, you need not worry about it unless
 you are working on the layout.</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Security Options and Multi-User
-Blogs</h3>
 
-<p>Blog 3.5 added support for multiple blogs and users per dsn.
-To add, edit, or delete users, you must edit directly in the database itself.
-Any user defined in the tblUsers table will have access to all the blogs that
-exist in the database. You can use the blog.ini.cfm file to limit users to
-particular blogs. Please see the Blog INI section for more information.</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Internationalization</h3>
+<4>Internationalization</h4>
 
 <p>BlogCFC makes use of a resource bundle CFC developed by Paul
 Hastings (and with slight modifications by myself). All strings (things like
@@ -806,7 +750,7 @@ that particular resource bundle. To create a new resource bundle in your
 language, copy the en_US file and make sure you translate each and every
 setting.</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Comment Notification</h3>
+<h4>Comment Notification</h4>
 
 <p>By default, when a user posts a comment to a thread, the
 administrator for the blog will get an email. Users also have the option to
@@ -822,195 +766,83 @@ unsubscribe URL and values specific to the person getting the email. Note that
 as the owner of the blog, you get emails for all postings. The unsubscribe link
 will be marked as unavailable.</p>
 
-<p>&nbsp;</p>
-
 <p>By default, all emails sent out will be marked with a footer
 that identifies the BlogCFC application and gives credit to Raymond Camden. You
 have the right to remove this footer, or modify it as you see fit.</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Using Aliases</h3>
+<h4>Ping</h4>
 
-<p>BlogCFC makes use of UUIDs to identify blog entries. Some
-folks do not care for these URLs. A feature of BlogCFC is the ability to give
-an alias to an entry. So for example, a blog entry on Star Wars could have an
-alias of �starwars.� To load an entry with it�s alias, you must use this
-syntax:</p>
-
-<p>&nbsp;</p>
-
-<p><span style='font-size:10.0pt;font-family:"Courier New"'>index.cfm?mode=alias&amp;alias=starwars</span></p>
-
-<p>&nbsp;</p>
-
-<p>&nbsp;</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>SES URLs and Aliases</h3>
-
-<p>BlogCFC version 3.8 added support for SES URLs. So, a
-typical URL could look like so:</p>
-
-<p>&nbsp;</p>
-
-<p><a
-href="http://host/client/index.cfm/2005/7/12/Testing-my-new-title-maker">http://host/client/index.cfm/2005/7/12/Testing-my-new-title-maker</a></p>
-
-<p>&nbsp;</p>
-
-<p>By default, when you make a new blog entry, an alias using
-the year, month, date, and title will be created. You do not need to worry
-about this typically. The only potential problem will be if two (or more)
-entries in the same day have the exact same title, or a title similar enough so
-that they create the same shortened version.</p>
-
-<p>&nbsp;</p>
-
-<p>If you have problems with the SES URLs, please see this
-technote: http://www.adobe.com/go/2addd247. Also ensure your blogURL property
-has &quot;index.cfm&quot; in the value.</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Ping</h3>
-
-<p>Some blog aggregators support �ping�, which simply means a
+<p>Some blog aggregators support ping, which simply means a
 way to tell the aggregator that you have updated your blog. This is typically
 done by simply loading a URL. For aggregators that support this feature, you
 can ping them from your blog when you add a new entry. Simply add the ping URL
 to the pingurls setting in the blog.ini.cfm file. You can supply multiple ping
 URLs by simply separating them with a comma.</p>
 
-<p>&nbsp;</p>
+<p>
+Note - BlogCFC supports "special" pings for Technorati, Weblogs, and Icerocket. You
+can ping these services by using the following special ping URLs: @technorati, @weblogs, and @icerocket.
+</p>
 
-<p>Note - BlogCFC supports Technorati pings. In order to ping
-Technorati, simply add @technorati to your blog.ini.cfm file in the pingurls
-setting. This can be by itself, or with any other ping URL.</p>
+<h4>RSS</h4>
 
-<p>&nbsp;</p>
+<p>
+BlogCFC makes use of RSS 2.0. You can offer RSS 1.0 support
+by simply adding version=1 to the RSS URL. By default your RSS url will be: http://yourblog.com/rss.cfm.
+</p>
 
-<p>BlogCFC also supports the Weblogs API
-(http://www.weblogs.com/api.html). To ping weblogs.com, add @weblogs to your
-ping list. </p>
-
-<p>&nbsp;</p>
-
-<p>BlogCFC also supports Icerocket. To ping them, add
-@icerocket to your list of pingurls.</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>RSS</h3>
-
-<p>BlogCFC makes use of RSS 2.0. You can offer RSS 1.0 support
-by simply adding version=1 to the RSS URL. So if your normal RSS URL is:</p>
-
-<p>http://www.coldfusionjedi.com/rss.cfm</p>
-
-<p>&nbsp;</p>
-
-<p>You would use this to offer RSS 1.0:</p>
-
-<p>http://www.coldfusionjedi.com/rss.cfm?version=1</p>
-
-<p>&nbsp;</p>
-
-<p>It is certainly ok to offer both RSS feeds to your visitors,
-but only RSS 2.0 will support enclosures.</p>
-
-<p>&nbsp;</p>
-
-<p>You can create �RSS� blends of multiple categories. This is
+<p>You can create RSS blends of multiple categories. This is
 done by first getting the ID values of each category. You can find these in the
 BlogCFC admin. Once you have the IDs, you append them to the end of the core
 RSS url. If your blog was located at blogcfc.localhost.com, your RSS url would
 look like so:</p>
 
-<p>&nbsp;</p>
 
 <p>http://blogcfc5.localhost.com/client/rss.cfm?mode=full&amp;mode2=cat&amp;catid=96F8AE90-A8BC-1230-CC4F71ED36CF7E51,96F8DD56-9C3A-BEF5-88133F51DC54E2FB</p>
 
-<p>&nbsp;</p>
-
 <p>You can put any number of category IDs in this list. (Up to
-the maximum length of a URL.) This RSS �blend� will show the last ten articles
+the maximum length of a URL.) This RSS blend will show the last ten articles
 from any of the categories listed. </p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Enclosures</h3>
-
-<p>BlogCFC 3.9 added support for enclosures. These are media
-files associated with a blog entry. This allows support for pod casting. While
-you can attach any file to a blog entry, normally you will want to attach an
-MP3 file. Once a file is attached, it will show up in the entry as a download,
-and be displayed in the RSS 2.0 feed. If you enclose an image, it will also be
-automatically added to the blog entry in the top left corner.</p>
-
-<p>&nbsp;</p>
-
-<p>You also have the option of uploading an enclosure manually
-(via FTP for example) and setting an enclosure file name directly in the blog
-entry editor. This is handy for files that are too large to upload via HTTP.</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Subscribers</h3>
+<h4>Subscribers</h4>
 
 <p>BlogCFC allows folks to subscribe to your blog. When a
 person subscribes, they will receive each and every posting you write. They
-will not receive an email if you simply edit an existing post. </p>
+will not receive an email if you simply edit an existing post.
+</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>Print Format</h3>
-
-<p>BlogCFC offers a print format version of blog entries. This
-is only supported on ColdFusion MX 7. If you are not running BlogCFC on
-ColdFusion MX 7, you will not see the Print link.</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Google Site Maps</h3>
+<h4>Google Site Maps</h4>
 
 <p>BlogCFC now supports Google Site Maps. Google Site Maps are
 a way to let Google know the 'map' of your site. For BlogCFC, this is simply a
-listing of all the blog entries. More information may be found here:</p>
-
-<p>&nbsp;</p>
-
-<p>https://www.google.com/webmasters/sitemaps/docs/en/about.html</p>
-
-<p>&nbsp;</p>
+listing of all the blog entries. More information may be found here: <a href="https://www.google.com/webmasters/sitemaps/docs/en/about.html">https://www.google.com/webmasters/sitemaps/docs/en/about.html</a>
+</p>
 
 <p>BlogCFC uses the file, googlesitemap.cfm, in the root of the
 client folder to enable site map support. Note - I have problems using a CFM
 file with Google. I found that Google would only accept my file when I added a
 URL parameter at the end to 'fake' an XML file. In other words, I provided a
-URL like so:</p>
-
-<p>&nbsp;</p>
-
-<p>http://www.foo.com/googlesitemap.cfm?ext=xml</p>
-
-<p>&nbsp;</p>
+URL like so: http://www.foo.com/googlesitemap.cfm?ext=xml</p>
 
 <p>This URL variable was ignored by the code, and seemed to
 please Google. As you know, we must all please Google!</p>
 
-<p>&nbsp;</p>
-
-<h3 style='margin-left:0in;text-indent:0in'>Dynamic BlogCFC Instances</h3>
+<h4>Dynamic BlogCFC Instances</h4>
 
 <p>BlogCFC supports dynamic blog instances. This allows for
 Blogger.com type sites. While I do not have 'proper' documentation right now,
-you can view a blog entry on the topic here: http://www.coldfusionjedi.com/index.cfm/2006/10/7/Dynamic-BlogCFC-Instances</p>
+you can view a blog entry on the topic here: <a href="http://www.coldfusionjedi.com/index.cfm/2006/10/7/Dynamic-BlogCFC-Instances">http://www.coldfusionjedi.com/index.cfm/2006/10/7/Dynamic-BlogCFC-Instances</a></p>
 
-<p>&nbsp;</p>
 
-<h3 style='margin-left:0in;text-indent:0in'>�Blended� Category Pages</h3>
+<h4>Blended Category Pages</h4>
 
 <p>In the RSS section I talked about how you can manually
 create RSS links for multiple categories. The same can be done for the front
 end. As with the RSS support, this is done by finding the category IDs and
 adding them to the URL, like so:</p>
 
-<p>&nbsp;</p>
-
 <p>http://blogcfc5.localhost.com/client/index.cfm?mode=cat&amp;catid=96F8AE90-A8BC-1230-CC4F71ED36CF7E51,96F8DD56-9C3A-BEF5-88133F51DC54E2FB</p>
 
-<p>&nbsp;</p>
-
-<p>Note that you cannot use the category aliases. You must use
-the IDs. </p>
-
-
 </body>
-
 </html>
+
