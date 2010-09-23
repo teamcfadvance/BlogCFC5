@@ -1,0 +1,66 @@
+
+
+<p>
+<b>Oracle 10g Notes</b>:
+</p>
+
+<p>Note - for Oracle, only version 10g is supported.</p>
+
+<p><i>The following notes come from Nick Hill. Thanks Nick!</i></p>
+
+<p>When you install BlogCFC onto a server utilizing Oracle as
+your datasource, you will need to be aware of some factors that may inhibit the 
+installation. The installation scripts are broken into 2 parts. The first is the table creation, grants and constraints. The second part
+is utilizing Oracle Synonyms to allow for general relation of tables names to
+limit the difference in the application code.</p>
+
+<p>In some production scenarios access to Public Synonyms is
+blocked by the DBA. Oracle may be configured as a single database with multiple
+schemas. If public synonyms were allowed, any schema would be able to access
+the BlogCFC tables. If the previous scenario does not apply to your Oracle
+installation you may not have any issues with the Oracle scripts as they are
+currently written. If however your installation does match the above described
+scenario please be aware of the following changes to the scripts.</p>
+
+<p><b>Oracle.sql</b></p>
+
+<p>The first thing to be aware of is that when you are running
+this script you will want to be logged in as the SCHEMA OWNER for the Oracle
+schema and NOT the CF Datasource user that you are about to configure. It is a
+good practice to use a separate Oracle User (not the schema owner) for
+CFAdministrator to access your Schema. Specific to the script you will want to
+make changes to the lines that follow <code>insert into TBLUSERS</code></p>
+
+<p>You will first want to change <code>yourschema</code> to not be a
+schema name, but actually the separate Oracle User that you will assign to the datasource
+in CF Administrator. Ex. (make sure you do not use these example names)</p>
+
+<p>Oracle Schema: MyBlog<br/>
+Oracle Schema Owner: BlogAdmin<br/>
+CFAdministrator User: CFBlogAdmin
+</p>
+
+<p>(This is the name you enter in CFAdministrator in the &quot;Data &amp; Services &gt; Datasources &gt; Oracle&quot; Screen next 
+to the &quot;User name&quot; label).</p>
+
+<p>Before you run Oracle.sql replace <code>yourschema</code> with the
+CFAdministrator User (CFBlogAdmin).</p>
+
+<p>Logged in as the schema owner (BlogAdmin) you will run
+Oracle.sql. This will grant the necessary priviledges to CFAdmin.</p>
+
+<p><b>Oracle_synonyms.sql</b></p>
+
+<p>This is where Oracle is different from the other DB's. You
+will now want to LOGOUT as the Schema Owner (BlogAdmin) and log in as the
+CFAdmin User (CFBlogAdmin). Before you run oracle_synonyms.sql you will need to
+make some changes to the code. You will need to preface each tablename with the
+Oracle Schema that is being used. Ex.</p>
+
+<p>CREATE SYNONYM TBLUSERS FOR MyBlog.TBLUSERS;</p>
+
+<p>With all of the lines changed, now you will want to run this
+script as the CFAdmin user (CFBlogAdmin). What you have done is created a
+PRIVATE synonym for these tables that ONLY CFAdmin will be able to use which
+will ensure that you do not have to preface every table name in the Client code
+with additional scoping of the Oracle Schema.</p>
