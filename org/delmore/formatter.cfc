@@ -120,7 +120,7 @@
 				}
 			</script>
 			<div style='#getStyle("TOOLBAR")#'>
-				<span style='margin:0 0 0 2em'/>
+				<!---<span style='margin:0 0 0 2em'/>--->
 				<!--- Toggle code view --->
 				<a href='javascript:toggle_view_#arguments.codesig#()' style='#getStyle("TOOLBARLINK")#' id='view_#arguments.codesig#'>view plain</a>
 				
