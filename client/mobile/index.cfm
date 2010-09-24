@@ -185,6 +185,8 @@
 
             <div class="info">
                 <p>Add this page to your home screen to view the custom icon, startup screen, and full screen mode.</p>
+				<BR>
+				<p><a href="#">Click Here</a> to exit mobile version.</p>
             </div>
         </div> 		      
     </body>

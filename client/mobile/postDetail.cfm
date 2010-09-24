@@ -5,8 +5,7 @@
 
 <cftry>
 	<cfset entryData = application.blog.getEntry(thisItem)>
-	<cfset comments = application.blog.getComments(thisItem)>
-	
+	<cfset comments = application.blog.getCommentCount(thisItem)>	
 	<!---catch an attept to load an unreleased entry--->
 	<cfif NOT entryData.released>
 		<cfset dataError = true>	
@@ -17,8 +16,6 @@
 </cfcatch>
 
 </cftry>
-
-
 <cfoutput>
 	<div id="#hash(thisItem)#">
 	    <div class="toolbar">
@@ -55,27 +52,13 @@
 				</div>					
 			</div>			
 		
-			<cfif comments.recordCount>
+			<cfif comments>
 			<ul class="edgetoedge" >	
-				<li style="text-align: center;">Comments</li>
+				<li style="text-align: center;"><a href="postComments.cfm/#thisItem#">View Comments</a></li>
 			</ul>
-			<ul class="edgetoedge">
-				<cfloop query="comments">
-					<li class="sep" style="font-size: 14px;">
-						<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar/#lcase(hash(comments.email))#?s=40&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.png" alt="#comments.name#'s Gravatar" border="0" align="left" style="padding-right: 5px;" /></cfif>
-						#comments.name# 
-						<cfif application.gravatarsAllowed><BR><cfelse> - </cfif>
-						#application.localeUtils.dateLocaleFormat(comments.posted)# #application.localeUtils.timeLocaleFormat(comments.posted)#
-					</li>
-					<li style="font-size: 13px;">
-						<p>
-							#paragraphFormat2(replaceLinks(comments.comment))#
-						</p>
-					</li>			
-				</cfloop>
-			</ul>
+			
 			</cfif>
 		</cfif>
 	</div>
 
-</cfoutput>
+</cfoutput>547
