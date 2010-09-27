@@ -22,5 +22,5 @@
 </cfif>
 
 <cfoutput query="articles">
-		<li class="arrow" style="padding: 7px 10px 7px 10px;"><a href="postDetail.cfm/#id#"><span style="font-size: 14px;">#left(title, 35)#<cfif len(title) GT 35>...</cfif></span></a></li>
+		<li class="arrow" style="padding: 7px 10px 7px 10px;"><a href="postDetail.cfm/#id#" fullhref="#application.blog.makeLink(articles.id)#?mobile=1"><span style="font-size: 14px;">#left(title, 35)#<cfif len(title) GT 35>...</cfif></span></a></li>
 </cfoutput>

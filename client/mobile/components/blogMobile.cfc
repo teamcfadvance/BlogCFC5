@@ -29,6 +29,7 @@
 		<cfset instance.appVersion = variables.utils.configParam(variables.cfgFile,arguments.name,"appVersion")>
 		<cfset instance.theme = variables.utils.configParam(variables.cfgFile,arguments.name,"theme")>
 		<cfset instance.mobileRoot = variables.utils.configParam(variables.cfgFile,arguments.name,"mobileRoot")>
+		<cfset instance.gaAccount = variables.utils.configParam(variables.cfgFile,arguments.name,"gaAccount")>
 		
 		
 		<!--- Name the blog --->

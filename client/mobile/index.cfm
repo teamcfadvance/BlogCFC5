@@ -26,9 +26,10 @@
 <cfset pages = ceiling(articleData.totalEntries/params.maxEntries)>
 
 
+<cfset isGAEnabled = len(application.blogMobile.getProperty("gaAccount"))>
 
 
-<!doctype html>
+
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -45,11 +46,11 @@
 		<script type="text/javascript" charset="utf-8">
 		
 			// Google Analytics tracker for this page view
-			/* uncomment to enable GA
+			<cfif isGAEnabled>
 			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', '----account number here----']);
+			_gaq.push(['_setAccount', '<cfoutput>#application.blogMobile.getProperty("gaAccount")#</cfoutput>']);
 			_gaq.push(['_trackPageview']);			
-			*/
+			</cfif>
 			
             var jQT = new $.jQTouch({
                 icon: './assets/icon.png',
@@ -115,13 +116,13 @@
 				});
 				
 				// Google Analytics click trackers
-				/* uncomment to enable GA
+				<cfif isGAEnabled>
 				$('a[href]').click(function(){
 					var linksto = this.href;
 					var fullhref = $(this).attr('fullhref');
 					if (linksto.match(/\.(cfm)/)) _gaq.push(['_trackPageview',fullhref]);
 				});
-				*/
+				</cfif>
 				
 				// hide prev on load					
 				btnShow(1);		
@@ -234,14 +235,14 @@
             </div>
         </div> 
 	
-	<!--- Standard Google Analytics include --->
-	<!--- uncomment to enable GA
-	  <script type="text/javascript">  (function() {
-	    var ga = document.createElement('script');     ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:'   == document.location.protocol ? 'https://ssl'   : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	    })();
-	   </script>	
-			      --->
+		<!--- Standard Google Analytics include --->
+		<cfif isGAEnabled>
+		  <script type="text/javascript">  (function() {
+		    var ga = document.createElement('script');     ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:'   == document.location.protocol ? 'https://ssl'   : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		    })();
+		   </script>	
+		</cfif>
     </body>
 </html>

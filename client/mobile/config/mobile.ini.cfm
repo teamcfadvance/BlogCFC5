@@ -1,7 +1,8 @@
 [default]
-title=BlogCFC Mobile
-shortTitle=BlogCFC Mobile
-iconLabel=BlogCFC Mobile
+title=blogCFC Mobile
+shortTitle=BlogCFC
+iconLabel=blogCFC
 appVersion=1.0
 theme=jqt
-mobileRoot=coldfusionjedi.com/mobile
+mobileRoot=www.blogcfc.com/mobile
+gaAccount=
