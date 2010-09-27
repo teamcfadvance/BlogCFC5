@@ -43,6 +43,14 @@
 		<style type="text/css" media="screen">@import "./themes/main.css";</style>
 		
 		<script type="text/javascript" charset="utf-8">
+		
+			// Google Analytics tracker for this page view
+			/* uncomment to enable GA
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', '----account number here----']);
+			_gaq.push(['_trackPageview']);			
+			*/
+			
             var jQT = new $.jQTouch({
                 icon: './assets/icon.png',
                 addGlossToIcon: false,
@@ -61,10 +69,7 @@
 	        var maxPage = <cfoutput>#pages#</cfoutput>;		
 			  $(function(){
 	          
-			  
-			  	// hide forward button on initial load.
-			  	$('#fwdBtn').hide();
-	            
+			  	            
 				// warn on links that will take user to new window.
 				$('a[target="_blank"]').click(function() {
 	                if (confirm('This link opens in a new window.')) {
@@ -108,6 +113,15 @@
 					});
 					return false;		
 				});
+				
+				// Google Analytics click trackers
+				/* uncomment to enable GA
+				$('a[href]').click(function(){
+					var linksto = this.href;
+					var fullhref = $(this).attr('fullhref');
+					if (linksto.match(/\.(cfm)/)) _gaq.push(['_trackPageview',fullhref]);
+				});
+				*/
 				
 				// hide prev on load					
 				btnShow(1);		
@@ -201,7 +215,7 @@
 			 <ul class="plastic" id="blogList">		
 			 	<!---hidden item for navigation to load directly into a post--->
 				<cfif isDefined("loadPost")>
-			 		<li class="arrow" style="display: none;"><a id="loadPostClick" href="./postDetail.cfm/<cfoutput>#loadpost#</cfoutput>"></a></li>
+			 		<li class="arrow" style="display: none;"><a id="loadPostClick" href="./postDetail.cfm/<cfoutput>#loadpost#</cfoutput>" fullhref="#application.blog.makeLink(loadpost)#?mobile=1"></a></li>
 				</cfif>
 			 	<cfinclude template="posts.cfm">
 			 </ul>
@@ -219,8 +233,15 @@
 				<p><a href="#">Click Here</a> to exit mobile version.</p>
             </div>
         </div> 
-	<cfif isDefined('loadpost')>
-	<div id="loadInto"></div>	
-	</cfif>		      
+	
+	<!--- Standard Google Analytics include --->
+	<!--- uncomment to enable GA
+	  <script type="text/javascript">  (function() {
+	    var ga = document.createElement('script');     ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:'   == document.location.protocol ? 'https://ssl'   : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	    })();
+	   </script>	
+			      --->
     </body>
 </html>
