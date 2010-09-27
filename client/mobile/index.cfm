@@ -1,3 +1,21 @@
+
+<cfif listlen(cgi.PATH_INFO, '/') GT 1>
+	<!---attempt to load directly into a post--->
+	<cfmodule template="../tags/getmode.cfm" r_params="chkparams"/>
+	<cfset thePostID = application.blog.getEntries(chkparams)>
+	
+	<!---we got a query back.. SES url contained a post--->
+	<cfif isQuery(thePostID.entries)> 
+		<!---have to do this because jqtouch breaks on ses urls--->
+		<cfset session.loadPost = thePostID.entries.id>
+		<cflocation url="http://#cgi.SERVER_NAME##cgi.SCRIPT_NAME#">
+	</cfif>
+<cfelseif isDefined('session.loadPost')>
+	<cfset loadpost = session.loadPost>
+	<cfset void = structDelete(session, "loadpost")>
+</cfif>
+
+
 <!---this is here for initial load --->
 <cfset params.startrow = 1>
 <cfset params.maxEntries = application.mobilePageMax>
@@ -6,6 +24,9 @@
 
 <!---determin max numer of pages--->
 <cfset pages = ceiling(articleData.totalEntries/params.maxEntries)>
+
+
+
 
 <!doctype html>
 <html>
@@ -90,7 +111,11 @@
 				
 				// hide prev on load					
 				btnShow(1);		
-
+				
+			<cfif isDefined('loadpost')>
+				// select hidden div to load directly to a specific post
+				$('#loadPostClick').click();
+			</cfif>
             });
 			
 			btnShow = function(view){				
@@ -110,10 +135,11 @@
 				
 			}
 			
+			
         </script>
 		<!---
 		This section is here to layout screen correctly. 
-		If in css file the interface could load wrong due to css load delay
+		If this was in css file the interface could load wrong due to css load delay
 		--->
         <style type="text/css" media="screen">
 	       	.body {
@@ -173,6 +199,10 @@
 			</ul>
 			
 			 <ul class="plastic" id="blogList">		
+			 	<!---hidden item for navigation to load directly into a post--->
+				<cfif isDefined("loadPost")>
+			 		<li class="arrow" style="display: none;"><a id="loadPostClick" href="./postDetail.cfm/<cfoutput>#loadpost#</cfoutput>"></a></li>
+				</cfif>
 			 	<cfinclude template="posts.cfm">
 			 </ul>
 			 
@@ -188,6 +218,9 @@
 				<BR>
 				<p><a href="#">Click Here</a> to exit mobile version.</p>
             </div>
-        </div> 		      
+        </div> 
+	<cfif isDefined('loadpost')>
+	<div id="loadInto"></div>	
+	</cfif>		      
     </body>
 </html>
