@@ -129,194 +129,122 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 	</cfif>
 
 	<cfoutput>
-	<form action="settings.cfm" method="post">
-	<table>
-		<tr>
-			<td align="right">blog title:</td>
-			<td><input type="text" name="blogtitle" value="#htmlEditFormat(form.blogtitle)#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr valign="top">
-			<td align="right">blog description:</td>
-			<td><textarea name="blogdescription" class="txtAreaShort">#htmlEditFormat(form.blogdescription)#</textarea></td>
-		</tr>
-		<tr valign="top">
-			<td align="right">blog keywords:</td>
-			<td><input type="text" name="blogkeywords" value="#htmlEditFormat(form.blogkeywords)#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr valign="top">
-			<td align="right">owner email:</td>
-			<td><input type="text" name="owneremail" value="#htmlEditFormat(form.owneremail)#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr>
-			<td align="right">blog url:</td>
-			<td><input type="text" name="blogurl" value="#form.blogurl#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr>
-			<td align="right">comments sent from:</td>
-			<td><input type="text" name="commentsfrom" value="#form.commentsfrom#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr>
-			<td align="right">max entries:</td>
-			<td><input type="text" name="maxentries" value="#form.maxentries#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr>
-			<td align="right">offset:</td>
-			<td><input type="text" name="offset" value="#form.offset#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr valign="top">
-			<td align="right">ping urls:</td>
-			<td><textarea name="pingurls" class="txtAreaShort">#toLines(form.pingurls)#</textarea></td>
-		</tr>
-		<tr>
-			<td align="right">dsn:</td>
-			<td><input type="text" name="dsn" value="#form.dsn#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">blog database type:</td>
-			<td>
-			<select name="blogdbtype">
-			<cfloop index="dbtype" list="#validDBTypes#">
-			<option value="#dbtype#" <cfif form.blogdbtype is dbtype>selected</cfif>>#dbtype#</option>
-			</cfloop>
-			</select>
-			</td>
-		</tr>
-		<tr valign="top">
-			<td align="right">dsn username:</td>
-			<td><input type="text" name="dsn_username" value="#form.dsn_username#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr valign="top">
-			<td align="right">dsn password:</td>
-			<td><input type="text" name="dsn_password" value="#form.dsn_password#" class="txtField" maxlength="255"></td>
-		</tr>
-		<tr>
-			<td align="right">locale:</td>
-			<td><input type="text" name="locale" value="#form.locale#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr valign="top">
-			<td align="right">ip block list:</td>
-			<td><textarea name="ipblocklist" class="txtAreaShort">#toLines(form.ipblocklist)#</textarea></td>
-		</tr>
-		<tr>
-			<td align="right">moderate comments:</td>
-			<td>
-			<select name="moderate">
-			<option value="yes" <cfif form.moderate>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.moderate>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">use captcha:</td>
-			<td>
-			<select name="usecaptcha">
-			<option value="yes" <cfif form.usecaptcha>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.usecaptcha>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">use cfFormProtect:</td>
-			<td>
-			<select name="usecfp">
-			<option value="yes" <cfif form.usecfp>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.usecfp>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">use tweetbacks:</td>
-			<td>
-			<select name="usetweetbacks">
-			<option value="yes" <cfif form.usetweetbacks>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.usetweetbacks>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">allow trackbacks:</td>
-			<td>
-			<select name="allowtrackbacks">
-			<option value="yes" <cfif form.allowtrackbacks>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.allowtrackbacks>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr valign="top">
-			<td align="right">trackback spamlist:</td>
-			<td><textarea name="trackbackspamlist" class="txtAreaShort">#toLines(form.trackbackspamlist)#</textarea></td>
-		</tr>
-		<tr>
-			<td align="right">allow gravatars:</td>
-			<td>
-			<select name="allowgravatars">
-			<option value="yes" <cfif form.allowgravatars>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.allowgravatars>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">show file manager:</td>
-			<td>
-			<select name="filebrowse">
-			<option value="yes" <cfif form.filebrowse>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.filebrowse>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">image root for dynamic images:</td>
-			<td><input type="text" name="imageroot" value="#form.imageroot#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">mail server:</td>
-			<td><input type="text" name="mailserver" value="#form.mailserver#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">mail username:</td>
-			<td><input type="text" name="mailusername" value="#form.mailusername#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">mail password:</td>
-			<td><input type="text" name="mailpassword" value="#form.mailpassword#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td colspan="2">The following entries are specifically related to podcasting.</td>
-		</tr>
-		<tr>
-			<td align="right">itunes Subtitle:</td>
-			<td><input type="text" name="itunessubtitle" value="#form.itunessubtitle#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">itunes Summary:</td>
-			<td><input type="text" name="itunessummary" value="#form.itunessummary#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">itunes Keywords:</td>
-			<td><input type="text" name="ituneskeywords" value="#form.ituneskeywords#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">itunes Author:</td>
-			<td><input type="text" name="itunesauthor" value="#form.itunesauthor#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">itunes Image:</td>
-			<td><input type="text" name="itunesimage" value="#form.itunesimage#" class="txtField" maxlength="50"></td>
-		</tr>
-		<tr>
-			<td align="right">itunes Explicit:</td>
-			<td>
-			<select name="itunesexplicit">
-			<option value="yes" <cfif form.itunesexplicit>selected</cfif>>Yes</option>
-			<option value="no" <cfif not form.itunesexplicit>selected</cfif>>No</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="cancel" value="Cancel"> <input type="submit" name="save" value="Save"></td>
-		</tr>
-	</table>
+	<script>
+		function editDatasource() {
+			document.getElementById('datasource_edit').style.display='block';
+			document.getElementById('datasource_ro').style.display='none';
+			
+		}
+	</script>
+	<form action="settings.cfm" method="post" name="settingsForm">
+	<fieldset>
+		<legend>Blog Information</legend>
+		<ul>
+			<li><label for="blogtitle">blog title:</label><input type="text" name="blogtitle" value="#htmlEditFormat(form.blogtitle)#" class="txtField" maxlength="255"></li>
+			<li><label for="blogdescription">blog description:</label><textarea name="blogdescription" class="txtAreaShort">#htmlEditFormat(form.blogdescription)#</textarea></li>
+			<li><label for="blogkeywords">blog keywords:</label><input type="text" name="blogkeywords" value="#htmlEditFormat(form.blogkeywords)#" class="txtField" maxlength="255"></li>
+			<li><label for="owneremail">owner email:</label><input type="text" name="owneremail" value="#htmlEditFormat(form.owneremail)#" class="txtField" maxlength="255"></li>
+			<li><label for="blogurl">blog url:</label><input type="text" name="blogurl" value="#form.blogurl#" class="txtField" maxlength="255"></li>
+		</ul>
+	</fieldset>
+	<fieldset>
+		<legend>Content Settings</legend>
+		<ul>		
+			<li><label for="commentsfrom">comments sent from:</label><input type="text" name="commentsfrom" value="#form.commentsfrom#" class="txtField" maxlength="255"></li>
+			<li><label for="maxentries">max entries:</label><input type="text" name="maxentries" value="#form.maxentries#" class="txtField" maxlength="255"></li>
+			<li><label for="offset">offset:</label><input type="text" name="offset" value="#form.offset#" class="txtField" maxlength="255"></li>
+			<li><label for="pingurls">ping urls:</label><textarea name="pingurls" class="txtAreaShort">#toLines(form.pingurls)#</textarea></li>
+			<li><label for="locale">locale:</label><input type="text" name="locale" value="#form.locale#" class="txtField" maxlength="50"></li>
+		</ul>
+	</fieldset>
+	<fieldset>
+		<legend>Content Controls / Security</legend>
+		<ul>
+			<li><label for="ipblocklist">ip block list:</label><textarea name="ipblocklist" class="txtAreaShort">#toLines(form.ipblocklist)#</textarea></li>
+			<li><label for="moderate">moderate comments:</label>
+				<input type="radio" name="moderate" value="yes" <cfif form.moderate>checked</cfif>/> Yes
+				<input type="radio" name="moderate" value="no" <cfif not form.moderate>checked</cfif>/> No
+			</li>
+			<li><label for="">use captcha:</label>
+				<input type="radio" name="usecaptcha" value="yes" <cfif form.usecaptcha>checked</cfif>/> Yes
+				<input type="radio" name="usecaptcha" value="no" <cfif not form.usecaptcha>checked</cfif>/> No
+			</li>
+			<li><label for="usecfp">use cfFormProtect:</label>
+				<input type="radio" name="usecfp" value="yes" <cfif form.usecfp>checked</cfif>/> Yes
+				<input type="radio" name="usecfp" value="no" <cfif not form.usecfp>checked</cfif>/> No
+			</li>
+			<li><label for="usetweetbacks">use tweetbacks:</label>
+				<input type="radio" name="usetweetbacks" value="yes" <cfif form.usetweetbacks>checked</cfif>/> Yes
+				<input type="radio" name="usetweetbacks" value="no" <cfif not form.usetweetbacks>checked</cfif>/> No
+			</li>
+			<li><label for="allowtrackbacks">allow trackbacks:</label>
+				<input type="radio" name="allowtrackbacks" value="yes" <cfif form.allowtrackbacks>checked</cfif>/> Yes
+				<input type="radio" name="allowtrackbacks" value="no" <cfif not form.allowtrackbacks>checked</cfif>/> No
+			</li>
+			<li><label for="trackbackspamlist">trackback spamlist:</label><textarea name="trackbackspamlist" class="txtAreaShort">#toLines(form.trackbackspamlist)#</textarea></li>
+			<li><label for="allowgravatars">allow gravatars:</label>
+				<input type="radio" name="allowgravatars" value="yes" <cfif form.allowgravatars>checked</cfif>/> Yes
+				<input type="radio" name="allowgravatars" value="no" <cfif not form.allowgravatars>checked</cfif>/> No
+			</li>
+			<li><label for="filebrowse">show file manager:</label>
+				<input type="radio" name="filebrowse" value="yes" <cfif form.filebrowse>checked</cfif>/> Yes
+				<input type="radio" name="filebrowse" value="no" <cfif not form.filebrowse>checked</cfif>/> No
+			</li>
+			<li><label for="imageroot">image root for dynamic images:</label><input type="text" name="imageroot" value="#form.imageroot#" class="txtField" maxlength="50"></li>
+		</ul>
+	</fieldset>
+	<fieldset id="datasource_edit" style='display:none'>
+		<legend>Data Source (Edit mode)</legend>
+		<ul>
+			<li><label for="dsn">dsn:</label><input type="text" name="dsn" value="#form.dsn#" class="txtField" maxlength="50"></li>
+			<li><label for="blogdbtype">blog database type:</label>
+				<select name="blogdbtype">
+				<cfloop index="dbtype" list="#validDBTypes#">
+				<option value="#dbtype#" <cfif form.blogdbtype is dbtype>selected</cfif>>#dbtype#</option>
+				</cfloop>
+				</select>
+			</li>
+			<li><label for="dsn_username">dsn username:</label><input type="text" name="dsn_username" value="#form.dsn_username#" class="txtField" maxlength="255"></li>
+			<li><label for="dsn_password">dsn password:</label><input type="text" name="dsn_password" value="#form.dsn_password#" class="txtField" maxlength="255"></li>
+		</ul>
+	</fieldset>
+	<fieldset id="datasource_ro">
+		<legend>Data Source</legend>
+		<ul>
+			<li><label for="dsn">dsn:</label>#form.dsn#</li>
+			<li><label for="blogdbtype">blog database type:</label>#dbtype#</li>
+			<li><label for="dsn_username">dsn username:</label>#form.dsn_username#</li>
+			<li><label for="dsn_password">dsn password:</label>#form.dsn_password#</li>
+		</ul>
+		<div class="buttonbar">
+			<a href="javascript:editDatasource();" class="button">Edit Data Source</a>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Mail Settings</legend>
+		<ul>
+			<li><label for="mailserver">mail server:</label><input type="text" name="mailserver" value="#form.mailserver#" class="txtField" maxlength="50"></li>
+			<li><label for="mailusername">mail username:</label><input type="text" name="mailusername" value="#form.mailusername#" class="txtField" maxlength="50"></li>
+			<li><label for="mailpassword">mail password:</label><input type="text" name="mailpassword" value="#form.mailpassword#" class="txtField" maxlength="50"></li>
+		</ul>
+	</fieldset>
+	<fieldset>
+		<legend>Podcasting</legend>
+		<ul>
+			<li><label for="itunessubtitle">itunes Subtitle:</label><input type="text" name="itunessubtitle" value="#form.itunessubtitle#" class="txtField" maxlength="50"></li>
+			<li><label for="itunessummary">itunes Summary:</label><input type="text" name="itunessummary" value="#form.itunessummary#" class="txtField" maxlength="50"></li>
+			<li><label for="ituneskeywords">itunes Keywords:</label><input type="text" name="ituneskeywords" value="#form.ituneskeywords#" class="txtField" maxlength="50"></li>
+			<li><label for="itunesauthor">itunes Author:</label><input type="text" name="itunesauthor" value="#form.itunesauthor#" class="txtField" maxlength="50"></li>
+			<li><label for="itunesimage">itunes Image:</label><input type="text" name="itunesimage" value="#form.itunesimage#" class="txtField" maxlength="50"></li>
+			<li><label for="itunesexplicit">itunes Explicit:</label>
+				<input type="radio" name="itunesexplicit" value="yes" <cfif form.itunesexplicit>checked</cfif>/> Yes
+				<input type="radio" name="itunesexplicit" value="no" <cfif not form.itunesexplicit>checked</cfif>/> No
+			</li>
+		</ul>
+	</fieldset>
+	<div class="buttonbar">
+		<a href="settings.cfm" class="button">Cancel Changes</a> <a href="javascript:document.settingsForm.submit();" class="button">Save Settings</a>
+	</div>
 	</form>
 	</cfoutput>
 
