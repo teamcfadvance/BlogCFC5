@@ -211,10 +211,10 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 	<fieldset id="datasource_ro">
 		<legend>Data Source</legend>
 		<ul>
-			<li><label for="dsn">dsn:</label>#form.dsn#</li>
-			<li><label for="blogdbtype">blog database type:</label>#dbtype#</li>
-			<li><label for="dsn_username">dsn username:</label>#form.dsn_username#</li>
-			<li><label for="dsn_password">dsn password:</label>#form.dsn_password#</li>
+			<li><label>dsn:</label>#htmleditformat(form.dsn)#</li>
+			<li><label>blog database type:</label>#form.blogdbtype#</li>
+			<li><label>dsn username:</label>#htmleditformat(form.dsn_username)#</li>
+			<li><label>dsn password:</label>#htmleditformat(form.dsn_password)#</li>
 		</ul>
 		<div class="buttonbar">
 			<a href="javascript:editDatasource();" class="button">Edit Data Source</a>
