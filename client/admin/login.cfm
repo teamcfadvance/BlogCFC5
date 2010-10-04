@@ -15,7 +15,8 @@
 <cfset qs = reReplace(qs, "logout=[^&]+", "")>
 
 <cfoutput>
-<form action="#cgi.script_name#?#qs#" method="post" enctype="multipart/form-data">
+<div id="login">
+<form name="loginform" action="#cgi.script_name#?#qs#" method="post" enctype="multipart/form-data">
 <!--- copy additional fields --->
 <cfloop item="field" collection="#form#">
 	<!--- the isSimpleValue is probably a bit much.... --->
@@ -25,26 +26,40 @@
 		<input type="hidden" name="#field#" value="#htmleditformat(form[field])#">
 	</cfif>
 </cfloop>
-<table>
-	<tr>
-		<td><b>#application.resourceBundle.getResource("username")#</b></td>
-		<td><input type="text" name="username"></td>
-	</tr>
-	<tr>
-		<td><b>#application.resourceBundle.getResource("password")#</b></td>
-		<td><input type="password" name="password"></td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td><input type="submit" value="#application.resourceBundle.getResource("login")#"></td>
-	</tr>
-</table>
-</form>
-<br><br/>
+		<table id="logintable">
+			<tr>
+				<td>#application.resourceBundle.getResource("username")#</td><td><input name="username" type="text" id="username" size="30"></td>
+			</tr>
+			<tr>
+				<td>#application.resourceBundle.getResource("password")#</td><td><input name="password" type="password" id="password" size="30"></td>
+			</tr>
+			<tr>
+				<td></td><td><input type="submit" value="#application.resourceBundle.getResource("login")#"></td>
+			</tr>
+			<!---<tr>
+				<td></td><td><a href="">Forgot username or password?</a></td>
+			</tr>--->
+			<tr>
+				<td colspan=2 nowrap=yes id="loginfooter"><a href="javascript:openAbout();">About</a></td>
+			</tr>
+		</table>
+	</form>
+</div>
+<div id="about">
+	<p>BlogCFC was created by Ray Camden with contributions from many supporters including Scott Stroz, Jeff Coughlin, Charlie Griefer, Paul Hastings, Adam Tuttle, Deanna Schneider, Joe Nicora, Jacob Munson, and Jason Delmore.</p>
+	<p>For more information visit <a href="http://www.blogcfc.com/">http://www.blogcfc.com/</a></p>
+	<a href="javascript:closeAbout();" class="button" style="float:right;">Close</a>
+</div>
 <script language="javaScript" TYPE="text/javascript">
 <!--
 document.forms[0].username.focus();
 //-->
+function openAbout(){
+	document.getElementById('about').style.display = 'block';
+}
+function closeAbout(){
+	document.getElementById('about').style.display = 'none';
+}
 </script>
 </cfoutput>
 

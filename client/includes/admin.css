@@ -1,48 +1,76 @@
-body{ background: url('../images/blogcfc_195.gif') no-repeat 15px 5px;}
-
-#header {
-	font-size: 30px;
-	font-family: Arial;
+/* color palette 
+ * Dark 	7d8524
+ * 			bbc737
+ * 			e4e8af
+ * 			edf0c9
+ * Light  	f6f7e4
+ */
+body{
+	background: url('../images/leftnav.png') no-repeat 20px 5px;
+	padding: 1em;
+	margin: 0 0 0 0;
+	font-family: Tahoma, Arial;
+	height:100%
 }
-
+a {
+	color:#7d8524;
+	text-decoration:none;
+}
+a:hover {
+	color:#bbc737;
+	text-decoration:underline;
+}
+#blogTitle {
+	font-size: 22px;
+	color:#7d8524;
+	padding:0 0 6px 0;
+	border-bottom:1px solid #e4e8af;
+}
+#header {
+	font-size: 22px;
+	margin:20px 0 0 0;
+	color:#444;
+}
 
 #menu {
 	float:left;
-	margin:55px 0 0 10px;
+	margin:55px 0 0 5px;
+	padding: 10px;
 	font-family: Arial;
-	background-color: #e0e0e0;
-	border: 1px solid #999;
+	font-size:15px;
 	width: 200px;
-}
-
-#content {
-	margin: 50px;
-	font-family: Arial;
-	margin: 20px 0 0 250px;
-	overflow:auto;
 }
 
 #menu ul {
 	list-style-type: none;
-	margin: 0px;
-	padding: 0px;	
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #bbc737;
 }
 
 #menu a {
-	color: black;
+	color: #333;
 	text-decoration: none;
 	display: block;
 	width: 190px;
-	padding: 5px;
+	padding: 5px 5px 5px 5px;
 }
 
 #menu a:hover {
-	background-color: #369;
-	color: #FFF;
+	border: 1px solid #bbc737;
+	color: #7d8524;
+	padding: 4px 4px 4px 4px;
+}
+
+#content {
+	margin: 0px 50px 0 270px;
+	font-family: Arial;
+	overflow:auto;
 }
 
 .txtField {
-	width: 100%;
+	width: 400px;
 }
 
 .txtFieldShort {
@@ -94,27 +122,136 @@ body{ background: url('../images/blogcfc_195.gif') no-repeat 15px 5px;}
 }	
 
 .adminListHeader {
-	background-color: #6699ff;
+	background-color:white;
+	color:#7d8524;
 	font-weight: bold;
 }
-
 .adminListHeader a { 
-	color: white;
+	color:#7d8524;
+}
+.adminListHeader a:hover { 
+	color:#bbc737;
 }
 .adminListTable{
 	width:98%;
 	}
 
-.adminListTable, .adminListTable td {
-	border-style: solid;
-	border-width: 1px;
+.adminListTable {
+	border: 1px solid #edf0c9;
+	color:#444;
+}
+.adminListTable td {
+	
 }
 
 .adminList0 {
-	background-color: white;
+	background-color: #f6f7e4;
 }
 
 .adminList1 {
-	background-color: #ffff99;
+	background-color: #edf0c9;
 }
+
+.button {
+	text-decoration:none;
+	background:#fff;
+	border:1px solid #edf0c9;
+	margin: 0 0 0 0;
+	padding: 0 .2em 0 .2em;
+}
+.button:hover {
+	text-decoration:none;
+	background:#f6f7e4;
+	border:1px solid #e4e8af;
+	margin: 0 0 0 0;
+	padding: 0 .2em 0 .2em;
+}
+.buttonbar {
+	margin:1em 1.2em 1em 0;
+	text-align:right;
+}
+
+/* login screen */
+	#login {
+		background-image:url('../images/login.png');
+		background-repeat:no-repeat;
+		background-position:center;
+		position: fixed;
+		top: 40%;
+		left: 50%;
+		margin-top: -135px;
+		margin-left: -250px;
+
+	}
+	#logintable {
+		color: #7d8524;
+		font-size: 12px;
+		padding:8em 8em 3em 8em;
+	}
+	#logintable tr td a {
+		text-decoration: none;
+	}
+	#loginfooter {
+		padding:3em 0 0 0;
+		text-align:right;
+		font-size:9px;
+		color:#000;
+	}
+	#loginfooter a {
+		margin:1em;
+		color:#7d8524;
+	}
+	#loginfooter a:hover {
+		margin:1em;
+		color:#bbc737;
+	}
+	#username {
+		width:15em;
+	}
+	#password {
+		width:15em;
+	}
+	#about {
+		background:white;
+		border:1px solid #edf0c9;
+		padding: 10px 10px 10px 10px;
+		position: fixed;
+		top: 40%;
+		left: 50%;
+		width:413px;
+		margin-top: 60px;
+		margin-left: -234px;
+		display:none;
+	}
+
+/* Fieldset styles */
+	fieldset {
+		margin: 1.5em 0 0 0;   
+		padding: .3em; 
+		border:1px dotted #e4e8af;
+
+	}  
+	legend {   
+		margin-left: 1em;   
+		color: #7d8524;   
+		font-weight: bold;  
+		background-color:white;
+	}  
+	fieldset ul {   
+		padding: 1em 1em 0 1em;
+		margin:0;  
+		list-style: none;  
+	}  
+	fieldset li {   
+		padding-bottom: .5em;  
+	}  
+	fieldset.submit {   
+		border-style: none;  
+	}
+	label {    
+		float: left;    
+		width: 10em;    
+		margin-right: 1em;    
+		text-align: right;
+	}
 

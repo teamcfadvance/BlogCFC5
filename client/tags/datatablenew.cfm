@@ -249,10 +249,10 @@ function checksubmit() {
 </form>
 </p>
 
-<p align="right">
-<cfif attributes.showAdd>[<a href="#attributes.editlink#?id=0&#attributes.querystring#">Add #attributes.label#</a>]</cfif>
-[<a href="javascript:checksubmit()">Delete Selected</a>]
-</p>
+<div class="buttonbar">
+<cfif attributes.showAdd><a href="#attributes.editlink#?id=0&#attributes.querystring#" class="button">Add #attributes.label#</a></cfif>
+<a href="javascript:checksubmit()" class="button">Delete Selected</a>
+</div>
 </cfoutput>
 
 <cfsetting enablecfoutputonly=false>

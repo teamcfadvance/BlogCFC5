@@ -45,7 +45,7 @@
 	
 	
 	<form action="pod.cfm" method="post" name="PodUpdate">
-	<table class="adminListTable">
+	<table class="adminListTable" cellspacing="0" cellpadding="5">
 	<tr class="adminListHeader">
 		<td width="50">Show</td>
 		<td>Name</td>
@@ -55,22 +55,22 @@
 	</cfoutput>
 
 	<cfoutput query="pods">
-		<tr class="adminList<cfif currentRow mod 2>1</cfif>">
+		<tr class="adminList<cfif currentRow mod 2>1<cfelse>0</cfif>">
 			<td><input type="checkbox" name="ShowPods" value="#name#" <cfif len(sortOrder)>checked</cfif>></td>
 			<td>#name#</td>
 			<td>
-				[<a href="showpods.cfm?pod=#name#" target="PodWin" onclick="window.open(this.href,this.target,'width=215,height=400');return false;">Show sample output</a> ]
-				[<a href="podform.cfm?pod=#name#">Edit Pod</a>]
-				[<a href="pods.cfm?deletePod=#name#">Delete Pod</a>]
+				<a href="showpods.cfm?pod=#name#" class="button" target="PodWin" onclick="window.open(this.href,this.target,'width=215,height=400');return false;">Show sample output</a>
+				<a href="podform.cfm?pod=#name#" class="button">Edit Pod</a>
+				<a href="pods.cfm?deletePod=#name#" class="button">Delete Pod</a>
  			</td>
 			<td align="center"><input type="text" name="#name#" value="#sortOrder#" size="3" tabindex="#currentrow#"></td>
 		</tr>
 	</cfoutput>
 	 
 	<cfoutput></table>
-		<div align="right" style="margin-right:15px;">
-			[<a href="podform.cfm">Add New Pod</a> ] 
-			[<a href="Javascript: document.PodUpdate.submit()">Update Pods</a> ]   
+		<div class="buttonbar">
+			<a href="podform.cfm" class="button">Add New Pod</a>
+			<a href="Javascript: document.PodUpdate.submit()" class="button">Update Pods</a>  
 		</div>
 	</form>
 	</cfoutput>

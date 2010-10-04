@@ -73,7 +73,6 @@
 <li><a href="users.cfm">Users</a></li>
 </cfif>
 </ul>
-<hr>
 <ul>
 <li><a href="pods.cfm">Pod Manager</a></li>
 <cfif application.filebrowse>
@@ -83,29 +82,30 @@
 <li><a href="slideshows.cfm">Slideshows</a></li>
 <li><a href="textblocks.cfm">Textblocks</a></li>
 </ul>
-<hr>
 <ul>
 <li><a href="../">Your Blog</a></li>
 <li><a href="../" target="_new">Your Blog (New Window)</a></li>
 <li><a href="../stats.cfm">Your Blog Stats</a></li>
 </ul>
-<hr>
-<ul>
+<ul style="border-bottom: none;">
 <li><a href="updatepassword.cfm">Update Password</a><li>
 <li><a href="index.cfm?logout=youbetterbelieveit">Logout</a></li>
 </ul>
 </div>
+<div id="content">
+<div id="blogTitle">#htmlEditFormat(application.blog.getProperty("blogTitle"))#</div>
+<div id="header">#attributes.title#</div>
+<cfelse>
+<div id="content">
 </cfif>
 
-<div id="content">
-<div id="header">BlogCFC Administrator #htmlEditFormat(application.blog.getProperty("blogTitle"))#: #attributes.title#</div>
+
 </cfoutput>
 
 <cfelse>
 
 <cfoutput>
 </div>
-
 </body>
 </html>
 </cfoutput>
