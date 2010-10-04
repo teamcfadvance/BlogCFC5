@@ -133,7 +133,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		function editDatasource() {
 			document.getElementById('datasource_edit').style.display='block';
 			document.getElementById('datasource_ro').style.display='none';
-			
+			document.getElementById('datasource_editbutton').style.display='none';
 		}
 	</script>
 	<form action="settings.cfm" method="post" name="settingsForm">
@@ -216,10 +216,10 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 			<li><label>dsn username:</label>#htmleditformat(form.dsn_username)#</li>
 			<li><label>dsn password:</label>#htmleditformat(form.dsn_password)#</li>
 		</ul>
-		<div class="buttonbar">
-			<a href="javascript:editDatasource();" class="button">Edit Data Source</a>
-		</div>
 	</fieldset>
+	<div class="buttonbar" id="datasource_editbutton">
+		<a href="javascript:editDatasource();" class="button">Edit Data Source</a>
+	</div>
 	<fieldset>
 		<legend>Mail Settings</legend>
 		<ul>
