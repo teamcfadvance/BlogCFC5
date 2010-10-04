@@ -1,5 +1,5 @@
-
-<cfif listlen(cgi.PATH_INFO, '/') GT 1>
+<cfset urlVars=reReplaceNoCase(trim(cgi.path_info), '.+\.cfm/? *', '')>
+<cfif listlen(urlVars, '/') GT 1>
 	<!---attempt to load directly into a post--->
 	<cfmodule template="../tags/getmode.cfm" r_params="chkparams"/>
 	<cfset thePostID = application.blog.getEntries(chkparams)>
@@ -8,7 +8,7 @@
 	<cfif isQuery(thePostID.entries)> 
 		<!---have to do this because jqtouch breaks on ses urls--->
 		<cfset session.loadPost = thePostID.entries.id>
-		<cflocation url="http://#cgi.SERVER_NAME##cgi.SCRIPT_NAME#">
+		<cflocation url="http://#cgi.SERVER_NAME##cgi.SCRIPT_NAME#" addToken="false">
 	</cfif>
 <cfelseif isDefined('session.loadPost')>
 	<cfset loadpost = session.loadPost>
@@ -150,7 +150,14 @@
 				
 			}
 			
-			
+			$(document).ready(function() {
+				$("#leaveMobileLink").click(function(e) {
+					<cfoutput>
+					document.location.href = '#application.rooturl#?nomobile=1';
+					</cfoutput>
+					e.preventDefault();
+				});
+			});
         </script>
 		<!---
 		This section is here to layout screen correctly. 
@@ -231,7 +238,7 @@
             <div class="info">
                 <p>Add this page to your home screen to view the custom icon, startup screen, and full screen mode.</p>
 				<BR>
-				<p><a href="#">Click Here</a> to exit mobile version.</p>
+				<p><a href="#" id="leaveMobileLink">Click Here</a> to exit mobile version.</p>
             </div>
         </div> 
 	
