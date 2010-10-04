@@ -211,15 +211,16 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 	<fieldset id="datasource_ro">
 		<legend>Data Source</legend>
 		<ul>
-			<li><label>dsn:</label>#htmleditformat(form.dsn)#</li>
-			<li><label>blog database type:</label>#form.blogdbtype#</li>
-			<li><label>dsn username:</label>#htmleditformat(form.dsn_username)#</li>
-			<li><label>dsn password:</label>#htmleditformat(form.dsn_password)#</li>
+			<li><label>dsn:</label>#htmleditformat(form.dsn)#&nbsp;</li>
+			<li><label>blog database type:</label>#htmleditformat(form.blogdbtype)#&nbsp;</li>
+			<li><label>dsn username:</label>#htmleditformat(form.dsn_username)#&nbsp;</li>
+			<li><label>dsn password:</label>#htmleditformat(form.dsn_password)#&nbsp;</li>
 		</ul>
+		<div class="buttonbar" id="datasource_editbutton">
+			<a href="javascript:editDatasource();" class="button">Edit Data Source</a>
+		</div>
 	</fieldset>
-	<div class="buttonbar" id="datasource_editbutton">
-		<a href="javascript:editDatasource();" class="button">Edit Data Source</a>
-	</div>
+	
 	<fieldset>
 		<legend>Mail Settings</legend>
 		<ul>
