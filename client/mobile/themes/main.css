@@ -2,3 +2,7 @@ a {
 	color: #ddd;
 	text-decoration: underline;	
 }
+
+.info a {
+	color: black;
+}
