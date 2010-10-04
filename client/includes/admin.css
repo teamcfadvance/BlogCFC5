@@ -64,7 +64,7 @@ a:hover {
 }
 
 #content {
-	margin: 0px 50px 0 270px;
+	margin: 0px 5px 0 270px;
 	font-family: Arial;
 	overflow:auto;
 }
@@ -229,7 +229,7 @@ a:hover {
 		margin: 1.5em 0 0 0;   
 		padding: .3em; 
 		border:1px dotted #e4e8af;
-
+		max-width:800px;
 	}  
 	legend {   
 		margin-left: 1em;   
