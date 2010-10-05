@@ -20,7 +20,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.6.006" />
+	<cfset version = "5.9.7" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -2396,6 +2396,7 @@ To unsubscribe, please go to this URL:
 		<!--- Both of these are related to comment moderation. --->
 		<cfargument name="adminonly" type="boolean" required="false">
 		<cfargument name="noadmin" type="boolean" required="false">
+		<cfargument name="html" type="boolean" required="false" default="false">
 
 		<!--- used so we can get the kill switch --->
 		<cfargument name="commentid" type="string" required="false">
@@ -2409,6 +2410,12 @@ To unsubscribe, please go to this URL:
 		<cfset var theMessage = "">
 		<cfset var comment = getComment(arguments.commentid)>
 
+		<cfset var mailType = "text">
+		
+		<cfif arguments.html>
+			<cfset mailType = "html">
+		</cfif>
+		
 		<!--- is it a valid entry? --->
 		<cfif not entryExists(arguments.entryid)>
 			<cfset variables.utils.throw("#entryid# isn't a valid entry.")>
@@ -2460,13 +2467,26 @@ To unsubscribe, please go to this URL:
 					<cfif address is not instance.ownerEmail>
 						<cfset ulink = getRootURL() & "unsubscribe.cfm" &
 						"?commentID=#emailAddresses[address]#&amp;email=#address#">
+						<cfif mailType is "html">
+							<cfset ulink = "<a href=""#ulink#"">Unsubscribe from Entry</a><br/>">
+						<cfelse>
+							<cfset ulink = "Unsubscribe from Entry: #ulink#">
+						</cfif>
 					<cfelse>
-						<cfset ulink = "Not available for owner.">
+						<cfset ulink = "">
 						<!--- We get a bit fancier now as well as we will be allowing for kill switches --->
-						<cfset ulink = ulink & "#chr(10)#Delete this comment: #getRootURL()#index.cfm?killcomment=#comment.killcomment#">
+						<cfif mailType is "text">
+							<cfset ulink = ulink & "#chr(10)#Delete this comment: #getRootURL()#index.cfm?killcomment=#comment.killcomment#">
+						<cfelse>
+							<cfset ulink = ulink & "<br/><a href=""#getRootURL()#index.cfm?killcomment=#comment.killcomment#"">Delete this Comment</a>">
+						</cfif>
 						<!--- also allow for approving --->
 						<cfif instance.moderate>
-							<cfset ulink = ulink & "#chr(10)#Approve this comment: #getRootURL()#index.cfm?approvecomment=#comment.id#">
+							<cfif mailType is "text">
+								<cfset ulink = ulink & "#chr(10)#Approve this comment: #getRootURL()#index.cfm?approvecomment=#comment.id#">
+							<cfelse>
+								<cfset ulink = ulink & "<br/><a href=""#getRootURL()#index.cfm?approvecomment=#comment.id#"">Approve this Comment</a>">
+							</cfif>
 						</cfif>
 					</cfif>
 					<cfset theMessage = replaceNoCase(arguments.message, "%unsubscribe%", ulink, "all")>
@@ -2476,10 +2496,10 @@ To unsubscribe, please go to this URL:
 
 				<!--- switch depending on server --->
 				<cfif instance.mailserver is "">
-					<cfmail to="#address#" from="#arguments.from#" subject="#variables.utils.htmlToPlainText(arguments.subject)#">#theMessage#</cfmail>
+					<cfmail to="#address#" from="#arguments.from#" subject="#variables.utils.htmlToPlainText(arguments.subject)#" type="#mailType#">#theMessage#</cfmail>
 				<cfelse>
 					<cfmail to="#address#" from="#arguments.from#" subject="#variables.utils.htmlToPlainText(arguments.subject)#"
-							server="#instance.mailserver#" username="#instance.mailusername#" password="#instance.mailpassword#">#theMessage#</cfmail>
+							server="#instance.mailserver#" username="#instance.mailusername#" password="#instance.mailpassword#" type="#mailType#">#theMessage#</cfmail>
 				</cfif>
 			</cfloop>
 		</cfif>
