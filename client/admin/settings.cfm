@@ -102,7 +102,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 
 	<cfif structKeyExists(url, "settingsupdated")>
 		<cfoutput>
-			<div style="margin: 15px 0; padding: 15px; border: 5px solid ##cd6f6f; background-color: ##f79992; color: ##c54043; font-weight: bold; text-align: center;">
+			<div style="margin: 15px 0; padding: 15px; border: 5px solid ##008000; background-color: ##80ff00; color: ##000000; font-weight: bold; text-align: center;">
 				Your settings have been updated and your cache refreshed.
 			</div>
 		</cfoutput>
@@ -246,6 +246,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 	<div class="buttonbar">
 		<a href="settings.cfm" class="button">Cancel Changes</a> <a href="javascript:document.settingsForm.submit();" class="button">Save Settings</a>
 	</div>
+	<input type="hidden" name="save" value="1">
 	</form>
 	</cfoutput>
 

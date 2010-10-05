@@ -40,7 +40,7 @@ order by views desc
 	
 	<cfif structKeyExists(url, "reinit")>
 		<cfoutput>
-			<div style="margin: 15px 0; padding: 15px; border: 5px solid ##cd6f6f; background-color: ##f79992; color: ##c54043; font-weight: bold; text-align: center;">
+			<div style="margin: 15px 0; padding: 15px; border: 5px solid ##008000; background-color: ##80ff00; color: ##000000; font-weight: bold; text-align: center;">
 				Your blog cache has been refreshed.
 			</div>
 		</cfoutput>
