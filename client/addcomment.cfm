@@ -129,23 +129,27 @@
 			</cfinvoke>								
 
 			<!--- Form a message about the comment --->
-			<cfset subject = rb("commentaddedtoblog") & ": " & application.blog.getProperty("blogTitle") & " / " & rb("entry") & ": " & entry.title>
+			<cfset subject = "Comment posted to " & application.blog.getProperty("blogTitle") & " : " & entry.title>
 			<cfset commentTime = dateAdd("h", application.blog.getProperty("offset"), now())>
+
 			<cfsavecontent variable="email">
 			<cfoutput>
-#rb("commentaddedtoblogentry")#:	#application.utils.htmlToPlainText(entry.title)#
-#rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(commentTime)# / #application.localeUtils.timeLocaleFormat(commentTime)#
-#rb("commentmadeby")#:	 	#form.name# <cfif len(form.website)>(#form.website#)</cfif>
-#rb("ipofposter")#:			#cgi.REMOTE_ADDR#
-URL: #application.blog.makeLink(url.id)###c#commentID#
+<h2>#subject#</h2>
+<p>
+<img src="http://www.gravatar.com/avatar/#lcase(hash(form.email))#?s=80&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" title="#form.name#'s Gravatar" border="0" align="left" />
+#form.name# <cfif len(form.website)><br/><a href="#form.website#">#form.website#</a></cfif><br clear="left" />
+</p>
 
+#paragraphformat(form.comments)#
+<br/>
+View Comment: <a href="#application.blog.makeLink(url.id)###c#commentID#">#application.blog.makeLink(url.id)###c#commentID#</a>
+%unsubscribe%
 
-#form.comments#
-
-------------------------------------------------------------
-#rb("unsubscribe")#: %unsubscribe%
-This blog powered by BlogCFC #application.blog.getVersion()#
-Created by Raymond Camden (http://www.coldfusionjedi.com)
+<hr/>
+<img src="#application.rooturl#/images/logo.png" align="left" title="BlogCFC">
+<br/>
+This blog powered by <a href="http://www.blogcfc.com">BlogCFC #application.blog.getVersion()#</a>, 
+created by <a href="http://www.coldfusionjedi.com">Raymond Camden</a>.
 			</cfoutput>
 			</cfsavecontent>
 
@@ -158,6 +162,7 @@ Created by Raymond Camden (http://www.coldfusionjedi.com)
 					<cfinvokeargument name="adminonly" value="true">
 				</cfif>										
 				<cfinvokeargument name="commentid" value="#commentid#">
+				<cfinvokeargument name="html" value="true">
 			</cfinvoke>
 								
 			<cfcatch>

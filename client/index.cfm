@@ -267,7 +267,7 @@ popular view
 				<cfoutput query="comments">
 				<div id="c#id#" class="comment<cfif currentRow mod 2>Alt</cfif>">
 					<div class="commentBody">
-					<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=40&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" alt="#name#'s Gravatar" border="0" /></cfif>
+					<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=40&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" title="#name#'s Gravatar" border="0" /></cfif>
 					#paragraphFormat2(replaceLinks(comment))#
 					</div>
 					<div class="commentByLine">
