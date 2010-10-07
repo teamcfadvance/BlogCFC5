@@ -32,7 +32,9 @@ and <a href="http://www.blogcfc.com">http://www.blogcfc.com</a>.
 <a href="#license">Licence</a> | <a href="#contrib">Contributors</a> | <a href="#req">Requirements</a> |
 <a href="#install">Installation</a> | <a href="#ini">The Blog INI File</a> | <a href="#working">Working with Your Blog</a> |
 <a href="#editing">Blog Entry Editing Options</a> | <a href="#publishing">Publishing Non-Blog Content</a> | 
-<a href="#security">Security</a> | <a href="#misc">Miscellaneous</a>
+<a href="#security">Security</a> | 
+<a href="#mobile">Mobile</a> | 
+<a href="#misc">Miscellaneous</a>
 </div>
 
 <hr/>
@@ -72,61 +74,34 @@ wishlist, located here: <a href="http://www.amazon.com/o/registry/2TCL1D08EZEYE"
 <p>Many users have provided support, both in bug reports,
 suggestions, and even code, for this project. I cannot thank them all, but please
 note that I appreciate your work. BlogCFC would <b>not</b> be what it is today
-without the support of its community of users. I'd like to call out a few
-special contributors below.</p>
+without the support of its community of users. Below is a short list of major contributors.</p>
 
-<p>BlogCFC makes use of the design/css skills of <b>Scott
-Stroz.</b>. His wishlist may be found <a href="http://www.amazon.com/o/registry/3OQX89CUTAV1X">here</a>.
-Scott handled the &quot;No more table&quot; conversion of my layout for BlogCFC5, as well as providing design
-help in general and bug testing all around.</p>
-
-<p><b>Jeff Coughlin</b> and <b>Charlie Griefer</b> spent a lot
-of time and energy on the Related Entries feature. This was a significant new
-feature of BlogCFC5. Jeff's wishlist may be found <a href="http://www.amazon.com/o/registry/3MZKP36I6JCTL">here</a>.
-Charlie's may be found <a href="http://www.amazon.com/gp/registry/registry.html/103-6263653-9438218?%5Fencoding=UTF8&amp;type=wishlist&amp;id=YLEZ85Q4LPCI">here</a>.
-</p>
-
-<p>BlogCFC makes use of code from <a href="http://www.sustainablegis.com/blog/cfg11n/">Paul Hastings</a>. Paul was a
-great help in adding localization to the blog. Many thanks go to him. We also
-make use of a custom tag (coloredCode) from Dain Anderson (<a
-href="mailto:webmaster@cfcomet.com">webmaster@cfcomet.com</a>). Many other
-people have helped with contributed bug fixes and ideas.</p>
-
-<p>BlogCFC makes use of <a href="http://lyla.maestropublishing.com">LylaCaptcha</a>
-by Peter J. Farrel. Please note that his code has a license as well. It may be
-found in org/captcha/lylaCaptchaLicense.txt. <a href="http://www.remotesynthesis.com/blog/">Brian Rinaldi</a> 
-wrote an excellent article on
-integrating BlogCFC and Lyla. His article and code was used to add this feature
-to BlogCFC.</p>
-
-<p>Deanna Schneider added Oracle and Query Username/Password support.</p>
-
-<p>The BlogCFC logo was created by Joe Nicora.</p>
-
-<p>BlogCFC makes use of CFFormProtect by Jacob Munson
-(http://cfformprotect.riaforge.org/)</p>
+<ul>
+<li><a href="http://www.boyzoid.com">Scott Stroz</a></li>
+<li><a href="http://www.cfinsider.com">Jason Delmore</a></li>
+<li><a href="http://www.jeffcoughlin.com/blog/index.cfm">Jeff Coughlin</a></li>
+<li><a href="http://charlie.griefer.com/blog/index.cfm">Charlie Griefer</a></li>
+<li><a href="http://www.sustainablegis.com/blog/cfg11n/">Paul Hastings</a></li>
+<li><a href="http://blog.maestropublishing.com/">Peter J. Farrel</a></li>
+<li>Deanna Schneider</li>
+<li>Joe Nicora</li>
+<li><a href="http://www.techfeed.net/blog/">Jacob Munson</a></li>
+</ul>
 
 <hr/>
 
 <a name="req"></a>
 <h2>Requirements</h2>
 
-<p>BlogCFC requires ColdFusion 7 or compatible CFML engine.</p>
-
-<p>If you use the Developer Version of ColdFusion, a token
-is added to each request that will interfere with the RSS support as well as
-the Related Entries support in the administrator. The Developer edition should
-not be used for production sites. If testing BlogCFC on a Developer edition
-server, you will not be able to use the Related Entries feature.</p>
-
-<p>Access users should not use the &quot;Access with Unicode&quot; driver type. They should use the &quot;Access&quot; driver type.</p>
+<p>BlogCFC requires ColdFusion 7 or compatible CFML engine and one of the following databases: MYSQL 4+, Oracle, MS Access, SQL Server.</p>
 
 <hr/>
 
 <a name="install"></a>
 <h2>Installation</h2>
 
-<p>When you unzip the installation package, you will have three
+<p>
+When you unzip the installation package, you will have three
 main directories, client, org, and install. The client folder represents the
 main blog application. If your web site will only contain the blog, then
 obviously this folder will be your web root; you may rename this folder (be
@@ -152,7 +127,7 @@ favorite db admin program. Set up a datasource pointing to your database. Open
 the blog.ini.cfm file from /org/camden/blog folder. Find the default section,
 dsn key, and edit the value. Set the dsn value to what you set in the
 ColdFusion Administrator. Set blogDBType to either MSSQL (for SQL Server),
-MYSQL (for MySQL), ORACLE (for Oracle), or MSACCESS (for Access).</p>
+MYSQL (for MySQL), ORACLE (for Oracle), or MSACCESS (for Access). Access users should not use the &quot;Access with Unicode&quot; driver type. They should use the &quot;Access&quot; driver type.</p>
 
 <p>You also need to ensure blogdbtype matches your database.
 This is described in the <a href="#ini"><b>Blog Ini File</b></a> section.</p>
@@ -186,8 +161,11 @@ should change this password <b>immediately</b> or sometime soon. There is no
 interface to do this so you will have to manually edit the password in the
 database.</p>
 
-
 <p>Unix users should make the /blog/images/captcha folder writeable by ColdFusion.</p>
+
+<p>
+Finally - note that the <a href="#mobile">mobile view</a> has it's own configuration.
+</p>
 
 <a name="ini"></a>
 <h2>The Blog INI File</h2>
@@ -687,6 +665,17 @@ BlogCFC handles security via a simple username/password mechanism. Out of the bo
 user has the ability to do anything. However, you can create new users and givem them specific roles.
 Currently BlogCFC ships with a set of roles that allow for control over who can write and publish
 content as well as manage categories. Who you give access to these features is entirely up to you.
+</p>
+
+<hr/>
+
+<a name="mobile"></a>
+<h2>Mobile</h2>
+
+<p>
+BlogCFC supports a mobile version of the blog. This is a highly optimized JavaScript enabled view of your blog. Mobile browsers will be sent to this view by default when they access your blog. 
+(But note that a link is provided to return to the &quot;real&quot; blog home if they want.) The mobile version has it's own configuration which may be found in the mobile/config folder. Editing
+the mobile.ini.cfm is similar to the main blog.ini.cfm file. This process will be documented further in the future.
 </p>
 
 <hr/>
