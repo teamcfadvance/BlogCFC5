@@ -144,6 +144,7 @@
 		<tr id="header">
 			<td colspan=2 style="font-size: 14pt;padding:0 0 6px 0;border-bottom:1px solid ##e4e8af;">Comment Added to <a href="#application.blog.makeLink(url.id)###c#commentID#" style="color:##7d8524;text-decoration:none;">#htmlEditFormat(application.blog.getProperty("blogTitle"))# : #entry.title#</a></td>
 		</tr>
+		<tr><td colspan=2 style="height:10px"></td></tr>
 		<tr id="content" style="padding: 20px;">
 			<td id="comment" style="width:75%;">
 #paragraphformat2(htmlEditFormat(form.comments))#
@@ -155,6 +156,7 @@
 				</div>
 			</td>
 		</tr>
+		<tr><td colspan=2 style="height:10px"></td></tr>
 		<tr id="footer">
 			<td style="border-top:1px solid ##e4e8af;padding:0 10px 0 0;"><a href="http://blogcfc.com/" style="color:##7d8524;text-decoration:none;"><img src="#application.rooturl#/images/logo.png" border=0/></a></td>
 			<td id="footerlinks" nowrap style="margin:5px;text-align:right;border-top:1px solid ##e4e8af;padding:0 10px 0 0;">
