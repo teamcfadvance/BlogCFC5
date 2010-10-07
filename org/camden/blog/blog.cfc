@@ -2462,13 +2462,17 @@ To unsubscribe, please go to this URL:
 					Note, right now, the email sent to the admin will have a blank
 					commentID. Since the admin can't unsub anyway I don't think it
 					is a huge deal.
+					
+					Btw - I've got some of the HTML design emedded in here. This because web based
+					email readers require inline CSS. I could have passed it in as an argument but
+					said frack it. 
 				--->
 				<cfif findNoCase("%unsubscribe%", arguments.message)>
 					<cfif address is not instance.ownerEmail>
 						<cfset ulink = getRootURL() & "unsubscribe.cfm" &
 						"?commentID=#emailAddresses[address]#&amp;email=#address#">
 						<cfif mailType is "html">
-							<cfset ulink = "<a href=""#ulink#"">Unsubscribe</a>">
+							<cfset ulink = "<a href=""#ulink#"" style=""font-size:8pt;text-decoration:underline;color:##7d8524;text-decoration:none;"">Unsubscribe</a>">
 						<cfelse>
 							<cfset ulink = "Unsubscribe from Entry: #ulink#">
 						</cfif>
@@ -2478,14 +2482,14 @@ To unsubscribe, please go to this URL:
 						<cfif mailType is "text">
 							<cfset ulink = ulink & "#chr(10)#Delete this comment: #getRootURL()#index.cfm?killcomment=#comment.killcomment#">
 						<cfelse>
-							<cfset ulink = ulink & " <a href=""#getRootURL()#index.cfm?killcomment=#comment.killcomment#"">Delete</a>">
+							<cfset ulink = ulink & " <a href=""#getRootURL()#index.cfm?killcomment=#comment.killcomment#"" style=""font-size:8pt;text-decoration:underline;color:##7d8524;text-decoration:none;"">Delete</a>">
 						</cfif>
 						<!--- also allow for approving --->
 						<cfif instance.moderate>
 							<cfif mailType is "text">
 								<cfset ulink = ulink & "#chr(10)#Approve this comment: #getRootURL()#index.cfm?approvecomment=#comment.id#">
 							<cfelse>
-								<cfset ulink = ulink & " <a href=""#getRootURL()#index.cfm?approvecomment=#comment.id#"">Approve</a>">
+								<cfset ulink = ulink & " <a href=""#getRootURL()#index.cfm?approvecomment=#comment.id#"" style=""font-size:8pt;text-decoration:underline;color:##7d8524;text-decoration:none;"">Approve</a>">
 							</cfif>
 						</cfif>
 					</cfif>

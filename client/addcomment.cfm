@@ -138,96 +138,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Comment Subscription</title>
-<style>
-##blogcommentmail {
-	font:10pt Arial,sans-serif;
-	padding: 10px;
-}
-##blogcommentmail table tr td a, ##blogcommentmail table tr td div a {
-	color:##7d8524;
-	text-decoration:none;
-}
-##blogcommentmail table tr td a:hover, ##blogcommentmail table tr td div a:hover {
-	color:##bbc737;
-	text-decoration:none;
-}
-##header td {
-	font-size: 14pt;
-	padding:0 0 6px 0;
-	border-bottom:1px solid ##e4e8af;
-}
-##content {
-	padding: 20px;
-}
-##comment {
-	width:75%;
-}
-##commentor {
-	width:25%;
-	background-color: ##edf0c9;
-	height:100%
-}
-##avatar {
-	text-align: center;
-	margin:30px 0 0 0;
-	padding:20px 0 20px 0;
-	width: 100%;
-	height: 100%;
-}
-##avatar_image {
-	 width:80px;
-	 height:80px;
-	 padding:5px;
-	 background:white;
-	 border:1px solid ##e4e8af;
-}
-##commentorname {
-	text-align: center;
-	padding:20 0 20px 0;
-}
-##footer td {
-	border-top:1px solid ##e4e8af;
-	padding:0 10px 0 0;
-}
-##footerlinks {
-	margin:5px;
-	text-align:right;
-}
-##footerlinks a {
-	font-size:8pt;
-	text-decoration:underline;
-}
-##createdby {
-	font-size:8pt;
-	padding:20px 0 0 0;
-	bottom:0px;
-	text-align:right;
-}
-
-</style>
 </head>
-<body id="blogcommentmail">
-	<table cellspacing=10>
+<body id="blogcommentmail" style="font:10pt Arial,sans-serif;padding: 10px;">
+	<table cellspacing=0>
 		<tr id="header">
-			<td colspan=2>Comment Added to <a href="#application.blog.makeLink(url.id)###c#commentID#">#htmlEditFormat(application.blog.getProperty("blogTitle"))# : #entry.title#</a></td>
+			<td colspan=2 style="font-size: 14pt;padding:0 0 6px 0;border-bottom:1px solid ##e4e8af;">Comment Added to <a href="#application.blog.makeLink(url.id)###c#commentID#" style="color:##7d8524;text-decoration:none;">#htmlEditFormat(application.blog.getProperty("blogTitle"))# : #entry.title#</a></td>
 		</tr>
-		<tr id="content">
-			<td id="comment">
-#paragraphformat(form.comments)#
+		<tr id="content" style="padding: 20px;">
+			<td id="comment" style="width:75%;">
+#paragraphformat2(htmlEditFormat(form.comments))#
 			</td>
-			<td id="commentor" valign=top>
-				<div id="avatar">
-					<img src="http://www.gravatar.com/avatar/#lcase(hash(form.email))#?s=80&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" id="avatar_image" border=0 title="#form.name#'s Gravatar" />
-					<div id="commentorname"><cfif len(form.website)><a href="#form.website#"></cfif>#form.name#<cfif len(form.website)></a></cfif></div>
+			<td id="commentor" valign=top style="width:25%;background-color: ##edf0c9;height:100%">
+				<div id="avatar" style="text-align: center;margin:30px 0 0 0;padding:20px 0 20px 0;width: 100%;height: 100%;">
+					<img src="http://www.gravatar.com/avatar/#lcase(hash(form.email))#?s=80&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" id="avatar_image" border=0 title="#form.name#'s Gravatar" style="width:80px;height:80px;padding:5px;background:white; border:1px solid ##e4e8af;" />
+					<div id="commentorname" style="text-align: center;padding:20 0 20px 0;"><cfif len(form.website)><a href="#form.website#" style="color:##7d8524;text-decoration:none;"></cfif>#form.name#<cfif len(form.website)></a></cfif></div>
 				</div>
 			</td>
 		</tr>
 		<tr id="footer">
-			<td><a href="http://blogcfc.com/"><img src="#application.rooturl#/images/logo.png" border=0/></a></td>
-			<td id="footerlinks" nowrap>
+			<td style="border-top:1px solid ##e4e8af;padding:0 10px 0 0;"><a href="http://blogcfc.com/" style="color:##7d8524;text-decoration:none;"><img src="#application.rooturl#/images/logo.png" border=0/></a></td>
+			<td id="footerlinks" nowrap style="margin:5px;text-align:right;border-top:1px solid ##e4e8af;padding:0 10px 0 0;">
 				%unsubscribe%
-				<div id="createdby">
-					Created by <a href="http://www.coldfusionjedi.com">Raymond Camden</a>
+				<div id="createdby" style="font-size:8pt;padding:20px 0 0 0;bottom:0px;text-align:right;">
+					Created by <a href="http://www.coldfusionjedi.com" style="color:##7d8524;text-decoration:none;">Raymond Camden</a>
 				</div>
 			</td>
 		</tr>
