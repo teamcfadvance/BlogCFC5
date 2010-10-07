@@ -24,13 +24,31 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: October 6, 2010 (BlogCFC 5.9.7)
+
+Note - this is a big update. Therefore, not all files modified are listed. I recommend updating all files to be safe.
+
+The following changes are credit Rob Brooks-Bilson
+/org/camden/blog/blog.cfc
+various methods have hints now
+getArchives - new function to get archived entries - this can be used in a new pod
+getCommentCount - new func to - you can guess
+Ok, so lots of other improvements as well. Not things that you as an end user need to worry about, but basically he cleaned up a lot of my crap. ;)
+/org/delmore/formatter.cfc - a IE fix - thanks to Rob
+
+/client/includes/pods/monthlyarchives.cfm - new pod by RBB, also updated the main.properties and main_en_US.properties files for it
+
+Dave Ferguson added mobile support. This is done via auto detection but clients can temporarily disable the mobile version.
+Jason Delmore updated the UI of the Admin as well as comment emails.
+
+
+=======================================================================================================================================================================================
 Last Updated: August 26, 2010 (BlogCFC 5.9.6.005)
 
 /client/admin/pods.cfm - Added text to make it more clear how it works.
 /client/admin/pod.cfm - if you cleared the checkboxes, we weren't storing that.
 /org/camden/blog/blog.cfc - version #
 
-=======================================================================================================================================================================================
 Last Updated: August 3, 2010 (BlogCFC 5.9.6.004)
 
 /install/oracle.sql - updated by Chad Armond

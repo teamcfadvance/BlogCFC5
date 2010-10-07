@@ -2468,7 +2468,7 @@ To unsubscribe, please go to this URL:
 						<cfset ulink = getRootURL() & "unsubscribe.cfm" &
 						"?commentID=#emailAddresses[address]#&amp;email=#address#">
 						<cfif mailType is "html">
-							<cfset ulink = "<a href=""#ulink#"">Unsubscribe from Entry</a><br/>">
+							<cfset ulink = "<a href=""#ulink#"">Unsubscribe</a>">
 						<cfelse>
 							<cfset ulink = "Unsubscribe from Entry: #ulink#">
 						</cfif>
@@ -2478,14 +2478,14 @@ To unsubscribe, please go to this URL:
 						<cfif mailType is "text">
 							<cfset ulink = ulink & "#chr(10)#Delete this comment: #getRootURL()#index.cfm?killcomment=#comment.killcomment#">
 						<cfelse>
-							<cfset ulink = ulink & "<br/><a href=""#getRootURL()#index.cfm?killcomment=#comment.killcomment#"">Delete this Comment</a>">
+							<cfset ulink = ulink & " <a href=""#getRootURL()#index.cfm?killcomment=#comment.killcomment#"">Delete</a>">
 						</cfif>
 						<!--- also allow for approving --->
 						<cfif instance.moderate>
 							<cfif mailType is "text">
 								<cfset ulink = ulink & "#chr(10)#Approve this comment: #getRootURL()#index.cfm?approvecomment=#comment.id#">
 							<cfelse>
-								<cfset ulink = ulink & "<br/><a href=""#getRootURL()#index.cfm?approvecomment=#comment.id#"">Approve this Comment</a>">
+								<cfset ulink = ulink & " <a href=""#getRootURL()#index.cfm?approvecomment=#comment.id#"">Approve</a>">
 							</cfif>
 						</cfif>
 					</cfif>
