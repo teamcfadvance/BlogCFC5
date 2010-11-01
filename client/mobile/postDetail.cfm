@@ -46,9 +46,15 @@
 					<!---
 						pre render rereplace is here to correct rendering issue caused by the renderer
 					--->
-					#application.blog.renderEntry(REReplace("<p>" & entryData.body & "</p>", "\r+\n\r+\n", "</p><BR><p>", "ALL"),true,'', true)#
+					<cfsavecontent variable="pBody">
+					#REReplace("<p>" & entryData.body & "</p>", "\r+\n\r+\n", "</p><BR><p>", "ALL")#
 					<BR>
-					#application.blog.renderEntry(REReplace("<p>" & entryData.morebody & "</p>", "\r+\n\r+\n", "</p><BR><p>", "ALL"),true,'', true)#
+					#REReplace("<p>" & entryData.morebody & "</p>", "\r+\n\r+\n", "</p><BR><p>", "ALL")#
+					</cfsavecontent>
+					
+					<!---overrides jquery mobiles default handling of links by adding blank target to links --->
+					<cfset linkRep = '<a target="_blank"'>
+					#replaceNoCase(application.blog.renderEntry(pBody,true,'', true), '<a', linkRep, 'all')#
 				</div>					
 			</div>			
 		
