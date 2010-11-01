@@ -52,7 +52,7 @@
 					#REReplace("<p>" & entryData.morebody & "</p>", "\r+\n\r+\n", "</p><BR><p>", "ALL")#
 					</cfsavecontent>
 					
-					<!---overrides jquery mobiles default handling of links by adding blank target to links --->
+					<!---overrides jqtouch's default handling of links by adding blank target to links --->
 					<cfset linkRep = '<a target="_blank"'>
 					#replaceNoCase(application.blog.renderEntry(pBody,true,'', true), '<a', linkRep, 'all')#
 				</div>					
