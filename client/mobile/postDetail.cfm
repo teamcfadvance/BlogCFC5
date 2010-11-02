@@ -52,9 +52,15 @@
 					#REReplace("<p>" & entryData.morebody & "</p>", "\r+\n\r+\n", "</p><BR><p>", "ALL")#
 					</cfsavecontent>
 					
-					<!---overrides jqtouch's default handling of links by adding blank target to links --->
+					<!--- overrides jqtouch's default handling of links by 
+					adding blank target to links  and rel attribute to all images --->
 					<cfset linkRep = '<a target="_blank"'>
-					#replaceNoCase(application.blog.renderEntry(pBody,true,'', true), '<a', linkRep, 'all')#
+					<cfset pBody = replaceNoCase(pBody, '<a', linkRep, 'all')>
+					
+					<cfset imgRep = '<img rel="external"'>
+					<cfset pBody = replaceNoCase(pBody, '<img', imgRep, 'all')>
+					
+					#application.blog.renderEntry(pBody,true,'', true)#
 				</div>					
 			</div>			
 		
