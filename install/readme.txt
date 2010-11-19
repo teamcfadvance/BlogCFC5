@@ -24,6 +24,14 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: October 6, 2010 (BlogCFC 5.9.7.001)
+
+/client/xmlrpc/xmlrpc.cfm - fix for Windows Live Writer by Dan Switzer: http://blog.pengoworks.com/index.cfm/2010/10/12/Problems-with-BlogCFC-and-new-Live-Writer-2011
+/includes - locale RB files updated by Knut Bewersdorff
+/mobile/Application.cfm - fix by Andy Jarett - http://www.andyjarrett.co.uk/blog/index.cfm/2010/10/27/Making-BlogCFC-mobile-a-bit-more-flexible
+
+
+=======================================================================================================================================================================================
 Last Updated: October 6, 2010 (BlogCFC 5.9.7)
 
 Note - this is a big update. Therefore, not all files modified are listed. I recommend updating all files to be safe.
@@ -41,8 +49,6 @@ Ok, so lots of other improvements as well. Not things that you as an end user ne
 Dave Ferguson added mobile support. This is done via auto detection but clients can temporarily disable the mobile version.
 Jason Delmore updated the UI of the Admin as well as comment emails.
 
-
-=======================================================================================================================================================================================
 Last Updated: August 26, 2010 (BlogCFC 5.9.6.005)
 
 /client/admin/pods.cfm - Added text to make it more clear how it works.
