@@ -1,0 +1,12 @@
+
+/* sidebar to the left */
+
+#page.with-sidebar .mask-main .mask-left { left: 0%; }
+#page.with-sidebar .mask-main .col1 { left:30%; }
+#page.with-sidebar .mask-main .col2 { left:-70%; }
+
+#page.with-sidebar.and-secondary .mask-main .mask-left { left: 0%; }
+#page.with-sidebar.and-secondary .mask-main .col1 { left: 50%; }
+#page.with-sidebar.and-secondary .mask-main .col2 {  left: -50%; }
+#page.with-sidebar.and-secondary .mask-main .col3 { left: -50%; }
+

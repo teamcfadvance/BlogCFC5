@@ -15,7 +15,7 @@
 --->
 
 
-<cfmodule template="../../tags/podlayout.cfm" title="Latest from CFBloggers.org">
+<cfmodule template="../../tags/podlayout.cfm" title="#application.resourceBundle.getResource("latestfromcfbloggers")#">
 
 <cfmodule template="../../tags/scopecache.cfm" scope="application" cachename="feed" timeout="#60*60#">
 
@@ -33,7 +33,7 @@
 		</cfloop>
 		<cfcatch>
 			<cfoutput>
-			Feed temporarily down.
+				#application.resourceBundle.getResource("cfbloggersfeeddown")#
 			</cfoutput>
 		</cfcatch>
 	</cftry>
@@ -42,3 +42,4 @@
 	
 </cfmodule>
 <cfsetting enablecfoutputonly=false>
+

@@ -1,0 +1,6 @@
+
+/* default content background (light brown + noise) */
+
+#main-wrap1{ background: transparent url(images/main-bg.jpg) repeat center top; }
+#main-wrap2{ background: transparent url(images/main-top.jpg) repeat-x center top; }
+#main{ background: transparent url(images/main-center.jpg) no-repeat center top; }

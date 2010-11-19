@@ -1,0 +1,10 @@
+
+/* green sidebar titles */
+
+.box .titlewrap{ background: transparent url(images/options/box-title-left-green.png) no-repeat top left; }
+.box .titlewrap h4{ background: transparent url(images/options/box-title-bg-green.png) no-repeat top right; }
+
+.post .post-date span.month{ background: #7dc744; }
+
+a:hover,
+h3.post-title a:hover, h2.post-title a:hover{ color: #65ae2b; }

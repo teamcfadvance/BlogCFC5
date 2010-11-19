@@ -14,16 +14,30 @@
 <cfif thisTag.executionMode is "start">
 
 	<cfoutput>
-	<div class="rightMenu">
-	<div class="menuTitle">#attributes.title#</div>
-	<div class="menuBody">
+
+            <div class="box">
+             <div class="titlewrap"><h4><span>#attributes.title#</span></h4></div>
+
+             <div class="wrapleft">
+              <div class="wrapright">
+               <div class="tr">
+                <div class="bl">
+                 <div class="tl">
+                  <div class="br the-content">
+				  
 	</cfoutput>		
 
 <cfelse>
 
 	<cfoutput>
-	</div>
-	</div>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+
+            </div>
 	</cfoutput>
 
 </cfif>

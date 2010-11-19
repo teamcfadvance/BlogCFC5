@@ -1,5 +1,11 @@
 <cfprocessingdirective pageencoding="utf-8" />
 
+<!---// this is required for Live Writer to ensure that the request is processed as UTF-8 //--->
+<cfset responseCharset = getPageContext().getRequest().getHttpRequest().getCharacterEncoding() />
+<cfif not structKeyExists(variables, "responseCharset")>
+  <cfset getPageContext().getRequest().getHttpRequest().setCharacterEncoding("UTF-8") />
+</cfif>
+
 <cfsetting enablecfoutputonly=true>
 <!---
 	Name         : C:\projects\blogcfc5\client\xmlrpc\xmlrpc.cfm
@@ -298,7 +304,7 @@
 		<!---// replace the em dash character with the HTML entity //--->
 		<cfset entry.body = replace(entry.body, chr(8212), "&##8212;", "all") />
 		<cfset entry.body = replace(entry.body, chr(151), "&##8212;", "all") />
-		<cfset entry.body = replace(entry.body, "—", "&##8212;", "all") />
+		<cfset entry.body = replace(entry.body, "ï¿½", "&##8212;", "all") />
 
 		<cfif url.parseMarkup>
 			<cfset entry.body = xmlrpc.unescapeMarkup(entry.body) />

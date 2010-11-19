@@ -1,0 +1,7 @@
+
+/* blue header */
+
+#header{ background: transparent url(images/options/header-noise-blue-center.jpg) no-repeat center top; }
+#header-wrap{ background: transparent url(images/options/header-noise-blue.jpg) repeat-x center top; }
+
+#pagetitle h4{ border-left: 1px solid #7a96a4; }

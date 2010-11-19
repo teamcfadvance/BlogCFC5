@@ -1,0 +1,74 @@
+
+
+/*
+
+  Internet Explorer 5.5 and 6.0 bug-fixes (still incomplete)
+
+*/
+
+body{ text-align: center; }  /* center main div in IE 5.5 */
+#page{ text-align: left; }
+
+.comment-mask{
+  background: none;
+}
+
+.box{
+  background: none;
+  position: relative;
+}
+
+.post p.post-author{
+  background: #e0d9c4;
+}
+
+#nav-wrap2 ul#nav .fadeThis span.hover { background: #5798c2; }
+#nav-wrap1{ background: transparent url(images/nav-left-ie6.png) no-repeat left top; }
+#nav-wrap2{ background: transparent url(images/nav-bg-ie6.png) no-repeat right top; }
+#nav-wrap2 ul#nav{ float:left; }
+
+#nav-wrap2 ul#nav li a{
+  height: 35px;
+  margin-top: 1px;
+}
+
+#nav-wrap2 ul#nav .fadeThis span.hover {
+  height: 35px;
+}
+
+#nav-wrap2 ul#nav ul {
+  top: 35px;
+}
+
+/* search */
+.search-block{ background: transparent url(images/search-bg-ie6.png) no-repeat left top; }
+
+.search-block .searchform-wrap{
+  background: transparent url(images/search-go-ie6.png) no-repeat right top; }
+
+ul.menu .fadeThis {
+  position: static;
+}
+
+ul.menu .fadeThis span.hover {
+  display: none;
+}
+
+ul.menu li a:hover{
+  background: #f7f5ef url(images/side-menu-active.png) repeat-x left bottom;
+}
+
+.comment-wrap2{
+  position: relative;
+  height: 100%;
+}
+
+#main-wrap1{
+  position: relative;
+}
+
+
+span.hover, ul.menu li.cat-item a.rss{
+  display: none;
+  visibility: hidden;
+}

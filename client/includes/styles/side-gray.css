@@ -1,0 +1,10 @@
+
+/* gray sidebar titles */
+
+.box .titlewrap{ background: transparent url(images/options/box-title-left-gray.png) no-repeat top left; }
+.box .titlewrap h4{ background: transparent url(images/options/box-title-bg-gray.png) no-repeat top right; }
+
+.post .post-date span.month{ background: #929494; }
+
+a:hover,
+h3.post-title a:hover, h2.post-title a:hover{ color: #777878; }

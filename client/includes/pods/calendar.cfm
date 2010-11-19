@@ -58,6 +58,7 @@
 
 
 <!--- swap navigation buttons if BIDI is true --->
+<!---
 <cfoutput>
 	<div class="header">
 	<cfif application.localeutils.isBIDI()>
@@ -71,9 +72,23 @@
 	</cfif>
 	</div>
 </cfoutput>
+--->
 <cfoutput>
-<table border="0" class="calendarTable" id="calendar">
+<table border="0" id="calendar">
 <thead>
+<tr>
+	<td colspan="7" align="center">
+	<cfif application.localeutils.isBIDI()>
+		<a href="#application.blog.getProperty("blogurl")#/#year(nextmonth)#/#month(nextmonth)#" rel="nofollow">&lt;&lt;</a>
+		<a href="#application.blog.getProperty("blogurl")#/#year#/#month#" rel="nofollow">#localizedMonth# #localizedYear#</a>
+		<a href="#application.blog.getProperty("blogurl")#/#year(lastmonth)#/#month(lastmonth)#" rel="nofollow">&gt;&gt;</a>		
+	<cfelse>
+		<a href="#application.blog.getProperty("blogurl")#/#year(lastmonth)#/#month(lastmonth)#" rel="nofollow">&lt;&lt;</a>
+		<a href="#application.blog.getProperty("blogurl")#/#year#/#month#" rel="nofollow">#localizedMonth# #localizedYear#</a>
+		<a href="#application.blog.getProperty("blogurl")#/#year(nextmonth)#/#month(nextmonth)#" rel="nofollow">&gt;&gt;</a>
+	</cfif>
+	</td>
+</tr>
 <tr>
 	<!--- emit localized days in proper week start order --->
 	<cfloop index="i" from="1" to="#arrayLen(localizedDays)#">

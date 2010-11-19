@@ -89,15 +89,15 @@ Created by Raymond Camden (ray@camdenfamily.com)
 		<form action="#cgi.script_name#?#cgi.query_string#" method="post">
     <fieldset id="sendForm">
 	     <div>
-	      <label for="name">#rb("name")#:</label>
+	      <label for="name">#rb("name")#:</label><br/>
 	      <input type="text" id="name" name="name" value="#form.name#" style="width:300px;" />
 	    </div>
 	     <div>
-	      <label for="email">#rb("youremailaddress")#:</label>
+	      <label for="email">#rb("youremailaddress")#:</label><br/>
 	      <input type="text" id="email" name="email" value="#form.email#" style="width:300px;" />
 	    </div>
 	     <div>
-	      <label for="comments">#rb("comments")#:</label>
+	      <label for="comments">#rb("comments")#:</label><br/>
 	      <textarea name="comments" id="comments" style="width: 400px; height: 300px;" rows="15" cols="45">#form.comments#</textarea>
 	    </div>
 		<cfif application.useCaptcha>

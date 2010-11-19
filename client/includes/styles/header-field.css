@@ -1,0 +1,16 @@
+
+/* wall header */
+
+#header{ background: transparent url(images/options/header-field-center.jpg) no-repeat center top; }
+#header-wrap{ background: transparent url(images/options/header-field.jpg) repeat-x center top; }
+
+#pagetitle h1.logo, #pagetitle h1.logo a, #pagetitle h4{
+  color: #fff;
+  text-shadow: #999 1px 1px 1px;
+}
+
+#pagetitle h4{ border-left: 1px solid #fff; }
+
+.search-block input{
+  color: #fff;
+}

@@ -15,7 +15,7 @@
 	Purpose		 : Stats
 --->
 
-<cfmodule template="tags/layout.cfm" title="#rb("stats")#">
+<cfmodule template="../tags/adminlayout.cfm" title="Stats">
 	
 	<cfset dsn = application.blog.getProperty("dsn")>
 	<cfset dbtype = application.blog.getProperty("blogdbtype")>
@@ -148,28 +148,6 @@
 		</cfif>
 		<cfif dbtype is "mysql">limit 10</cfif>
 	</cfquery>
-	
-	<cfif application.blog.getProperty("allowtrackbacks")>
-		<!--- RBB 1/20/2006: gets num of trackbacks per entry, top 10 --->
-		<cfquery name="topTrackbackedEntries" datasource="#dsn#" username="#username#" password="#password#">
-			select 
-			<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif>
-			tblblogentries.id, tblblogentries.title, count(tblblogtrackbacks.id) as trackbackcount
-			from			tblblogentries, tblblogtrackbacks
-			where			tblblogtrackbacks.entryid = tblblogentries.id
-			and				tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
-			<cfif dbtype is "oracle">
-            and		rownum <= 10
-            </cfif>	
-			group by		tblblogentries.id, tblblogentries.title
-			<cfif dbtype is not "msaccess">
-				order by	trackbackcount desc
-			<cfelse>
-				order by 	count(tblblogtrackbacks.id) desc
-			</cfif>
-			<cfif dbtype is "mysql">limit 10</cfif>
-		</cfquery>	
-	</cfif>
 		
 	<cfquery name="topSearchTerms" datasource="#dsn#" username="#username#" password="#password#">
 		select		
@@ -207,199 +185,176 @@
 		<cfset dur = dateDiff("d",getTotalEntries.firstEntry, now())>
 		<cfset averageCommentsPerEntry = getTotalComments.totalComments / getTotalEntries.totalEntries>
 	</cfif>
-	
+
 	<cfoutput>
-	<div class="date"><b>#rb("contents")#</b></div>
-	<div class="body">
-	<a href="##generalstats">#rb("generalstats")#</a><br />
-	<a href="##topviews">#rb("topviews")#</a><br />
-	<a href="##categorystats">#rb("categorystats")#</a><br />
-	<a href="##topentriesbycomments">#rb("topentriesbycomments")#</a><br />
-	<a href="##topcategoriesbycomments">#rb("topcategoriesbycomments")#</a><br />
-	<cfif application.blog.getProperty("allowtrackbacks")><a href="##topentriesbytrackbacks">#rb("topentriesbytrackbacks")#</a><br /></cfif>
-	<a href="##topsearchterms">#rb("topsearchterms")#</a><br />
-	<a href="##topcommenters">#rb("topcommenters")#</a><br />
-
-	</div>
-	
-	<p />
-	
-	<div class="date"><a name="generalstats"></a><b>#rb("generalstats")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<tr>
-			<td width="50%"><b>#rb("totalnumentries")#:</b></td>
-			<td align="right">#numberFormat(getTotalEntries.totalEntries)#</td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("last30")#:</b></td>
-			<td align="right">#numberFormat(last30.totalEntries)#</td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("last30avg")#:</b></td>
-			<td align="right"><cfif last30.totalentries gt 0>#numberFormat(last30.totalEntries/30,"999.99")#<cfelse>&nbsp;</cfif></td>
-		</tr>				
-		<tr>
-			<td width="50%"><b>#rb("firstentry")#:</b></td>
-			<td align="right"><cfif len(getTotalEntries.firstEntry)>#dateFormat(getTotalEntries.firstEntry,"mm/dd/yy")#<cfelse>&nbsp;</cfif></td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("lastentry")#:</b></td>
-			<td align="right"><cfif len(getTotalEntries.lastEntry)>#dateFormat(getTotalEntries.lastEntry,"mm/dd/yy")#<cfelse>&nbsp;</cfif></td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("bloggingfor")#:</b></td>
-			<td align="right"><cfif structKeyExists(variables, "dur")>#numberFormat(variables.dur)# #rb("days")#<cfelse>&nbsp;</cfif></td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("totalcomments")#:</b></td>
-			<td align="right">#numberFormat(getTotalComments.totalComments)#</td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("avgcommentsperentry")#:</b></td>
-			<td align="right">#numberFormat(averageCommentsPerEntry,"999.99")#</td>
-		</tr>
-		<cfif application.blog.getProperty("allowtrackbacks")>
-		<!--- RBB: 1/20/06: Added total trackbacks --->
-		<tr>
-			<td width="50%"><b>#rb("totaltrackbacks")#:</b></td>
-			<td align="right">#getTotalTrackbacks.totalTrackbacks#</td>
-		</tr>		
-		</cfif>
-		<tr>
-			<td width="50%"><b>#rb("totalviews")#:</b></td>
-			<td align="right">#numberFormat(getTotalViews.total)#</td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("avgviews")#:</b></td>
-			<td align="right">
-				<cfif gettotalentries.totalentries gt 0 and gettotalviews.total gt 0>
-				#numberFormat(gettotalviews.total/gettotalentries.totalentries,"999.99")#
-				<cfelse>
-				0
-				</cfif>
-			</td>
-		</tr>
-		<tr>
-			<td width="50%"><b>#rb("totalsubscribers")#:</b></td>
-			<td align="right">#getTotalSubscribers.totalsubscribers#</td>
-		</tr>
+	<script type="text/javascript">
+	$(document).ready(function() {
 		
-	</table>
-	</div>
+		//create tabs
+		$("##statstabs").tabs();
+		
+	});
+	</script>
+			
+	<div id="statstabs">
+	
+		<ul>
+			<li><a href="##generalstats">#rb("generalstats")#</a></li>
+			<li><a href="##topviews">#rb("topviews")#</a></li>
+			<li><a href="##categorystats">#rb("categorystats")#</a></li>
+			<li><a href="##topentriesbycomments">#rb("topentriesbycomments")#</a></li>
+			<li><a href="##topcategoriesbycomments">#rb("topcategoriesbycomments")#</a></li>
+			<li><a href="##topsearchterms">#rb("topsearchterms")#</a></li>
+			<li><a href="##topcommenters">#rb("topcommenters")#</a></li>
+		</ul>
+		
+		<div id="generalstats">
+		
+			<table border="1" width="100%">
+				<tr>
+					<td width="50%">#rb("totalnumentries")#:</td>
+					<td align="right">#numberFormat(getTotalEntries.totalEntries)#</td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("last30")#:</td>
+					<td align="right">#numberFormat(last30.totalEntries)#</td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("last30avg")#:</td>
+					<td align="right"><cfif last30.totalentries gt 0>#numberFormat(last30.totalEntries/30,"999.99")#<cfelse>&nbsp;</cfif></td>
+				</tr>				
+				<tr>
+					<td width="50%">#rb("firstentry")#:</td>
+					<td align="right"><cfif len(getTotalEntries.firstEntry)>#dateFormat(getTotalEntries.firstEntry,"mm/dd/yy")#<cfelse>&nbsp;</cfif></td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("lastentry")#:</td>
+					<td align="right"><cfif len(getTotalEntries.lastEntry)>#dateFormat(getTotalEntries.lastEntry,"mm/dd/yy")#<cfelse>&nbsp;</cfif></td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("bloggingfor")#:</td>
+					<td align="right"><cfif structKeyExists(variables, "dur")>#numberFormat(variables.dur)# #rb("days")#<cfelse>&nbsp;</cfif></td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("totalcomments")#:</td>
+					<td align="right">#numberFormat(getTotalComments.totalComments)#</td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("avgcommentsperentry")#:</td>
+					<td align="right">#numberFormat(averageCommentsPerEntry,"999.99")#</td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("totalviews")#:</td>
+					<td align="right">#numberFormat(getTotalViews.total)#</td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("avgviews")#:</td>
+					<td align="right">
+						<cfif gettotalentries.totalentries gt 0 and gettotalviews.total gt 0>
+						#numberFormat(gettotalviews.total/gettotalentries.totalentries,"999.99")#
+						<cfelse>
+						0
+						</cfif>
+					</td>
+				</tr>
+				<tr>
+					<td width="50%">#rb("totalsubscribers")#:</td>
+					<td align="right">#getTotalSubscribers.totalsubscribers#</td>
+				</tr>
+				
+			</table>
+	
+		</div>
 
-	<p />
+		<div id="topviews">
 	
-	<div class="date"><a name="topviews"></a><b>#rb("topviews")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<cfloop query="getTopViews">
-		<tr>
-			<td width="50%"><b><a href="#application.blog.makeLink(id)#" rel="nofollow">#title#</a></b></td>
-			<td align="right">#numberFormat(views)#</td>
-		</tr>
-		</cfloop>
-	</table>
-	</div>
-	
-	<p />
-	
-	<div class="date"><a name="categorystats"></a><b>#rb("categorystats")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<cfloop query="getCategoryCount">
-		<tr>
-			<td width="50%"><a href="#application.blog.makeCategoryLink(categoryid)#">#categoryname#</a></td>
-			<td align="right">#numberFormat(total)#</td>
-		</tr>
-		</cfloop>
-	</table>
-	</div>
-	
-	<p />
-	
-	<div class="date"><a name="topentriesbycomments"></a><b>#rb("topentriesbycomments")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<cfloop query="topCommentedEntries">
-		<tr>
-			<td width="50%"><b><a href="#application.blog.makeLink(id)#" rel="nofollow">#title#</a></b></td>
-			<td align="right">#numberFormat(commentCount)#</td>
-		</tr>
-		</cfloop>
-	</table>
-	</div>
-	
-	<p />
-	
-	<div class="date"><a name="topcategoriesbycomments"></a><b>#rb("topcategoriesbycomments")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<cfloop query="topCommentedCategories">
-			<!--- 
-				This is ugly code.
-				I want to find the avg number of posts
-				per entry for this category.
-			--->
-			<cfquery name="getTotalForThisCat" dbtype="query">
-				select	total
-				from	getCategoryCount
-				where	categoryid = '#categoryid#'
-			</cfquery>
-			<cfset avg = commentCount / getTotalForThisCat.total>
-			<cfset avg = numberFormat(avg,"___.___")>
-			<tr>
-				<td width="50%"><b><a href="index.cfm?mode=cat&amp;catid=#categoryid#" rel="nofollow">#categoryname#</a></b></td>
-				<td align="right">#commentCount# (#rb("avgcommentperentry")#: #avg#)</td>
-			</tr>
-		</cfloop>
-	</table>
-	</div>
+			<table border="1" width="100%">
+				<cfloop query="getTopViews">
+				<tr>
+					<td width="50%"><a href="#application.blog.makeLink(id)#" rel="nofollow">#title#</a></td>
+					<td align="right">#numberFormat(views)#</td>
+				</tr>
+				</cfloop>
+			</table>
 
-	<p />
-	
-	<cfif application.blog.getProperty("allowtrackbacks")>
-	<!--- RBB 1/20/2006: Added top entriex by trackbacks --->
-	<div class="date"><a name="topentriesbytrackbacks"></a><b>#rb("topentriesbytrackbacks")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<cfloop query="topTrackbackedEntries">
-		<tr>
-			<td width="50%"><b><a href="#application.blog.makeLink(id)#" rel="nofollow">#title#</a></b></td>
-			<td align="right">#trackbackCount#</td>
-		</tr>
-		</cfloop>
-	</table>
-	</div>
-	
-	<p />
-	</cfif>
-	
-	<div class="date"><a name="topsearchterms"></a><b>#rb("topsearchterms")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<cfloop query="topSearchTerms">
-		<tr>
-			<td width="50%"><b><a href="#application.rooturl#/index.cfm?mode=search&amp;search=#urlEncodedFormat(searchterm)#" rel="nofollow">#searchterm#</a></b></td>
-			<td align="right">#numberFormat(total)#</td>
-		</tr>
-		</cfloop>
-	</table>
-	</div>
+		</div>
 
-	<p />
-	<div class="date"><a name="topcommenters"></a><b>#rb("topcommenters")#</b></div>
-	<div class="body">
-	<table border="1" width="100%">
-		<cfloop query="topCommenters">
-		<tr>
-			<td width="50%"><b>#name#</b></td>
-			<td align="right">#numberFormat(emailcount)#</td>
-		</tr>
-		</cfloop>
-	</table>
-	</div>
+		<div id="categorystats">
+			<table border="1" width="100%">
+				<cfloop query="getCategoryCount">
+				<tr>
+					<td width="50%"><a href="#application.blog.makeCategoryLink(categoryid)#">#categoryname#</a></td>
+					<td align="right">#numberFormat(total)#</td>
+				</tr>
+				</cfloop>
+			</table>
+		</div>
+
+		<div id="topentriesbycomments">
+			
+			<table border="1" width="100%">
+				<cfloop query="topCommentedEntries">
+				<tr>
+					<td width="50%"><a href="#application.blog.makeLink(id)#" rel="nofollow">#title#</a></td>
+					<td align="right">#numberFormat(commentCount)#</td>
+				</tr>
+				</cfloop>
+			</table>
 	
+		</div>
+	
+		<div id="topcategoriesbycomments">
+			
+			<table border="1" width="100%">
+				<cfloop query="topCommentedCategories">
+					<!--- 
+						This is ugly code.
+						I want to find the avg number of posts
+						per entry for this category.
+					--->
+					<cfquery name="getTotalForThisCat" dbtype="query">
+						select	total
+						from	getCategoryCount
+						where	categoryid = '#categoryid#'
+					</cfquery>
+					<cfset avg = commentCount / getTotalForThisCat.total>
+					<cfset avg = numberFormat(avg,"___.___")>
+					<tr>
+						<td width="50%"><a href="index.cfm?mode=cat&amp;catid=#categoryid#" rel="nofollow">#categoryname#</a></td>
+						<td align="right">#commentCount# (#rb("avgcommentperentry")#: #avg#)</td>
+					</tr>
+				</cfloop>
+			</table>
+	
+		</div>
+
+		<div id="topsearchterms">
+		
+			<table border="1" width="100%">
+				<cfloop query="topSearchTerms">
+				<tr>
+					<td width="50%"><a href="#application.rooturl#/index.cfm?mode=search&amp;search=#urlEncodedFormat(searchterm)#" rel="nofollow">#searchterm#</a></td>
+					<td align="right">#numberFormat(total)#</td>
+				</tr>
+				</cfloop>
+			</table>
+			
+		</div>
+
+		<div id="topcommenters">
+	
+			<table border="1" width="100%">
+				<cfloop query="topCommenters">
+				<tr>
+					<td width="50%">#name#</td>
+					<td align="right">#numberFormat(emailcount)#</td>
+				</tr>
+				</cfloop>
+			</table>
+	
+		</div>
+	
+	</div>
 	</cfoutput>
 	
 </cfmodule>

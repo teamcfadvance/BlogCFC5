@@ -1,0 +1,22 @@
+
+/* grunge content design */
+
+#main-wrap1{ background: transparent url(images/options/main2-bg.jpg) repeat center top; }
+#main-wrap2{ background: transparent url(images/options/main2-top.jpg) repeat-x center top; }
+#main{ background: transparent url(images/options/main2-center.jpg) no-repeat center top; }
+
+
+/* adjust table background */
+
+table td, table th{ border-right: 1px solid #fff; }
+
+table th{
+  background: #7e7e7e;
+  border-bottom: 1px solid #fff;
+}
+
+table td{ background: #f1f1f1; }
+table tr.even td{ background: #fff; }
+table tr:hover td{ background: #fff; }
+
+fieldset{  border: 1px solid #999; }

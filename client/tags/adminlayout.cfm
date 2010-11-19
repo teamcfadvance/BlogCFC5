@@ -61,6 +61,7 @@
 <li><a href="moderate.cfm">Moderate Comments (<cfoutput>#application.blog.getNumberUnmoderated()#</cfoutput>)</a></li>
 </cfif>
 <li><a href="index.cfm?reinit=1">Refresh Blog Cache</a></li>
+<li><a href="stats.cfm">Stats</a></li>
 <cfif application.settings>
 <li><a href="settings.cfm">Settings</a></li>
 </cfif>

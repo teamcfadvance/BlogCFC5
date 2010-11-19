@@ -72,101 +72,84 @@ popular view
 	<cfset lastDate = "">
 	<cfloop query="articles">
 	
-		<cfoutput><div class="entry<cfif articles.currentRow EQ articles.recordCount>Last</cfif>"></cfoutput>
+		<cfoutput>
 		
-		<cfif application.trackbacksallowed>
-			<!--- output this rdf for auto discovery of trackback links --->
-			<cfoutput>
-			<!-- 
-			<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns##"
-	             xmlns:dc="http://purl.org/dc/elements/1.1/"
-	             xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
-		    <rdf:Description
-		        rdf:about="#application.blog.makeLink(id)#"
-		        dc:identifier="#application.blog.makeLink(id)#"
-		        dc:title="#title#"
-		        trackback:ping="#application.rooturl#/trackback.cfm?#id#" />
-		    </rdf:RDF>
-			-->
-			</cfoutput>		
-		</cfif>
+            <div class="post">
+             <div class="post-header">
+              <h3 class="post-title"><a href="#application.blog.makeLink(id)#">#title#</a></h3>
 
-		<cfoutput>
-		<h1><a href="#application.blog.makeLink(id)#">#title#</a></h1>
+              <p class="post-date">
+			   <span class="month">#dateFormat(posted, "mmm")#</span>
+               <span class="day">#day(posted)#</span>
+              </p>
+              <p class="post-author">
+               <span class="info">posted <cfif len(name)>by <a href="#application.blog.makeUserLink(name)#">#name#</a></cfif> in 
+			   	</cfoutput>
+			   	<cfset lastid = listLast(structKeyList(categories))>
+				<cfloop item="catid" collection="#categories#">
+					<cfoutput><a href="#application.blog.makeCategoryLink(catid)#">#categories[currentRow][catid]#</a><cfif catid is not lastid>, </cfif></cfoutput>
+				</cfloop>
+			    <cfoutput>
+			    | <a href="##comments" class="comments"><cfif commentCount neq "">#commentCount#<cfelse>0</cfif> Comments</a>
+				<!-- AddThis Button BEGIN -->
+				<a href="http://www.addthis.com/bookmark.php?v=250" onmouseover="return addthis_open(this, '', '#URLEncodedFormat(application.blog.makeLink(id))#', '#URLEncodedFormat(application.blog.getProperty('blogTitle'))#')" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img  src="http://s7.addthis.com/static/btn/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0;float:right;"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a20091556eefead"></script>
+				<!-- AddThis Button END -->
+				</span>
+              </p>
+             </div>
+             <div class="post-content clearfix">
+					#application.blog.renderEntry(body,false,enclosure)#
+
+					<!--- STICK IN THE MP3 PLAYER --->
+					<cfif enclosure contains "mp3">
+						<cfset alternative=replace(getFileFromPath(enclosure),".mp3","") />
+						<div class="audioPlayerParent">
+							<div id="#alternative#" class="audioPlayer">
+							</div>
+						</div>
+						<script type="text/javascript">
+						// <![CDATA[
+							var flashvars = {};
+							// unique ID
+							flashvars.playerID = "#alternative#";
+							// load the file
+							flashvars.soundFile= "#application.rooturl#/enclosures/#getFileFromPath(enclosure)#";
+							// Load width and Height again to fix IE bug
+							flashvars.width = "470";
+							flashvars.height = "24";
+							// Add custom variables
+							var params = {};
+							params.allowScriptAccess = "sameDomain";
+							params.quality = "high";
+							params.allowfullscreen = "true";
+							params.wmode = "transparent";
+							var attributes = false;
+							swfobject.embedSWF("#application.rooturl#/includes/audio-player/player.swf", "#alternative#", "470", "24", "8.0.0","/includes/audio-player/expressinstall.swf", flashvars, params, attributes);
+						// ]]>
+						</script>
+					</cfif>
+					<cfif len(morebody) and url.mode is not "entry">
+					<p align="right">
+					<a href="#application.blog.makeLink(id)###more">[#rb("more")#]</a>
+					</p>
+					<cfelseif len(morebody)>
+					#application.blog.renderEntry(morebody)#
+					</cfif>
+
+					<div class="clear"></div>
+
+					<p class="post-metadata">
+					This entry was posted on #dateFormat(posted, "mmmm d, yyyy")# at #timeFormat(posted, "h:mm tt")# and has received #views# views. There are currently <cfif commentCount is "">0<cfelse>#commentCount#</cfif> comments. 
+					<a href="#application.rooturl#/print.cfm?id=#id#" rel="nofollow">Print this entry.</a> <cfif len(enclosure)><a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">Download attachment.</a></cfif>
+					</p>
+
+
+             </div>
+            </div>
+
+		</cfoutput>
+
 		
-		<div class="byline">#rb("postedat")# : #application.localeUtils.dateLocaleFormat(posted)# #application.localeUtils.timeLocaleFormat(posted)# 
-		<cfif len(name)>| #rb("postedby")# : <a href="#application.blog.makeUserLink(name)#">#name#</a></cfif><br />
-		#rb("relatedcategories")#:
-		</cfoutput>
-		<cfset lastid = listLast(structKeyList(categories))>
-		<cfloop item="catid" collection="#categories#">
-			<cfoutput><a href="#application.blog.makeCategoryLink(catid)#">#categories[currentRow][catid]#</a><cfif catid is not lastid>, </cfif></cfoutput>
-		</cfloop>
-		<cfoutput>
-		</div>
-		</cfoutput>
-
-		<cfoutput>		
-		<div class="body">
-		#application.blog.renderEntry(body,false,enclosure)#
-
-		<!--- STICK IN THE MP3 PLAYER --->
-		<cfif enclosure contains "mp3">
-			<cfset alternative=replace(getFileFromPath(enclosure),".mp3","") />
-			<div class="audioPlayerParent">
-				<div id="#alternative#" class="audioPlayer">
-				</div>
-			</div>
-			<script type="text/javascript">
-			// <![CDATA[
-				var flashvars = {};
-				// unique ID
-				flashvars.playerID = "#alternative#";
-				// load the file
-				flashvars.soundFile= "#application.rooturl#/enclosures/#getFileFromPath(enclosure)#";
-				// Load width and Height again to fix IE bug
-				flashvars.width = "470";
-				flashvars.height = "24";
-				// Add custom variables
-				var params = {};
-				params.allowScriptAccess = "sameDomain";
-				params.quality = "high";
-				params.allowfullscreen = "true";
-				params.wmode = "transparent";
-				var attributes = false;
-				swfobject.embedSWF("#application.rooturl#/includes/audio-player/player.swf", "#alternative#", "470", "24", "8.0.0","/includes/audio-player/expressinstall.swf", flashvars, params, attributes);
-			// ]]>
-			</script>
-		</cfif>
-		
-		<cfif len(morebody) and url.mode is not "entry">
-		<p align="right">
-		<a href="#application.blog.makeLink(id)###more">[#rb("more")#]</a>
-		</p>
-		<cfelseif len(morebody)>
-		<span id="more"></span>
-		#application.blog.renderEntry(morebody)#
-		</cfif>
-		</div>
-		</cfoutput>
-
-		<cfoutput>
-		<div class="byline">
-		</cfoutput>
-
-		<cfif allowcomments or commentCount neq ""><cfoutput><img src="#application.rooturl#/images/comment.gif" align="middle" title="#rb("comments")#" alt="#rb("comments")#" height="16" width="16" /> <a href="#application.blog.makeLink(id)###comments">#rb("comments")# (<cfif commentCount is "">0<cfelse>#commentCount#</cfif>)</a> | </cfoutput></cfif>
-		<cfif application.trackbacksallowed><cfoutput><a href="#application.blog.makeLink(id)###trackbacks">Trackbacks (<cfif trackbackCount is "">0<cfelse>#trackbackCount#</cfif>)</a> | </cfoutput></cfif>
-		<cfif application.isColdFusionMX7><cfoutput><img src="#application.rooturl#/images/printer.gif" align="middle" title="#rb("print")#" alt="#rb("print")#" height="16" width="16" /> <a href="#application.rooturl#/print.cfm?id=#id#" rel="nofollow">#rb("print")#</a> | </cfoutput></cfif>
-		<cfoutput><img src="#application.rooturl#/images/email.gif" align="middle" title="#rb("send")#" alt="#rb("send")#" height="16" width="16" /> <a href="#application.rooturl#/send.cfm?id=#id#" rel="nofollow">#rb("send")#</a> | </cfoutput>
-		<cfif len(enclosure)><cfoutput><img src="#application.rooturl#/images/disk.png" align="middle" title="#rb("download")#" alt="#rb("download")#" height="16" width="16" /> <a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">#rb("download")#</a> | </cfoutput></cfif>
-		<cfoutput>
-    	#views# #rb("views")# |  
-		<!-- AddThis Button BEGIN -->
-		<a href="http://www.addthis.com/bookmark.php?v=250" onmouseover="return addthis_open(this, '', '#URLEncodedFormat(application.blog.makeLink(id))#', '#URLEncodedFormat(application.blog.getProperty('blogTitle'))#')" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img src="http://s7.addthis.com/static/btn/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a20091556eefead"></script>
-		<!-- AddThis Button END -->
-		</div>
-		</cfoutput>
-
 		<!--- Things to do if showing one entry --->						
 		<cfif articles.recordCount is 1>
 		
@@ -188,49 +171,7 @@ popular view
 		  		</cfoutput>
 			</cfif>
 
-			<cfif application.trackbacksallowed>
-				<cfset trackbacks = application.blog.getTrackBacks(id)>	
-				<cfoutput>	
-				<div id="trackbacks">
-				<div class="trackbackHeader">TrackBacks</div>
-				</cfoutput>
-				
-				<cfif trackbacks.recordCount>
-		
-					<cfoutput>		
-					<div class="trackbackBody addTrackbackLink">
-					[<a href="javaScript:launchTrackback('#id#')">#application.resourceBundle.getResource("addtrackback")#</a>]
-					</div>				
-					</cfoutput>
-					
-					<cfoutput query="trackbacks">
-						<div class="trackback<cfif currentRow mod 2>Alt</cfif>">
-						<div class="trackbackBody">
-						<a href="#postURL#" target="_new" rel="nofollow" class="tbLink">#title#</a><br />
-						#paragraphFormat2(excerpt)#
-						</div>
-						<div class="trackbackByLine">#application.resourceBundle.getResource("trackedby")# #blogname# | #application.resourceBundle.getResource("trackedon")# #application.localeUtils.dateLocaleFormat(created,"short")# #application.localeUtils.timeLocaleFormat(created)#</div>
-						</div>
-					</cfoutput>			
-				<cfelse>
-					<cfoutput><div class="body">#application.resourceBundle.getResource("notrackbacks")#</div></cfoutput>
-				</cfif>
-				
-				<cfoutput>
-				<p>
-				<div class="body">
-				#application.resourceBundle.getResource("trackbackurl")#<br />
-				#application.rooturl#/trackback.cfm?#id#
-				</div>
-				</p>
-				<div class="trackbackBody addTrackbackLink">
-					[<a href="javaScript:launchTrackback('#id#')">#application.resourceBundle.getResource("addtrackback")#</a>]
-				</div>
-				</div>
-				</cfoutput>				
-			</cfif>
-
-			<cfif application.usetweetbacks>
+			<cfif application.usetweetbacks and 0>
 
 				<cfoutput>	
 				<div id="tweetbacks">
@@ -245,86 +186,90 @@ popular view
 
 			</cfif>
 
+
 			<cfoutput>
-			<div id="comments">
-			<div class="commentHeader">#rb("comments")# <cfif application.commentmoderation>(#rb("moderation")#)</cfif></div>
+			<h3 class="commentHeader">#rb("comments")# <cfif application.commentmoderation>(#rb("moderation")#)</cfif></h3>
 			</cfoutput>
 			<cfset comments = application.blog.getComments(id)>
 
-			<cfif comments.recordCount>
-
-				<cfif allowComments>
-					<cfoutput>
-					<div class="trackbackBody addCommentLink">
-					[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
-					[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]
-
-					</div>
-					</cfoutput>
-				</cfif>
-				
-				<cfset entryid = id>
-				<cfoutput query="comments">
-				<div id="c#id#" class="comment<cfif currentRow mod 2>Alt</cfif>">
-					<div class="commentBody">
-					<cfif application.gravatarsAllowed><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=40&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" title="#name#'s Gravatar" border="0" /></cfif>
-					#paragraphFormat2(replaceLinks(comment))#
-					</div>
-					<div class="commentByLine">
-					<a href="#application.blog.makeLink(entryid)###c#id#">##</a> #rb("postedby")# <cfif len(comments.website)><a href="#comments.website#" rel="nofollow">#name#</a><cfelse>#name#</cfif> 
-					| #application.localeUtils.dateLocaleFormat(posted,"short")# #application.localeUtils.timeLocaleFormat(posted)#
-					</div>
-				</div>
-				</cfoutput>
-
-				<cfif allowComments>
-					<cfoutput>
-					<div class="trackbackBody addCommentLink">
-					[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
-					</div>
-					</cfoutput>
-				</cfif>
-								
-			<cfelseif not allowcomments>
-				<cfoutput><div class="body">#rb("commentsnotallowed")#</div></cfoutput>
-			<cfelse>
+			<cfif allowComments>
 				<cfoutput>
-				<div class="trackbackBody addCommentLink">
-				<p style="text-align:left">#rb("nocomments")#</p>				
+				<div style="font-size:12px">
 				[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
-				[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]				
+				[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]
 				</div>
 				</cfoutput>
 			</cfif>
 
 			<cfoutput>
-			</div>
-			</cfoutput>
+			<ul id="comments">
 
+			<cfset entryid = id>
+			<cfloop query="comments">
+				<cfif currentRow mod 2 is 0>
+					<cfset evenodd = "even">
+				<cfelse>
+					<cfset evenodd = "false">
+				</cfif>
+				<li class="comment #evenodd# thread-#evenodd# depth-1 with-avatar" id="c#id#">
+				   <div class="comment-mask regularcomment">
+				    <div class="comment-main">
+				     <div class="comment-wrap1">
+				      <div class="comment-wrap2">
+				       <div class="comment-head tiptrigger">
+						<p><a class="comment-id" href="#application.blog.makeLink(entryid)###c#id#">###currentRow#</a> by <b><cfif len(comments.website)><a href="#comments.website#" rel="nofollow">#name#</a><cfelse>#name#</cfif></b> 
+						on #application.localeUtils.dateLocaleFormat(posted,"short")# - #application.localeUtils.timeLocaleFormat(posted)#</p>
+					   </div>
+					   <div class="comment-body clearfix" id="comment-body-#currentRow#">
+						<div class="avatar"><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=64&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" title="#name#'s Gravatar" border="0" class="avatar avatar-64 photo" height="64" width="64" /></div>
+						<div class="comment-text">
+						#paragraphFormat2(replaceLinks(comment))#
+						</div>
+				       </div>
+				      </div>
+				     </div>
+				    </div>
+				   </div>
+				</li> 
+
+			</cfloop>
+			</ul>
+
+			<cfif allowComments>
+				<div style="font-size:12px">
+				[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
+				[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]
+				</div>
+			<cfelseif not allowcomments>
+				<cfoutput><div>#rb("commentsnotallowed")#</div></cfoutput>
+			</cfif>
+			
+		    <div class="clear"></div>
+		    </cfoutput>
+			
 		</cfif>
 
-		<!--- this div ends the entry div --->
-		<cfoutput>
-		</div>
-		</cfoutput>
-		
+
+
+
 	</cfloop>
 	
 	<cfif articles.recordCount is 0>
 	
-		<cfoutput><div class="body">#rb("sorry")#</div></cfoutput>
+		<cfoutput><h3>#rb("sorry")#</h3></cfoutput>
 		<cfoutput>
-		<div class="body">
+		<p>
 		<cfif url.mode is "">
 			#rb("noentries")#
 		<cfelse>
 			#rb("noentriesforcriteria")#
 		</cfif>
-		</div>
+		</p>
 		</cfoutput>
 	
 	</cfif>
-
+	
+	<!---
 	<!--- Used for pagination. --->
 	<cfif (url.startRow gt 1) or (articleData.totalEntries gte url.startRow + application.maxEntries)>
 	
@@ -374,7 +319,8 @@ popular view
 		</p>
 		</cfoutput>
 		
-	</cfif>		
+	</cfif>	
+	--->	
 
 </cfmodule>
 </cfmodule>

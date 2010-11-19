@@ -7,7 +7,7 @@
 </cfif>
 
 <!---include primary application--->
-<cfinclude template="/Application.cfm">
+<cfinclude template="../Application.cfm">
 
 <cfif not isDefined('application.blogMobile') or isDefined('url.reinit')>
 	<cfset application.blogMobile = createObject("component","components.blogMobile").init(application.blog.getProperty("name"))>

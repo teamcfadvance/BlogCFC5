@@ -1,0 +1,19 @@
+
+/* white content background */
+
+#main-wrap1{ background: #fff; }
+
+/* adjust table background */
+
+table td, table th{ border-right: 1px solid #fff; }
+
+table th{
+  background: #7e7e7e;
+  border-bottom: 1px solid #fff;
+}
+
+table td{ background: #f1f1f1; }
+table tr.even td{ background: #fff; }
+table tr:hover td{ background: #fff; }
+
+fieldset{  border: 1px solid #999; }

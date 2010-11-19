@@ -31,13 +31,14 @@
 			<div class="body">
 				<p style="font-size:12px;">				
 					<span style="font-size: 14px;">#entryData.title#</span><br><br>
-					<strong>Posted:</strong> #application.localeUtils.dateLocaleFormat(entryData.posted)# #application.localeUtils.timeLocaleFormat(entryData.posted)# <strong>By:</strong> #entryData.name#
-					<BR>
+					<strong>Posted:</strong> #application.localeUtils.dateLocaleFormat(entryData.posted)# #application.localeUtils.timeLocaleFormat(entryData.posted)#<br/>
+					<strong>By:</strong> #entryData.name#<br>
 					<strong>Categories:</strong> 
 					<cfset lastid = listLast(structKeyList(entryData.categories))>
 					<cfloop item="catid" collection="#entryData.categories#">
 						#entryData.categories[catid]#<cfif catid is not lastid>, </cfif>
-					</cfloop>					
+					</cfloop><br/>
+					<cfif len(entryData.enclosure)><cfoutput>Download: <a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(entryData.enclosure))#">#getFileFromPath(entryData.enclosure)#</a></cfoutput></cfif>																	
 				</p>
 			</div>
 			

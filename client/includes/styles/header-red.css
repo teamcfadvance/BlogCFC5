@@ -1,0 +1,7 @@
+
+/* red header */
+
+#header{ background: transparent url(images/options/header-noise-red-center.jpg) no-repeat center top; }
+#header-wrap{ background: transparent url(images/options/header-noise-red.jpg) repeat-x center top; }
+
+#pagetitle h4{ border-left: 1px solid #af8b87; }

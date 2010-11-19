@@ -88,7 +88,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset form.password = form.dsn_password>
 
 		<!--- make a list of the keys we will send. --->
-		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,allowtrackbacks,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit,usecfp">
+		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit,usecfp">
 		<cfloop index="key" list="#keylist#">
 			<cfif structKeyExists(form, key)>
 				<cfset application.blog.setProperty(key, trim(form[key]))>
@@ -177,11 +177,8 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 				<input type="radio" name="usetweetbacks" value="yes" <cfif form.usetweetbacks>checked</cfif>/> Yes
 				<input type="radio" name="usetweetbacks" value="no" <cfif not form.usetweetbacks>checked</cfif>/> No
 			</li>
-			<li><label for="allowtrackbacks">allow trackbacks:</label>
-				<input type="radio" name="allowtrackbacks" value="yes" <cfif form.allowtrackbacks>checked</cfif>/> Yes
-				<input type="radio" name="allowtrackbacks" value="no" <cfif not form.allowtrackbacks>checked</cfif>/> No
-			</li>
-			<li><label for="trackbackspamlist">trackback spamlist:</label><textarea name="trackbackspamlist" class="txtAreaShort">#toLines(form.trackbackspamlist)#</textarea></li>
+
+			<li><label for="trackbackspamlist">spamlist:</label><textarea name="trackbackspamlist" class="txtAreaShort">#toLines(form.trackbackspamlist)#</textarea></li>
 			<li><label for="allowgravatars">allow gravatars:</label>
 				<input type="radio" name="allowgravatars" value="yes" <cfif form.allowgravatars>checked</cfif>/> Yes
 				<input type="radio" name="allowgravatars" value="no" <cfif not form.allowgravatars>checked</cfif>/> No
