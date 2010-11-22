@@ -90,7 +90,7 @@ popular view
 					<cfoutput><a href="#application.blog.makeCategoryLink(catid)#">#categories[currentRow][catid]#</a><cfif catid is not lastid>, </cfif></cfoutput>
 				</cfloop>
 			    <cfoutput>
-			    | <a href="##comments" class="comments"><cfif commentCount neq "">#commentCount#<cfelse>0</cfif> Comments</a>
+			    | <a href="#application.blog.makeLink(id)###comments" class="comments"><cfif commentCount neq "">#commentCount#<cfelse>0</cfif> Comments</a>
 				<!-- AddThis Button BEGIN -->
 				<a href="http://www.addthis.com/bookmark.php?v=250" onmouseover="return addthis_open(this, '', '#URLEncodedFormat(application.blog.makeLink(id))#', '#URLEncodedFormat(application.blog.getProperty('blogTitle'))#')" onmouseout="addthis_close()" onclick="return addthis_sendto()"><img  src="http://s7.addthis.com/static/btn/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0;float:right;"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a20091556eefead"></script>
 				<!-- AddThis Button END -->
