@@ -1,0 +1,111 @@
+<html>
+	<head>
+		<title>BlogCFC</title>
+		<style type="text/css">
+		@import "../includes/help.css";
+		</style>
+	</head>
+	<body>
+		<div id="header"><a href="../index.htm"><span>BlogCFC</span></a></div>
+		<div id="content">
+			<h1>BlogCFC Miscellany</h1>
+			<h2 id="pods">Pods</h2>
+			<p>
+				&quot;Pods&quot; is simply my term for the blocks of content in the right hand column. These tags are loaded by the /tags/layout.cfm file. 
+				To ensure a common look and feel, each pod file should use the /tags/podlayout.cfm file. 
+				This controls the size and tabular look of the pods. There are multiple pods included in the zip. 
+				You can modify/add/delete these to suit your tastes.
+			</p>
+			<p>
+				Please note that some pods included with BlogCFC are not actually used out of the box. 
+				I encourage you to take a look at the pods and see which ones you would like to use.
+			</p>
+			<h2 id="caching">Caching</h2>
+			<p>
+				The blog makes use of scopeCache, a custom tag I developed to enable easy RAM caching. 
+				You should be aware, however, that this caching means changes to layout may not be reflected immediately. 
+				You can either disable the tag in the index.cfm file, or you can simply refresh the cache using the Administrator. 
+				Caching will be automatically refreshed whenever you add, edit, or delete an entry. Basically, you need not worry about it unless you are working on the layout.
+			</p>
+			<h2 id="internationalization">Internationalization</h2>
+			<p>
+				BlogCFC makes use of a resource bundle CFC developed by Paul Hastings (and with slight modifications by myself). 
+				All strings (things like button labels, etc) are controlled by a properties file in the includes directory. 
+				By default, the blog uses main_en_US.properties. If you specify another locale in the blog.ini.cfm file, then the Blog will attempt to load that particular resource bundle. 
+				To create a new resource bundle in your language, copy the en_US file and make sure you translate each and every setting.
+			</p>
+			<h2 id="commentnotification">Comment Notification</h2>
+			<p>
+				By default, when a user posts a comment to a thread, the administrator for the blog will get an email. 
+				Users also have the option to subscribe to a thread. When they do, they will automatically get notice when another user posts to the thread. 
+				Users have two options to unsubscribe. If they post again, and do not check the &quot;Subscribe&quot; checkbox, they will be removed from the thread, 
+				even though they subscribed earlier. The email sent out also contains a link to unsubscribe. If you want to modify how comment notifications look, edit addcomment.cfm. 
+				You will see where the email is generated. Everything there is pretty straightforward except for the %unsubscribe% token. 
+				This is a special value that gets replaced with the unsubscribe URL and values specific to the person getting the email. 
+				Note that as the owner of the blog, you get emails for all postings. The unsubscribe link will be marked as unavailable.
+			</p>
+			<p>
+				By default, all emails sent out will be marked with a footer that identifies the BlogCFC application and gives credit to Raymond Camden. 
+				You have the right to remove this footer, or modify it as you see fit.
+			</p>
+			<h2 id="ping">Ping</h2>
+			<p>
+				Some blog aggregators support ping, which simply means a way to tell the aggregator that you have updated your blog. 
+				This is typically done by simply loading a URL. For aggregators that support this feature, you can ping them from your blog when you add a new entry. 
+				Simply add the ping URL to the pingurls setting in the blog.ini.cfm file. You can supply multiple ping URLs by simply separating them with a comma.
+			</p>
+			<p>
+				Note - BlogCFC supports "special" pings for Technorati, Weblogs, and Icerocket. 
+				You can ping these services by using the following special ping URLs: @technorati, @weblogs, and @icerocket.
+			</p>
+			<h2 id="rss">RSS</h2>
+			<p>
+				BlogCFC makes use of RSS 2.0. You can offer RSS 1.0 support by simply adding version=1 to the RSS URL. By default your RSS url will be: http://yourblog.com/rss.cfm.
+			</p>
+			<p>
+				You can create RSS blends of multiple categories. This is done by first getting the ID values of each category. 
+				You can find these in the BlogCFC admin. Once you have the IDs, you append them to the end of the core RSS url. 
+				If your blog was located at blogcfc.localhost.com, your RSS url would look like so:
+			</p>
+			<p>
+				http://blogcfc5.localhost.com/client/rss.cfm?mode=full&amp;mode2=cat&amp;catid=96F8AE90-A8BC-1230-CC4F71ED36CF7E51,96F8DD56-9C3A-BEF5-88133F51DC54E2FB
+			</p>
+			<p>
+				You can put any number of category IDs in this list. (Up to the maximum length of a URL.) This RSS blend will show the last ten articles from any of the categories listed.
+			</p>
+			<h2 id="subscribers">Subscribers</h2>
+			<p>
+				BlogCFC allows folks to subscribe to your blog. When a person subscribes, they will receive each and every posting you write. 
+				They will not receive an email if you simply edit an existing post.
+			</p>
+			<h2 id="sitemap">Google Site Maps</h2>
+			<p>
+				BlogCFC now supports Google Site Maps. Google Site Maps are a way to let Google know the 'map' of your site. 
+				For BlogCFC, this is simply a listing of all the blog entries. More information may be found here: 
+				<a href="https://www.google.com/webmasters/sitemaps/docs/en/about.html">https://www.google.com/webmasters/sitemaps/docs/en/about.html</a>
+			</p>
+			<p>
+				BlogCFC uses the file, googlesitemap.cfm, in the root of the client folder to enable site map support. 
+				Previously Google Webmaster did not seem to accept site maps that did not end with an xml file extension and this would have to be faked with an unused URL variable.
+				Google Webmaster site tools do now accept any file name in the site maps section and will happily crawl this file regularly.
+			</p>
+
+			<h2 id="blogcfcinstances">Dynamic BlogCFC Instances</h2>
+			<p>
+				BlogCFC supports dynamic blog instances. This allows for Blogger.com type sites. While I do not have 'proper' documentation right now, you can view a blog entry on the topic here: 
+				<a href="http://www.coldfusionjedi.com/index.cfm/2006/10/7/Dynamic-BlogCFC-Instances">
+					http://www.coldfusionjedi.com/index.cfm/2006/10/7/Dynamic-BlogCFC-Instances
+				</a>
+			</p>
+			<h2 id="blendedcat">Blended Category Pages</h2>
+			<p>
+				In the RSS section I talked about how you can manually create RSS links for multiple categories. The same can be done for the front end. 
+				As with the RSS support, this is done by finding the category IDs and adding them to the URL, like so:
+			</p>
+			<p>
+				http://blogcfc5.localhost.com/client/index.cfm?mode=cat&amp;catid=96F8AE90-A8BC-1230-CC4F71ED36CF7E51,96F8DD56-9C3A-BEF5-88133F51DC54E2FB
+			</p>
+		</div>
+		<div id="footer"></div>
+	</body>
+</html>
