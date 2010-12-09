@@ -173,23 +173,6 @@ CREATE TABLE `tblblogtextblocks` (
   KEY `blogTextBlocks_label` (`label`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
-/*Table structure for table `tblblogtrackbacks` */
-
-DROP TABLE IF EXISTS `tblblogtrackbacks`;
-
-CREATE TABLE `tblblogtrackbacks` (
-  `id` varchar(35) CHARACTER SET utf8 DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `blogname` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `posturl` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `excerpt` text CHARACTER SET utf8,
-  `created` datetime DEFAULT NULL,
-  `entryid` varchar(35) CHARACTER SET utf8 DEFAULT NULL,
-  `blog` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
-  KEY `blogTrackBacks_entryid` (`entryid`),
-  KEY `blogTrackBacks_blog` (`blog`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
 /*Table structure for table `tbluserroles` */
 
 DROP TABLE IF EXISTS `tbluserroles`;

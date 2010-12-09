@@ -79,14 +79,6 @@ IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[tblblogtextblock
 GO
 
 --
--- Dropping table tblblogtrackbacks : 
---
-
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[tblblogtrackbacks]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
-  DROP TABLE [dbo].[tblblogtrackbacks]
-GO
-
---
 -- Dropping table tbluserroles : 
 --
 
@@ -245,23 +237,6 @@ CREATE TABLE [dbo].[tblblogtextblocks] (
   [id] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
   [label] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
   [body] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-  [blog] nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
-)
-ON [PRIMARY]
-GO
-
---
--- Definition for table tblblogtrackbacks : 
---
-
-CREATE TABLE [dbo].[tblblogtrackbacks] (
-  [id] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-  [title] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-  [blogname] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-  [posturl] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-  [excerpt] nvarchar(max) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-  [created] datetime NULL,
-  [entryid] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
   [blog] nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 )
 ON [PRIMARY]
@@ -680,32 +655,6 @@ GO
 
 CREATE NONCLUSTERED INDEX [tblblogtextblocks_blogTextBlocks_label] ON [dbo].[tblblogtextblocks]
   ([label])
-WITH (
-  PAD_INDEX = OFF,
-  DROP_EXISTING = OFF,
-  STATISTICS_NORECOMPUTE = OFF,
-  SORT_IN_TEMPDB = OFF,
-  ONLINE = OFF,
-  ALLOW_ROW_LOCKS = ON,
-  ALLOW_PAGE_LOCKS = ON)
-ON [PRIMARY]
-GO
-
-CREATE NONCLUSTERED INDEX [tblblogtrackbacks_blogTrackBacks_blog] ON [dbo].[tblblogtrackbacks]
-  ([blog])
-WITH (
-  PAD_INDEX = OFF,
-  DROP_EXISTING = OFF,
-  STATISTICS_NORECOMPUTE = OFF,
-  SORT_IN_TEMPDB = OFF,
-  ONLINE = OFF,
-  ALLOW_ROW_LOCKS = ON,
-  ALLOW_PAGE_LOCKS = ON)
-ON [PRIMARY]
-GO
-
-CREATE NONCLUSTERED INDEX [tblblogtrackbacks_blogTrackBacks_entryid] ON [dbo].[tblblogtrackbacks]
-  ([entryid])
 WITH (
   PAD_INDEX = OFF,
   DROP_EXISTING = OFF,

@@ -59,12 +59,6 @@ DROP TABLE tblblogsubscribers;
 DROP TABLE tblblogtextblocks;
 
 --
--- Dropping table tblblogtrackbacks : 
---
-
-DROP TABLE tblblogtrackbacks;
-
---
 -- Dropping table tbluserroles : 
 --
 
@@ -215,22 +209,6 @@ CREATE TABLE tblblogtextblocks (
 ;
 
 --
--- Definition for table tblblogtrackbacks : 
---
-
-CREATE TABLE tblblogtrackbacks (
-  id VARCHAR2(35) NULL,
-  title VARCHAR2(255) NULL,
-  blogname VARCHAR2(255) NULL,
-  posturl VARCHAR2(255) NULL,
-  excerpt VARCHAR2(2000) NULL,
-  created DATE NULL,
-  entryid VARCHAR2(35) NULL,
-  blog VARCHAR2(50) NULL
-)
-;
-
---
 -- Definition for table tbluserroles : 
 --
 
@@ -318,10 +296,6 @@ CREATE INDEX blogSubscribers_verified ON tblblogsubscribers (verified);
 CREATE INDEX blogTextBlocks_blog ON tblblogtextblocks (blog);
 
 CREATE INDEX blogTextBlocks_label ON tblblogtextblocks (label);
-
-CREATE INDEX blogTrackBacks_blog ON tblblogtrackbacks (blog);
-
-CREATE INDEX blogTrackBacks_entryid ON tblblogtrackbacks (entryid);
 
 CREATE INDEX blogUserRoles_blog ON tbluserroles (blog);
 
