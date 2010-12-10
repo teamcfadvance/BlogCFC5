@@ -86,7 +86,7 @@
 <ul>
 <li><a href="../">Your Blog</a></li>
 <li><a href="../" target="_new">Your Blog (New Window)</a></li>
-<li><a href="../stats.cfm">Your Blog Stats</a></li>
+<li><a href="stats.cfm">Your Blog Stats</a></li>
 </ul>
 <ul style="border-bottom: none;">
 <li><a href="updatepassword.cfm">Update Password</a><li>

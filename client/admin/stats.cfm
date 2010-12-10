@@ -75,16 +75,6 @@
 		</cfif>
 	</cfquery>
 	
-	<cfif application.blog.getProperty("allowtrackbacks")>
-		<!--- RBB: 1/20/2006: get trackbacks --->
-		<cfquery name="getTotalTrackbacks" datasource="#dsn#" username="#username#" password="#password#">
-			select count(tblblogtrackbacks.id) as totaltrackbacks
-			from	tblblogtrackbacks, tblblogentries
-			where	tblblogtrackbacks.entryid = tblblogentries.id
-			and		tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
-		</cfquery>
-	</cfif>
-		
 	<!--- gets num of entries per category --->
 	<cfquery name="getCategoryCount" datasource="#dsn#" username="#username#" password="#password#">
 		select	categoryid, categoryname, count(categoryidfk) as total
