@@ -67,9 +67,6 @@
 </cfif>
 <li><a href="subscribers.cfm">Subscribers</a></li>
 <li><a href="mailsubscribers.cfm">Mail Subscribers</a></li>
-<cfif application.trackbacksallowed>
-<li><a href="trackbacks.cfm">Trackbacks</a></li>
-</cfif>
 <cfif application.blog.isBlogAuthorized('ManageUsers')>
 <li><a href="users.cfm">Users</a></li>
 </cfif>
