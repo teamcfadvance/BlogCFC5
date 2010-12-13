@@ -37,7 +37,7 @@ to your BlogCFC Administrator and use the Settings link.
 <b>If that mail server requires a password, specify it here:</b> <input type="text" name="mailpassword"><br/>
 <b>Use CAPTCHA to protect from Spam?</b> <select name="usecaptcha"><option value="yes">Yes</option><option value="no">No</option></select><br/>
 <b>Enable cfFormProtect for more spam protection?</b> <select name="usecfp"><option value="yes">Yes</option><option value="no">No</option></select><br/>
-<b>Enable commenht moderation for ultimate spam protection?</b> <select name="moderate"><option value="yes">Yes</option><option value="no">No</option></select><br/>
+<b>Enable comment moderation for ultimate spam protection?</b> <select name="moderate"><option value="yes">Yes</option><option value="no">No</option></select><br/>
 <b>Use Gravatars in comments??</b> <select name="allowgravatars"><option value="yes">Yes</option><option value="no">No</option></select><br/>
 <input type="submit" name="submit" value="Save Settings">
 </form>
