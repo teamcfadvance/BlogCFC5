@@ -128,7 +128,7 @@
         <div class="searchform-wrap">
           <form method="get" id="searchform" action="#application.rooturl#/search.cfm">
            <fieldset>
-            <input type="text" name="s" id="searchbox" class="searchfield" value="Search" onfocus="if(this.value == 'Search') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search';}" />
+            <input type="text" name="search" id="searchbox" class="searchfield" value="Search" onfocus="if(this.value == 'Search') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search';}" />
             <input type="submit" value="Go" class="go" />
            </fieldset>
           </form>
