@@ -171,16 +171,14 @@ popular view
 		  		</cfoutput>
 			</cfif>
 
-			<cfif application.usetweetbacks and 0>
+			<cfif application.usetweetbacks>
 
 				<cfoutput>	
-				<div id="tweetbacks">
-				<div class="tweetbackHeader">TweetBacks</div>
+				<h3 class="commentHeader">TweetBacks</h3>	
 				<div id="tbContent">
 				</cfoutput>
 
 				<cfoutput>
-				</div>
 				</div>
 				</cfoutput>				
 
@@ -235,7 +233,7 @@ popular view
 			</cfloop>
 			</ul>
 
-			<cfif allowComments>
+			<cfif allowComments and comments.recordCount gte 5>
 				<div style="font-size:12px">
 				[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
 				[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]
