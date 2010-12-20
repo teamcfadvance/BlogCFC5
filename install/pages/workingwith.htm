@@ -1,0 +1,197 @@
+<html>
+	<head>
+		<title>BlogCFC</title>
+		<style type="text/css">
+		@import "../includes/help.css";
+		</style>
+	</head>
+	<body>
+		<div id="header"><a href="../index.htm"><span>BlogCFC</span></a></div>
+		<div id="content">
+			<h1>Working with Your Blog</h1>
+			<p>
+				To begin working with your blog, you will want to enter the administrator (found at: yourblogurl/admin). In the left hand menu you will see various options:
+			</p>
+			<ul>
+				<li>Home: Returns you to the administrator home page.</li>
+				<li><a href="#editing">Add Entry</a>: Takes you straight to the form for adding a new entry.</li>
+				<li>Entries: Lets you browse, add, delete, and edit blog entries.</li>
+				<li>Categories: Lets you browse, add, delete, and edit blog categories.</li>
+				<li>
+					Comments: Lets you browse, add, delete, and edit blog comments. This is a useful place to remove spam comments.
+				</li>
+				<li>Moderate Comments: Used to moderate comments.</li>
+				<li><a href="#pages">Pages</a>: Lets you browse, add, delete, and edit blog pages.</li>
+				<li><a href="#textblocks">Textblocks</a>: Lets you browse, add, delete, and edit textblocks.</li>
+				<li>Refresh Blog Cache: Refreshes the blog cache.</li>
+				<li><a href="configuring.htm#inisettings">Settings</a>: Lets you modify the blog settings defined in the INI file.</li>
+				<li><a href="misc.htm#subscribers">Subscribers</a>: Lets you browse and remove subscribers.</li>
+				<li>Mail Subscribers: Lets you send an email to your blog subscribers.</li>
+				<li>
+					Your Blog/Your Blog (New Window): Simply sends you to the public facing part of your web site.
+				</li>
+				<li>Your Blog Stats: Takes you to your blog stats.</li>
+				<li>File Manager: Lets you upload and view files.</li>
+				<li><a href="#slideshow">Slideshows</a>: Lets you work with slide shows.</li>
+				<li>Update Password: I bet you can guess what this does.</li>
+				<li><a href="#useradmin">Users</a>: Let's you modify users.</li>
+			</ul>
+			<p>
+				You will want to start by creating an initial blog category. You must have at least one blog category before writing an entry. After you have created a category, you may start writing blog entries.
+			</p>
+			<hr />
+
+			<h2 id="editing">Blog Entry Editing Options</h2>
+			<p>
+				When working with blog entries, there are a few special tags and features that you can use to enhance your entries:
+			</p>
+			<p>
+				<code>&lt;more/&gt;</code> : Sometimes a blog entry may be very long. 
+				It is preferable to show only a portion of the entry on the main blog and have the detailed link contain the entire entry. 
+				By using the <code>&lt;more/&gt;</code> tag in your blog entry, any text after the <code>&lt;more/&gt;</code> tag will only show up on the individual entry display. 
+				You <b>must</b> include the closing / in the tag. When blog entries are emailed, only the text before the <code>&lt;more/&gt;</code> tag is included.
+			</p>
+			<p>
+				<code>&lt;code&gt;</code> : The code tag allows you to wrap sets of code that you want to show up in your entry. 
+				For example:
+			</p>
+			<blockquote>
+				<p>This is a sample entry. Blah blah blah. Here is some code</p>
+				<p>
+					&lt;code&gt;
+					<br />
+					&lt;cfset x = 1&gt;
+					<br />
+					&lt;/code&gt;
+				</p>
+				<p>This is more text.</p>
+			</blockquote>
+			<p>
+				Any code inside the <code>&lt;code&gt;</code> block will be escaped 
+				(&lt; and &gt; tags changed to &amp;lt; and &amp;gt;), color coded, and will have line breaks changed to &lt;br&gt; tags.
+			</p>
+			<p>
+				<code>&lt;textblock label=&quot;&quot;&gt;</code> : A textblock is simply a block of text with a label. 
+				You can include textblocks dynamically in your blog entries by using the <code>&lt;textblock&gt;</code> tag:
+			</p>
+			<blockquote>
+				<p>Here is my standard footer: &lt;textblock label=&quot;footer&quot;&gt;</p>
+			</blockquote>
+			<p>
+				Entries can have &quot;enclosures&quot;, which are simply attached files. 
+				This is a handy way to attach a resource to a blog entry. 
+				One of the features of BlogCFC is that if you attach an image, the file will also be included at the top of the blog entry. 
+				This is a handy and simple way to display an image with a entry.
+			</p>
+			<h3>Scheduled Releases</h4>
+			<p>
+				BlogCFC supports delayed entries. This means you can write an entry now that won't be displayed until later in the day. 
+				Subscribers will not get an email on the entry until the entry is published. BlogCFC will automatically add a scheduled event to handle the entry release.
+			</p>
+			<h3>Draft Mode</h4>
+			<p>
+				BlogCFC technically doesn't support a draft mode, but an entry can be saved with the Released setting to false. 
+				This means that the entry will not be shown on the blog. If you want to write an entry and save it without publishing it, simply set the Released value to false.
+			</p>
+			<hr />
+			<h2 id="editors">HTML/XML-RPC Editors</h4>
+			<p>
+				BlogCFC uses a simple text area to handle entry editing. If you want fancier editing, you have two options. 
+				One is to simply use an XML-RPC capable blog editor. Your other option is to use an HTML edit control like tinyMCE. 
+				I've made this easier by abstracting the textarea field out of the blog editor. You can find this in the tags folder. The filename is textarea.cfm.
+			</p>
+			<hr />
+
+			<h2 id="publishing">Publishing Non-Blog Content</h2>
+			<p>
+				BlogCFC has basic CMS (content management system) capabilities. 
+				While the basic blog application works great for diary style entries, there was no way to create basic content outside of the blog. 
+				BlogCFC provides additional publishing capabilities by providing support for Pages, Textblocks, and Slide Shows.
+			</p>
+			<h3 id="pages">Pages</h4>
+			<p>
+				Pages are exactly what they sound like - complete pages of content. 
+				So imagine you wanted to add a &quot;About Me&quot; page to your blog. 
+				By using the pages feature, you could create a page that describes you. 
+				Once you give it a title, BlogCFC will automatically creates a SES (search engine safe URL) for the page and display it in the administrator. 
+				All pages live off the page.cfm file. So your &quot;About Me&quot; page might have this url: http://www.yourblog.com/page.cfm/About-Me
+			</p>
+			<p>
+				You can add any number of pages you want. To link to a blog page, simply use the URL displayed in the administrator. 
+				Pages follow the same editing rules that blog entries do. This means you can include code and textblocks directly in the content. 
+				The only tag not supported is the <code>&lt;more/&gt;</code> tag.
+			</p>
+			<h3 id="textblocks">Textblocks</h4>
+			<p>
+				A textblock acts much like a page. However, these are used for smaller pieces of content. 
+				For example, imagine you have a pod with your favorite links. Normally to update this you would need to edit the file and FTP it to the server. 
+				Textblocks lets you store the link pod data in the database. To use textblocks, simply use the textBlock application control:
+			</p>
+			<blockquote>
+				<p>
+					&lt;cfoutput&gt;
+					<br>
+					#application.textblock.getTextblockContent(&quot;links&quot;)#
+					<br>
+					&lt;/cfoutput&gt;
+				</p>
+			</blockquote>
+			<p>
+				Textblocks are identified by their labels so ensure that you do not duplicate two textblock labels. 
+				You can include the content of a textblock inside a blog entry by using the <code>&lt;textblock&gt;</code> tag. 
+				Please see the blog editing section for more information.
+			</p>
+			<h3 id="slideshow">Working with Slide Shows</h4>
+			<p>
+				There are two ways to create slide shows. One way to create a slide show is to simply upload a folder of images underneath your blog's images/slideshows folder. 
+				If your folder was named &quot;foo&quot;, you have created a slide show named foo. To view the slide show, simply go to: http://www.yourblog.com/slideshow.cfm/foo
+			</p>
+			<p>
+				BlogCFC will automatically discover all GIF and JPG files in the folder and will create a slide show based on those images. 
+				You should do your best to size your images beforehand as BlogCFC will not do any automatic sizing.
+			</p>
+			<p>
+				The second way to create slide shows is via the administrator. The administrator lets you add, edit, and delete slide shows. 
+				It also lets you add titles to your shows as well as captions to your pictures. 
+			</p>
+			<hr />
+			<h2 id="podcasting">Podcasting</h4>
+			<p>
+				Podcasting for BlogCFC was added by Brian Meloche. Podcasting is a large topic so we'll just cover how BlogCFC handles it. 
+				We will also assume you've got your MP3 files already prepared and ready to go.
+			</p>
+			<p>
+				The first thing you need to do is add the MP3 to the blog entry. 
+				You can do this either by uploading the MP3 when editing the blog entry, or by using another program (like an FTP client) to upload the MP3 file. 
+				You can then manually type in the name of the file in the blog entry.
+			</p>
+			<p>
+				As soon as you have used an MP3 file for a blog entry, a simple, Flash based audio player will be rendered with the blog entry. 
+				Even if you have no plans of being a podcaster, this could be useful for folks who want to attach songs or other sounds to a blog entry.
+			</p>
+			<p>
+				BlogCFC supports settings for podcasting. They are: itunesSubtitle, itunesSummary, itunesKeywords, itunesAuthor, itunesImage, and itunesExplicit. 
+				These settings are used in the RSS feed and are used by various feed readers to help flag blogs with podcasts attached to them.
+			</p>
+			<hr />
+			<h2 id="useradmin">User Admin</h2>
+			<p>
+				BlogCFC handles security via a simple username/password mechanism. Out of the box, the admin user has the ability to do anything. 
+				However, you can create new users and give them specific roles. 
+			</p>
+			<h3 id="security">Security</h3>
+			<p>
+				Currently BlogCFC ships with a set of roles that allow for control over who can write and publish content as well as manage categories. 
+				Who you give access to these features is entirely up to you. <br/>
+				These roles are :
+				<ol>
+					<li><strong>Admin</strong> : A special role for the admin. Allows all functionality.</li>
+					<li><strong>ManageCategories</strong> : The ability to manage blog categories.</li>
+					<li><strong>ManageUsers</strong> : The ability to manage blog users.</li>
+					<li><strong>ReleaseEntries</strong> : The ability to both release a new entry and edit any released entry.</li>
+				</ol>
+			</p>
+		</div>
+		<div id="footer"></div>
+	</body>
+</html>
