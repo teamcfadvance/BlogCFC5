@@ -267,7 +267,6 @@ popular view
 	
 	</cfif>
 	
-	<!---
 	<!--- Used for pagination. --->
 	<cfif (url.startRow gt 1) or (articleData.totalEntries gte url.startRow + application.maxEntries)>
 	
@@ -318,7 +317,6 @@ popular view
 		</cfoutput>
 		
 	</cfif>	
-	--->	
 
 </cfmodule>
 </cfmodule>
