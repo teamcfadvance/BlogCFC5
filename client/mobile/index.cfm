@@ -129,7 +129,7 @@
 				
 			<cfif isDefined('loadpost')>
 				// select hidden div to load directly to a specific post
-				$('#loadPostClick').click();
+				$('#loadPostClick').tap();
 			</cfif>
             });
 			
