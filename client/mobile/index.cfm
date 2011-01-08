@@ -12,6 +12,7 @@
 	</cfif>
 <cfelseif isDefined('session.loadPost')>
 	<cfset loadpost = session.loadPost>
+	<cfset session.hideContainer = true>
 	<cfset void = structDelete(session, "loadpost")>
 </cfif>
 
@@ -70,7 +71,7 @@
 	        var maxPage = <cfoutput>#pages#</cfoutput>;		
 			  $(function(){
 	          
-			  	            
+			  	          
 				// warn on links that will take user to new window.
 				$('a[target="_blank"]').click(function() {
 	                if (confirm('This link opens in a new window.')) {
@@ -80,6 +81,7 @@
 	                    return false;
 	                }
 	            });
+				
 				
 				$('#homeBtn').click(function(){
 					curPage = 1;
@@ -127,10 +129,7 @@
 				// hide prev on load					
 				btnShow(1);		
 				
-			<cfif isDefined('loadpost')>
-				// select hidden div to load directly to a specific post
-				$('#loadPostClick').tap();
-			</cfif>
+			
             });
 			
 			btnShow = function(view){				
@@ -151,6 +150,17 @@
 			}
 			
 			$(document).ready(function() {
+				
+				
+				// load directly into post.
+				// done this way to overcome navigational bugs in jQTouch
+				<cfif isDefined('loadPost')>
+								
+					$("#<cfoutput>#hash(loadPost)#</cfoutput>").load('./postDetail.cfm/<cfoutput>#loadpost#</cfoutput>');   
+					jQT.goTo('#<cfoutput>#hash(loadpost)#</cfoutput>');
+				
+				</cfif>
+				
 				$("#leaveMobileLink").click(function(e) {
 					<cfoutput>
 					document.location.href = '#application.rooturl#?nomobile=1';
@@ -209,11 +219,11 @@
                 <p><a href="#" class="grayButton goback">Close</a></p>
         </div>
        
-        <div id="home" class="current" >
+        <div id="home" class="current">
             <div class="toolbar">
-				<h1><cfoutput>#application.blogMobile.getProperty("shortTitle")#</cfoutput></h1>             	
-                <a href="#" class="button leftButton" id="homeBtn">Home</a>
-                <a href="#about" class="button swap" id="infoButton">About</a>
+				<h1><cfoutput>#application.blogMobile.getProperty("shortTitle")#</cfoutput></h1>  
+				<a href="#" class="button leftButton" id="homeBtn">Home</a>
+                <a class="button swap" href="#about" id="infoButton">About</a>
             </div>
 			
 			<ul class="plastic" style="height: 5px;">	
@@ -221,11 +231,7 @@
 			</ul>
 			
 			 <ul class="plastic" id="blogList">		
-			 	<!---hidden item for navigation to load directly into a post--->
-				<cfif isDefined("loadPost")>
-			 		<li class="arrow" style="display: none;"><a id="loadPostClick" href="./postDetail.cfm/<cfoutput>#loadpost#</cfoutput>" fullhref="#application.blog.makeLink(loadpost)#?mobile=1"></a></li>
-				</cfif>
-			 	<cfinclude template="posts.cfm">
+			 		<cfinclude template="posts.cfm">
 			 </ul>
 			 
 			 
@@ -234,13 +240,20 @@
                 <li class="grayButton" id="moreBtn">More &#62;&#62;</li>
             </ul>
 		
-
+			
+			
+			
             <div class="info">
                 <p>Add this page to your home screen to view the custom icon, startup screen, and full screen mode.</p>
 				<BR>
 				<p><a href="#" id="leaveMobileLink">Click Here</a> to exit mobile version.</p>
             </div>
         </div> 
+		
+		<cfif isDefined('loadPost')>
+			<div id="<cfoutput>#hash(loadPost)#</cfoutput>"></div>
+		</cfif>
+		
 	
 		<!--- Standard Google Analytics include --->
 		<cfif isGAEnabled>
