@@ -1,7 +1,8 @@
 
 
 <cfset dataError = false>
-<cfset thisItem = listlast(cgi.path_info, "/")>
+
+<cfset thisItem = listlast(cgi.path_info, "/")>	
 
 <cftry>
 	<cfset entryData = application.blog.getEntry(thisItem)>
@@ -17,10 +18,14 @@
 
 </cftry>
 <cfoutput>
-	<div id="#hash(thisItem)#">
+	
+	<cfif NOT IsDefined('session.hideContainer')>
+	<div id="#hash(thisItem)#">		
+	</cfif>
+	
 	    <div class="toolbar">
 	        <h1>Post Detail</h1>
-	        <a class="button back" href="##">Back</a>
+			<a class="button back" href="##home">Back</a>
 	    </div>
 	
 		<cfif dataError>		
@@ -72,6 +77,12 @@
 			
 			</cfif>
 		</cfif>
-	</div>
-
+	<cfif NOT IsDefined('session.hideContainer')>
+	</div>		
+	</cfif>
+	
 </cfoutput>
+
+<cfset void = structDelete(session, "hideContainer")>
+
+
