@@ -215,7 +215,7 @@
                 	<BR>
                 </p>
                 	<BR>
-				<p><a href="mailto: <cfoutput>#application.blog.getProperty("owneremail")#</cfoutput>?subject=Mobile app" rel="external" class="grayButton goback">Contact Us</a></p>
+				<p><a href="mailto:<cfoutput>#application.blog.getProperty("owneremail")#</cfoutput>?subject=Mobile app" rel="external" class="grayButton goback">Contact Us</a></p>
                 <p><a href="#" class="grayButton goback">Close</a></p>
         </div>
        
