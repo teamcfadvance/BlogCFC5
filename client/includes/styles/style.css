@@ -1579,3 +1579,6 @@ img.wp-smiley, .post .postbody img.wp-smiley, .attachment img.wp-smiley{
 .calendarToday {
 	background-color: yellow;
 }
+div.code {
+       background-color: #ffffff;
+}
