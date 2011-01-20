@@ -24,14 +24,26 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: January 20, 2011 (BlogCFC 5.9.8)
+
+5.9.8 is a rather drastic update to BlogCFC. First, a new theme is being used. This theme is a radical departure from the previous skin. 
+Next - trackbacks as a feature has been removed. For years now TBs were nothing but spam bait and used by only a very few of our users
+so it was decided to simply remove them. 
+
+You will also notice that the org folder now resides within the main client folder. Since most users had a simple setup like that it was decided
+to simply put the folder where most folks would end up using it. 
+
+The mobile folder has a few updates as well. You can simply copy that entire folder over.
+
+Existing users will - most likely - want to set up a test server with the new code base pointing to their database and see how the new skin works with their data.
+
+=======================================================================================================================================================================================
 Last Updated: October 6, 2010 (BlogCFC 5.9.7.001)
 
 /client/xmlrpc/xmlrpc.cfm - fix for Windows Live Writer by Dan Switzer: http://blog.pengoworks.com/index.cfm/2010/10/12/Problems-with-BlogCFC-and-new-Live-Writer-2011
 /includes - locale RB files updated by Knut Bewersdorff
 /mobile/Application.cfm - fix by Andy Jarett - http://www.andyjarrett.co.uk/blog/index.cfm/2010/10/27/Making-BlogCFC-mobile-a-bit-more-flexible
 
-
-=======================================================================================================================================================================================
 Last Updated: October 6, 2010 (BlogCFC 5.9.7)
 
 Note - this is a big update. Therefore, not all files modified are listed. I recommend updating all files to be safe.
