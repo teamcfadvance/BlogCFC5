@@ -33,4 +33,4 @@ itunesAuthor=
 itunesImage=
 itunesExplicit=no
 usetweetbacks=yes
-installed=yes
+installed=no
