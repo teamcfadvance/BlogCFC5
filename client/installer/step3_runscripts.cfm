@@ -1,3 +1,4 @@
+
 <cfif structKeyExists(form, "runscripts")>
 
 	<cfset scriptFile = expandPath("./#session.dbtype#/script.txt")>
@@ -16,6 +17,22 @@
 			</cfquery>
 		</cfif>
 	</cfloop>
+	
+	<!--- if values other than the defaults are chosen for crypto, we need to update 
+	the admin user values we just wrote to the database. There are much cleaner ways
+	to do all of this, but that would require rewriting a substantial part of the 
+	install wizard, and really, who wants to spend their time doing that? --->
+	<cfif (session.saltAlgorithm IS NOT "AES") OR (session.saltKeySize IS NOT "256") OR (session.hashAlgorithm IS NOT "SHA-512")>
+		<cfset salt = generateSecretKey(session.saltalgorithm, session.saltkeySize)>
+		
+		<cfquery name="updateUserSecurity" datasource="#session.dsn#" username="#session.dsnusername#" password="#session.dsnpassword#">
+			UPDATE tblusers
+			SET password = <cfqueryparam value="#hash(salt & 'admin', session.hashAlgorithm)#" cfsqltype="cf_sql_varchar" maxlength="256">,
+			    salt = <cfqueryparam value="#salt#" cfsqltype="cf_sql_varchar" maxlength="256">
+			WHERE 	username = 'admin'
+			and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#session.blogName#" maxlength="50">
+		</cfquery>
+	</cfif>
 
 	<cf_layout title="Step 3: Done with SQL Scripts">
 	<p>

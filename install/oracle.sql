@@ -1,7 +1,7 @@
 --
 -- Dropping table tblblogcategories : 
 --
-
+ 
 DROP TABLE tblblogcategories;
 
 --
@@ -225,7 +225,8 @@ CREATE TABLE tbluserroles (
 
 CREATE TABLE tblusers (
   username VARCHAR2(50) NULL,
-  password VARCHAR2(50) NULL,
+  password VARCHAR2(256) NULL,
+  salt VARCHAR2(256) NULL,
   name VARCHAR2(50) NULL,
   blog VARCHAR2(255) NULL
 )
@@ -319,7 +320,7 @@ INSERT INTO tblblogroles(role,id,description) VALUES('ReleaseEntries','800CA7AA-
 
 INSERT INTO tbluserroles VALUES ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default');
 
-INSERT INTO tblUsers (username,password,name,blog) VALUES ('admin','admin','name','Default');
+INSERT INTO tblUsers (username,password,salt,name,blog) VALUES ('admin','74FAE06F4B7BB31F16FA3CB4C873C88FB3669E413603CD103D714CC8C6B153188CEE84D3172F60027D96BAB4A79F275543865C80A927312D5CF00F7DD3F1753A','2XlAbs2fFEESboQCMue3N7yATpwT1QKAFNGIU0hZ35g=','name','Default');
 
 COMMIT;
 

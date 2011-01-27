@@ -7,7 +7,7 @@ Shiny! Your BlogCFC install is now complete. You can view it in all it's shining
 
 <cfoutput>
 <p>
-<a href="#session.blogurl#">#session.blogurl#</a>
+<a href="#session.blogurl#?reinit=1">#session.blogurl#</a>
 </p>
 </cfoutput>
 

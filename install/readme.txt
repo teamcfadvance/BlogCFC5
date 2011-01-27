@@ -22,6 +22,58 @@ Find your current version in the notes below, and read 'upwards' to determine wh
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
 
+=======================================================================================================================================================================================
+Last Updated: January 26, 2011 (BlogCFC 5.9.8.001)
+
+This update overhauls the user security mechanism in blogCFC.  Going forward, passwords in the tblusers table are no longer stored as plain text.  Instead,
+a practice known as salting and hashing has been added to help protect user accounts against compromise, especially from brute force attacks.  There's been a lot
+written on the subject of salting/hashing passwords, some good and some misinformed.  For a good general introduction, please see: 
+https://secure.wikimedia.org/wikipedia/en/wiki/Salt_%28cryptography%29
+
+In order to provide for some flexibility in the system, you have options regarding what encryption/hash algorithms are used to generate both the salt and the password hash.
+Unless you have a reason to do otherwise, the default values should suffice in most installations:
+
+saltAlgorithm=AES (the algorithm used to generate the salt)
+saltKeySize=256 (key size used to generate the salt)
+hashAlgorithm=SHA-512 (algorithm used to generate the salt)
+
+If you are installing a clean copy of blogCFC 5.9.8.001 and using the installer, you don't need to do anything to the database as the installer contains the latest updates 
+to automatically create the updated tables as long as you are using MS SQL Server or MySQL for the database.  If you are using MS Access, you don't need to run
+the installer. The MDB file included with BlogCFC is already updated with the security enhancements and uses the default values for the aforementioned crypto properties. If 
+you are running Oracle, the install scripts have been updated but you have to run them manually. The installer will not perform a fresh install for Oracle. To do this, 
+you'll need to run /install/oracle.sql.
+
+If you are updating an existing BlogCFC install, there's an updater included in /install/updater5.9.8.001. You'll need to move this directory into your web root in order
+to run the updater.  The updater makes use of the cfdbinfo tag, and because of this it's only supported in ColdFusion 8+.  Please note that the updater will work with 
+MS SQL Server, MySQL, Oracle and MS Access databases. You must run this updater or your BlogCFC installation will not work after updating the rest of the files in this 
+release.  WARNING! Before you run the updater, it is strongly recommended that you make a backup of your tblusers table.  Running this updater will alter your existing 
+users table and will result in hashing all of the passwords for all of the blogs in the database. Because a hash is a one-way operation, it is not possible to decrypt or 
+reverse the changes made to your database.  If you blow up your users table and don't have a backup it's your fault, not ours.  The updater will also automatically append 
+the crypto properties to you blogcfc.ini.cfm file for all supported database platforms.
+
+Once the update has completed, you will no longer be able to view passwords in the database.  Also note that if you've written any custom password recovery code, you'll
+most likely have to update that as well as it's no longer possible to send users their passwords.  If you require this type of self-service functionality, you'll need to
+code a solution that implements a password reset. 
+
+Note that you will not be able to edit the crypto settings from the Admin. This is intentional as one you've hashed your database, you can't simply rehash it with a different
+algorithm.
+
+Updated Files:
+/install/mysql.sql - updated script to add salt field to tblusers and changed length of password to 256. Also added hashed password for the admin using the default crypto values.
+/install/mssql.sql - updated script to add salt field to tblusers and changed length of password to 256. Also added hashed password for the admin using the default crypto values.
+/install/oracle.sql - updated script to add salt field to tblusers and changed length of password to 256. Also added hashed password for the admin using the default crypto values.
+/install/readme.txt -updated with the latest release notes.
+/client/admin/user.cfm - updated to handle hashed passwords.
+/client/org/camden/blog/blog.cfc - Added instance variables for crypto properties, modified addUser() to add salt and hash password, modified authenticate() to use a hashed password,
+								   removed "password" from the SQL statement in getUsers() because it's not actually used anywhere, updated saveUser()
+								   to use salt and hashed passwords, added new generateSalt() method.
+/client/org/camden/blog/blog.ini.cfm - added default crypto propertiessaltAlgorithm, saltKeySize, and hashAlgorithm
+/client/installer/step2_enterdsn.cfm - updated to include crypto settings
+/client/installer/step3_runscripts.cfm - updated to write the salt to db and hash the password
+/client/installer/step5_done.cfm - added ?reinit=1 to url to reset the cache.
+/client/installer/mssql/script.txt - updated to add salt field, lengthen password and write default values for admin user for MS SQL Server
+/client/installer/mysql/script.txt - updated to add salt field, lengthen password and write default values for admin user for MySQL
+
 
 =======================================================================================================================================================================================
 Last Updated: January 20, 2011 (BlogCFC 5.9.8)

@@ -33,4 +33,7 @@ itunesAuthor=
 itunesImage=
 itunesExplicit=no
 usetweetbacks=yes
+saltAlgorithm=AES
+saltKeySize=256
+hashAlgorithm=SHA-512
 installed=no

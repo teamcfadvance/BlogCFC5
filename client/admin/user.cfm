@@ -4,8 +4,8 @@
 	Name         : user.cfm
 	Author       : Raymond Camden 
 	Created      : 07/15/09
-	Last Updated : 
-	History      : 
+	Last Updated : 01/26/2011
+	History      : RBB: Updated to account for hashed passwords.
 --->
 
 <cfif not application.blog.isBlogAuthorized('ManageUsers')>
@@ -57,7 +57,12 @@
 	<cfif not arrayLen(errors)>
 		<cftry>
 		<cfif url.id neq 0>
-			<cfset application.blog.saveUser(url.id, left(form.name,50), left(form.password, 50))>
+			<!--- RBB 1/17/11: if the password value from the db is the same as the value submitted by form, don't update the password --->
+			<cfif form.passwordCheck is form.password>
+				<cfset application.blog.saveUser(url.id, left(form.name,50))>
+			<cfelse>
+				<cfset application.blog.saveUser(url.id, left(form.name,50), left(form.password, 256))>
+			</cfif>
 		<cfelse>
 			<cfset application.blog.addUser(left(form.username,50),left(form.name,50), left(form.password,50))>
 		</cfif>
@@ -101,6 +106,9 @@
 	</p>
 	
 	<form action="user.cfm?id=#url.id#" method="post">
+	<cfif structKeyExists(form, "password")>
+	<input type="hidden" name="passwordCheck" value="#form.password#">
+	</cfif>
 	<table>
 		<tr>
 			<td align="right">username:</td>

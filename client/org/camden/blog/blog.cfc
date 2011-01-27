@@ -83,6 +83,9 @@
 			<cfset instance.itunesExplicit = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesExplicit")>
 			<cfset instance.usetweetbacks = variables.utils.configParam(variables.cfgFile, arguments.name, "usetweetbacks")>
 			<cfset instance.installed = variables.utils.configParam(variables.cfgFile, arguments.name, "installed")>
+			<cfset instance.saltalgorithm = variables.utils.configParam(variables.cfgFile, arguments.name, "saltalgorithm")>
+			<cfset instance.saltkeysize = variables.utils.configParam(variables.cfgFile, arguments.name, "saltkeysize")>
+			<cfset instance.hashalgorithm = variables.utils.configParam(variables.cfgFile, arguments.name, "hashalgorithm")>
 
 		</cfif>
 
@@ -419,6 +422,7 @@
 		<cfargument name="name" type="string" required="true">
 		<cfargument name="password" type="string" required="true">
 		<cfset var q = "">
+		<cfset var salt = generateSalt()>
 
 		<cflock name="blogcfc.adduser" type="exclusive" timeout="60">
 			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
@@ -433,12 +437,13 @@
 			</cfif>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			insert into tblusers(username, name, password, blog)
+			insert into tblusers(username, name, password, blog, salt)
 			values(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.password#" maxlength="50">,
-			<cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#hash(salt & arguments.password, instance.hashalgorithm)#" maxlength="256">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#salt#" maxlength="256">
 			)
 			</cfquery>
 		</cflock>
@@ -504,16 +509,20 @@
 		<cfargument name="password" type="string" required="true">
 
 		<cfset var q = "">
+		<cfset var authenticated = false>
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select 	username
+			select 	username, password, salt
 			from	tblusers
 			where	username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
-			and		password = <cfqueryparam value="#arguments.password#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
 
-		<cfreturn q.recordCount is 1>
+		<cfif (q.recordCount eq 1) AND (q.password is hash(q.salt & arguments.password, instance.hashalgorithm))>
+			<cfset authenticated = true>
+		</cfif>
+		
+		<cfreturn authenticated>
 
 	</cffunction>
 
@@ -1962,7 +1971,7 @@
 		<cfset var q = "">
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		select	username, password, name
+		select	username, name
 		from	tblusers
 		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
@@ -2758,12 +2767,19 @@ To unsubscribe, please go to this URL:
 				hint="Saves a user.">
 		<cfargument name="username" type="string" required="true">
 		<cfargument name="name" type="string" required="true">
-		<cfargument name="password" type="string" required="true">
-
+		<cfargument name="password" type="string" required="false">
+		
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		update	tblusers
-		set		name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">,
-				password = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.password#" maxlength="50">
+		set		name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">
+				<!--- RBB 1/17/11: if no password is passed in, we can assume that only the user's name is being updated --->
+				<cfif structKeyExists(arguments, "password")>
+					<!--- RBB 1/17/11: generate new salt. I like to do this whenever a password is changed --->
+					<cfset var salt = generateSalt()>
+					
+					,password = <cfqueryparam value="#hash(salt & arguments.password, instance.hashalgorithm)#" cfsqltype="cf_sql_varchar" maxlength="256">,
+					salt = <cfqueryparam value="#salt#" cfsqltype="cf_sql_varchar" maxlength="256">
+				</cfif>
 		where	username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
 		and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
 		</cfquery>
@@ -2860,23 +2876,29 @@ To unsubscribe, please go to this URL:
 		<cfset var checkit = "" />
 
 		<cfquery name="checkit" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		select	password
+		select	password, salt
 		from	tblusers
 		where	username = <cfqueryparam value="#getAuthUser()#" cfsqltype="cf_sql_varchar" maxlength="50">
-		and		password = <cfqueryparam value="#arguments.oldpassword#" cfsqltype="cf_sql_varchar" maxlength="50">
+		<!---
+		and		password = <cfqueryparam value="#arguments.oldpassword#" cfsqltype="cf_sql_varchar" maxlength="255">
+		--->		
 		and		blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="50">
 		</cfquery>
 
-		<cfif checkit.recordCount is 0>
-			<cfreturn false />
-		<cfelse>
+		<cfif checkit.recordCount is 1 AND checkit.password is hash(checkit.salt & arguments.oldpassword, instance.hashalgorithm)>
+			<!--- generate a new salt --->
+			<cfset var salt = generateSalt()>
+			
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			update	tblusers
-			set		password = <cfqueryparam value="#arguments.newpassword#" cfsqltype="cf_sql_varchar" maxlength="50">
+			set		password = <cfqueryparam value="#hash(salt & arguments.newpassword, instance.hashalgorithm)#" cfsqltype="cf_sql_varchar" maxlength="256">,
+					salt = <cfqueryparam value="#salt#" cfsqltype="cf_sql_varchar" maxlength="256">
 			where	username = <cfqueryparam value="#getAuthUser()#" cfsqltype="cf_sql_varchar" maxlength="50">
 			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="50">
 			</cfquery>
-			<cfreturn true />
+			<cfreturn true />			
+		<cfelse>
+			<cfreturn false />
 		</cfif>
 	</cffunction>
 
@@ -2884,5 +2906,13 @@ To unsubscribe, please go to this URL:
 		<cfargument name="strTextBlock" required="true" type="string" />
 		<cfreturn REReplace("<p>" & arguments.strTextBlock & "</p>", "\r+\n\r+\n", "</p><p>", "ALL") />
 	</cffunction>
+	
+	<cffunction name="generateSalt" returnType="string" output="false" access="public" hint="I generate salt for use in hashing user passwords">
+		
+		<cfreturn generateSecretKey(instance.saltAlgorithm, instance.saltKeySize)>
+	</cffunction>
+
+	
+	
 
 </cfcomponent>

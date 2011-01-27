@@ -192,14 +192,15 @@ DROP TABLE IF EXISTS `tblusers`;
 
 CREATE TABLE `tblusers` (
   `username` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
-  `password` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `password` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
+  `salt` varchar(256) CHARACTER SET utf8 DEFAULT NULL,  
   `name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `blog` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   KEY `blogUsers_username` (`username`),
   KEY `blogUsers_blog` (`blog`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
-insert into tblusers(username,password,name,blog) values('admin','admin','Admin','Default');
+insert into tblusers(username,password,salt,name,blog) values('admin','74FAE06F4B7BB31F16FA3CB4C873C88FB3669E413603CD103D714CC8C6B153188CEE84D3172F60027D96BAB4A79F275543865C80A927312D5CF00F7DD3F1753A','2XlAbs2fFEESboQCMue3N7yATpwT1QKAFNGIU0hZ35g=','Admin','Default');
 
 /*!40000 ALTER TABLE `tblblogroles` DISABLE KEYS */;
 INSERT INTO `tblblogroles` (role,id,description) VALUES  ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.'),
