@@ -91,8 +91,6 @@
 	
 	<script src="#application.rooturl#/includes/jquery.min.js" type="text/javascript"></script>
 	<script src="#application.rooturl#/includes//jquery.arclite.js" type="text/javascript"></script>
-
-	<script type="text/javascript" src="#application.rooturl#/includes/jquery.min.js"></script>
 	<script type="text/javascript">
 	function launchComment(id) {
 		cWin = window.open("#application.rooturl#/addcomment.cfm?id="+id,"cWin","width=550,height=700,menubar=yes,personalbar=no,dependent=true,directories=no,status=yes,toolbar=no,scrollbars=yes,resizable=yes");
