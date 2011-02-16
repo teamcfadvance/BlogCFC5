@@ -1582,3 +1582,14 @@ img.wp-smiley, .post .postbody img.wp-smiley, .attachment img.wp-smiley{
 div.code {
        background-color: #ffffff;
 }
+.tweetback {
+   	border-style:solid;    
+   	border-width:thin;    
+	margin-bottom:5px;
+	background-color: white;
+	padding: 5px;
+	width: 90%;
+}
+.tweetback img {
+	margin-right: 5px;
+}
