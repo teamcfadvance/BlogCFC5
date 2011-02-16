@@ -219,7 +219,7 @@ popular view
 						on #application.localeUtils.dateLocaleFormat(posted,"short")# - #application.localeUtils.timeLocaleFormat(posted)#</p>
 					   </div>
 					   <div class="comment-body clearfix" id="comment-body-#currentRow#">
-						<div class="avatar"><img src="http://www.gravatar.com/avatar/#lcase(hash(email))#?s=64&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" title="#name#'s Gravatar" border="0" class="avatar avatar-64 photo" height="64" width="64" /></div>
+						<div class="avatar"><img src="http://www.gravatar.com/avatar/#lcase(hash(lcase(email)))#?s=64&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" title="#name#'s Gravatar" border="0" class="avatar avatar-64 photo" height="64" width="64" /></div>
 						<div class="comment-text">
 						#paragraphFormat2(replaceLinks(comment))#
 						</div>
