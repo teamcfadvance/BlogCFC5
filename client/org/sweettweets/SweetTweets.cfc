@@ -249,7 +249,7 @@ http://sweettweetscfc.riaforge.org/
 		<cfhttp url="#arguments.req#" method="get" result="result" useragent="SweetTweetsCFC | http://fusiongrokker.com"></cfhttp>
 		<!--- <cflog application="false" file="SweetTweets" text="Twitter Search Result: #result.fileContent#"/> --->
 		<cftry>
-			<cfset result = jsonService.deserialize(result.fileContent.toString())/>
+			<cfset result = jsonService.deserializeCustom(result.fileContent.toString())/>
 			<cfcatch type="any"><!--- catch errors thrown by jsonService (likely problem w/twitter search - down,etc), return empty set --->
 				<cfset result = StructNew()/>
 				<cfset result.results = arrayNew(1)/> 
