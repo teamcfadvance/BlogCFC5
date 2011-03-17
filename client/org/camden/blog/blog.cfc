@@ -2000,7 +2000,7 @@
 			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	id
 			from	tblblogroles
-			where	role = <cfqueryparam cfsqltype="cf_sql_varchar" value="admin" maxlength="50">
+			where	role = <cfqueryparam cfsqltype="cf_sql_varchar" value="Admin" maxlength="50">
 			</cfquery>
 			<cfset variables.roles['admin'] = q.id>
 		</cfif>
