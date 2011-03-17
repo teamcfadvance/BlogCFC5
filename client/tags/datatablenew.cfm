@@ -116,6 +116,23 @@ function checksubmit() {
 	}
 	
 }
+
+$(document).ready(function() {
+	$("##checkalllink").click(function(e) {
+		$(".itemcheckbox").each(function(item) {
+			$(this).attr("checked", "checked");
+		});
+		e.preventDefault();
+	});
+
+	$("##decheckalllink").click(function(e) {
+		$(".itemcheckbox").each(function(item) {
+			$(this).removeAttr("checked");
+		});
+		e.preventDefault();
+	});
+
+});
 </script>
 
 <cfif totalRows gt perpage>
@@ -167,7 +184,7 @@ function checksubmit() {
 		<cfset theVal = attributes.data[attributes.linkval][currentRow]>
 		<cfset theLink = attributes.editlink & "?id=#theVal#">
 		<tr class="adminList#currentRow mod 2#">
-			<td width="20"><input type="checkbox" name="mark" value="#attributes.data[attributes.linkval][currentRow]#" /></td>
+			<td width="20"><input type="checkbox" name="mark" value="#attributes.data[attributes.linkval][currentRow]#" class="itemcheckbox" /></td>
 			<cfloop index="c" list="#attributes.list#">
 				<cfif not structKeyExists(colData, c)>
 					<cfset value = attributes.data[c][currentRow]>
@@ -250,6 +267,8 @@ function checksubmit() {
 </p>
 
 <div class="buttonbar">
+<a href="" id="checkalllink" class="button">Check All</a> 
+<a href="" id="decheckalllink" class="button">Uncheck All</a> 
 <cfif attributes.showAdd><a href="#attributes.editlink#?id=0&#attributes.querystring#" class="button">Add #attributes.label#</a></cfif>
 <a href="javascript:checksubmit()" class="button">Delete Selected</a>
 </div>
