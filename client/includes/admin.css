@@ -225,6 +225,13 @@ a:hover {
 	}
 
 /* Fieldset styles */
+	#editForm fieldset {
+		margin: 1.5em 0 0 0;   
+		padding: .3em; 
+		border:none;
+		max-width:800px;
+	}  
+
 	fieldset {
 		margin: 1.5em 0 0 0;   
 		padding: .3em; 
