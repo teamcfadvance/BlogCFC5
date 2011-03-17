@@ -299,7 +299,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			
 			//create tabs
 			$("##entrytabs").tabs()
-			
+	
 			//handles searching
 			getEntries = function() {
 				$("##entries_dropdown").removeOption(/./);
@@ -402,7 +402,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 
 		<!--- tabs --->
 		<cfoutput>
-		<form action="entry.cfm?id=#url.id#" method="post" enctype="multipart/form-data" name="editForm" id="editForm" class="uniForm inlineLabels">
+		<form action="entry.cfm?id=#url.id#" method="post" enctype="multipart/form-data" name="editForm" id="editForm" class="inlineLabels">
 
 		<div id="entrytabs">
 
@@ -465,12 +465,16 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				</select>
 			</cfif>
 		</div>
+		</fieldset>
 		<cfif application.blog.isBlogAuthorized('AddCategory')>
+		<fieldset class="inlineLabels">		
 		<div class="ctrlHolder">
 			<label for="newcategory">Add  a New Category: </label>
 			<input type="text" name="newcategory" id="newcategory" value="#htmlEditFormat(form.newcategory)#" maxlength="50">
 		</div>
+		</fieldset>
 		</cfif>
+		<fieldset class="inlineLabels">		
 		<div class="ctrlHolder">
 			<input type="hidden" name="oldenclosure" value="#form.oldenclosure#">
 			<input type="hidden" name="oldfilesize" value="#form.oldfilesize#">
@@ -478,10 +482,13 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			<label for="enclosure">Enclosure: </label>
 			<input name="enclosure" id="enclosure" size="30" type="file" class="fileUpload" />
 		</div>	
+		</fieldset>
+		<fieldset class="inlineLabels">				
 		<div class="ctrlHolder">
 			<label for="manualenclosure">Manually Set Enclosure: </label>
 			<input type="text" name="manualenclosure" id="manualenclosure" class="textInput">
 		</div>		
+		</fieldset>
 		<cfif len(form.oldenclosure)>
 		<div class="ctrlHolder">
 		#listLast(form.oldenclosure,"/\")# <input type="submit" name="delete_enclosure" value="#application.resourceBundle.getResource("deleteenclosure")#">	
