@@ -1,0 +1,16 @@
+Many Thanks go to the many contributors to BlogCFC.
+
+Some these are, in no particular order :
+
+Scott Stroz : http://www.boyzoid.com
+Jason Delmore : http://www.cfinsider.com
+Jeff Coughlin :	http://www.jeffcoughlin.com/blog/index.cfm
+Charlie Griefer : http://charlie.griefer.com/blog/index.cfm
+Paul Hastings : http://www.sustainablegis.com/blog/cfg11n/
+Peter J. Farrel : http://blog.maestropublishing.com/
+Deanna Schneider
+Joe Nicora
+Jacob Munson : http://www.techfeed.net/blog/
+Steven Erat : http://www.talkingtree.com/blog
+Sam Farmer
+Rob Brooks-Bilson : http://rob.brooks-bilson.com/
