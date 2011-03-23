@@ -1,5 +1,12 @@
-body { font-family: Arial, Helvetica, sans-serif; margin: 0 auto; width : 60%;} 
+body { 
+	font-family: Arial, Helvetica, sans-serif; 
+	margin: 0 auto; 
+	width : 60%;
+    background: url("../images/bluebg.png") repeat scroll 0 0 transparent;
+    margin: 10px auto;
+    padding: 0;
+} 
 .toc { border: 2px solid black; width : 60%; padding: 5px; margin : 0 auto; padding : 5px;}
-#header {background-image: url(../img/blogcfc_195.gif); background-repeat: no-repeat; width : 197px; height : 67px;}
+#header {background-image: url(../images/blogcfc.jpg); background-color : white; background-repeat: no-repeat; width : 299px; height : 125px;}
 #header a {width : 197px; height : 67px; text-decoration:none;  display : block;}
 #header span {display:none; width : 197px; height : 67px;}
