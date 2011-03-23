@@ -23,7 +23,7 @@ Note - if your blog is running RIGHT now, you will want to ensure your first hit
 This is done by adding ?reinit=1 to the URL.
 
 =======================================================================================================================================================================================
-Last Updated: January 26, 2011 (BlogCFC 5.9.8.001)
+Last Updated: TBD (BlogCFC 5.9.8.001)
 
 This update overhauls the user security mechanism in blogCFC.  Going forward, passwords in the tblusers table are no longer stored as plain text.  Instead,
 a practice known as salting and hashing has been added to help protect user accounts against compromise, especially from brute force attacks.  There's been a lot
@@ -74,7 +74,11 @@ Updated Files:
 /client/installer/mssql/script.txt - updated to add salt field, lengthen password and write default values for admin user for MS SQL Server
 /client/installer/mysql/script.txt - updated to add salt field, lengthen password and write default values for admin user for MySQL
 
-
+MISC UPDATES:
+	In the admin, lists of data have a check all/deselect all (tags/datatable.cfm and datatablenew.cfm)
+	/admin/entry.cfm - clean up of form a bit
+	/includes/admin.css - misc
+	/client/org/camden/blog/blog.cfc - case issue in sql in isBlogAuthorized
 =======================================================================================================================================================================================
 Last Updated: January 20, 2011 (BlogCFC 5.9.8)
 
