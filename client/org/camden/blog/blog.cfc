@@ -20,7 +20,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.8.001" />
+	<cfset version = "5.9.8.002" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -2768,6 +2768,7 @@ To unsubscribe, please go to this URL:
 		<cfargument name="username" type="string" required="true">
 		<cfargument name="name" type="string" required="true">
 		<cfargument name="password" type="string" required="false">
+		<cfset var salt = generateSalt()>
 		
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		update	tblusers
@@ -2775,7 +2776,6 @@ To unsubscribe, please go to this URL:
 				<!--- RBB 1/17/11: if no password is passed in, we can assume that only the user's name is being updated --->
 				<cfif structKeyExists(arguments, "password")>
 					<!--- RBB 1/17/11: generate new salt. I like to do this whenever a password is changed --->
-					<cfset var salt = generateSalt()>
 					
 					,password = <cfqueryparam value="#hash(salt & arguments.password, instance.hashalgorithm)#" cfsqltype="cf_sql_varchar" maxlength="256">,
 					salt = <cfqueryparam value="#salt#" cfsqltype="cf_sql_varchar" maxlength="256">
@@ -2874,6 +2874,7 @@ To unsubscribe, please go to this URL:
 		<cfargument name="newpassword" type="string" required="true" />
 		
 		<cfset var checkit = "" />
+		<cfset var salt = generateSalt()>
 
 		<cfquery name="checkit" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	password, salt
@@ -2887,7 +2888,6 @@ To unsubscribe, please go to this URL:
 
 		<cfif checkit.recordCount is 1 AND checkit.password is hash(checkit.salt & arguments.oldpassword, instance.hashalgorithm)>
 			<!--- generate a new salt --->
-			<cfset var salt = generateSalt()>
 			
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			update	tblusers
