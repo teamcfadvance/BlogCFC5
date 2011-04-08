@@ -1,9 +1,9 @@
 
 
 <cfset dataError = false>
-<cfset thisItem = url.post>
 
 <cftry>
+	<cfset thisItem = url.post>
 	<cfset entryData = application.blog.getEntry(thisItem)>
 	<cfset commentsCnt = application.blog.getCommentCount(thisItem)>	
 	<cfif commentsCnt>	
@@ -35,12 +35,13 @@
 		
 			<ul data-role="listview" data-theme="d" data-inset="true" > 
 				<li>		
-					<h2 class="jtextfill"><span>#entryData.title#</span></h2> 
+					<h2 style="white-space: normal;"><span>#entryData.title#</span></h2> 
 					
 					
 				</li>
 				<li>
-					<p style="padding-top: 5px;"><strong>Posted:</strong> #application.localeUtils.dateLocaleFormat(entryData.posted)# #application.localeUtils.timeLocaleFormat(entryData.posted)# <strong>By:</strong> #entryData.name#</p> 
+					<p style="padding-top: 5px;"><strong>Posted:</strong> #application.localeUtils.dateLocaleFormat(entryData.posted)# #application.localeUtils.timeLocaleFormat(entryData.posted)#</p>
+					<p><strong>By:</strong> #entryData.name#</p> 
 					<p>
 						<strong>Categories:</strong> 
 						<cfset lastid = listLast(structKeyList(entryData.categories))>
