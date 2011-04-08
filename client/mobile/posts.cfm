@@ -24,6 +24,6 @@
 
 <cfoutput query="articles">
 		<cfset comCnt = application.blog.getCommentCount(id)>
-		<li><a href="postDetail.cfm?post=#id#">#title#</a> <span class="ui-li-count">#comCnt#</span></li>
+		<li style="white-space: normal;"><a href="postDetail.cfm?post=#id#" style="white-space: normal;">#title#</a> <span class="ui-li-count">#comCnt#</span></li>
 </cfoutput>
 
