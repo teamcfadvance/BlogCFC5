@@ -1,4 +1,19 @@
-﻿<cfset urlVars=reReplaceNoCase(trim(cgi.path_info), '.+\.cfm/? *', '')>
+﻿
+
+<cfif structKeyExists(url, "nomobile")>
+	<cfset redirLink = application.rooturl>
+	<cftry>
+		<cfif structKeyExists(url, "postID")>
+			<cfset redirLink = application.blog.makeLink(url.postID)>
+			<cfset session.nomobile = true>
+		</cfif>
+		<cfcatch type="any"></cfcatch>
+	</cftry>
+	<cflocation url="#redirLink#" addtoken="true">
+</cfif>
+
+
+<cfset urlVars=reReplaceNoCase(trim(cgi.path_info), '.+\.cfm/? *', '')>
 <cfif listlen(urlVars, '/') GT 1>
 	<!---attempt to load directly into a post--->
 	<cfmodule template="../tags/getmode.cfm" r_params="chkparams"/>
@@ -54,11 +69,19 @@
                 $('.jtextfill').textfill({ maxFontPixels: 24 });
             });
 			
-			// leve mobile version
+			// leave mobile version
 			$("#exitFooterButton").live('click tap', function(e) {
-				<cfoutput>
-				document.location.href = '#application.rooturl#?nomobile=1';
-				</cfoutput>
+				var postID = '';
+				var theURL = '';
+				var theUrlArray = '';
+				
+				// viewing a post... lets exit to it
+				if ($.mobile.activePage.attr('data-url').indexOf("postDetail" != -1)){
+					theURL = $.mobile.activePage.attr('data-url');
+					theUrlArray = theURL.split('=');				
+					postID = '&postID=' + theUrlArray[1] 					
+				}
+				document.location.href = './index.cfm?nomobile=1' + postID;
 				e.preventDefault();
 			});
 			<cfif isDefined('loadPost')>
