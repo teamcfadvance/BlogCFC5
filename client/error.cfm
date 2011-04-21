@@ -12,6 +12,16 @@
 	Purpose		 : Handles errors
 --->
 
+<!--- Critical error --->
+<cfif not structKeyExists(application, "init")>
+	<h2>Critical Error</h2>
+	<p>
+	A critical error has been thrown. Please visit <a href="http://www.blogcfc.com/index.cfm/main/support">BlogCFC support</a>.
+	</p>
+	<cfdump var="#error#">
+	<cfabort>
+</cfif>
+	
 <!--- Send the error report --->
 <cfset blogConfig = application.blog.getProperties()>
 

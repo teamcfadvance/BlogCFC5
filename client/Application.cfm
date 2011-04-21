@@ -133,6 +133,10 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- load pod --->
 	<cfset application.pod = createObject("component", "org.camden.blog.pods")>
 
+	<!--- Finally, do a DSN check --->
+	<!--- We end up throwing away this call, but it should be lightweight --->
+	<cfset foo = application.blog.getNameForUser(createUUID())>
+		
 	<!--- We are initialized --->
 	<cfset application.init = true>
 
