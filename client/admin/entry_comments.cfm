@@ -28,6 +28,7 @@
 			font-family: Arial;
 		}
 	</style>
+	<script type="text/javascript" src="#application.rooturl#/includes/jquery.min.js"></script>
 
 	<script type="text/javascript">
 		window.onload = adjustIframeSize;
