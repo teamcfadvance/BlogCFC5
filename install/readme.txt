@@ -23,10 +23,17 @@ Note - if your blog is running RIGHT now, you will want to ensure your first hit
 This is done by adding ?reinit=1 to the URL.
 
 =======================================================================================================================================================================================
+Last Updated: April 21, 2011 (BlogCFC 5.9.8.003)
+/client/org/camden/blog.cfc - just the version #
+/client/admin/entry_comments.cfm - needed to include jQuery
+/client/error.cfm - Better handling of errors when it occurs before the app is totally setup
+/client/Application.cfm - I do a quick DB check in startup to find issues with DSN
+/client/mobile/* - Various updated by Dave Ferguson
+
+=======================================================================================================================================================================================
 Last Updated: March 31, 2011 (BlogCFC 5.9.8.002)
 /client/org/camden/blog.cfc - Fixed 2 cases where a var statement was in the middle of a method. That works fine in CF9, but not 8.
 
-=======================================================================================================================================================================================
 Last Updated: TBD (BlogCFC 5.9.8.001)
 
 This update overhauls the user security mechanism in blogCFC.  Going forward, passwords in the tblusers table are no longer stored as plain text.  Instead,
