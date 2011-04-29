@@ -61,6 +61,10 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset arrayAppend(errors, "The commentsfrom setting must be a valid email address.")>
 	</cfif>
 
+	<cfif len(trim(form.failto)) and not isEmail(form.failto)>
+		<cfset arrayAppend(errors, "The failto setting must be a valid email address.")>
+	</cfif>
+
 	<cfif len(trim(form.maxentries)) and not isNumeric(form.maxentries)>
 		<cfset arrayAppend(errors, "Max entries must be numeric.")>
 	</cfif>
@@ -88,7 +92,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset form.password = form.dsn_password>
 
 		<!--- make a list of the keys we will send. --->
-		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit,usecfp">
+		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit,usecfp,failto">
 		<cfloop index="key" list="#keylist#">
 			<cfif structKeyExists(form, key)>
 				<cfset application.blog.setProperty(key, trim(form[key]))>
@@ -144,6 +148,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 			<li><label for="blogdescription">blog description:</label><textarea name="blogdescription" class="txtAreaShort">#htmlEditFormat(form.blogdescription)#</textarea></li>
 			<li><label for="blogkeywords">blog keywords:</label><input type="text" name="blogkeywords" value="#htmlEditFormat(form.blogkeywords)#" class="txtField" maxlength="255"></li>
 			<li><label for="owneremail">owner email:</label><input type="text" name="owneremail" value="#htmlEditFormat(form.owneremail)#" class="txtField" maxlength="255"></li>
+			<li><label for="failto">fail to:</label><input type="text" name="failto" value="#htmlEditFormat(form.failto)#" class="txtField" maxlength="255"></li>
 			<li><label for="blogurl">blog url:</label><input type="text" name="blogurl" value="#form.blogurl#" class="txtField" maxlength="255"></li>
 		</ul>
 	</fieldset>

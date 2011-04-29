@@ -59,6 +59,7 @@
 			<cfset instance.blogDBType = variables.utils.configParam(variables.cfgFile, arguments.name, "blogDBType")>
 			<cfset instance.locale = variables.utils.configParam(variables.cfgFile, arguments.name, "locale")>
 			<cfset instance.commentsFrom = variables.utils.configParam(variables.cfgFile,arguments.name,"commentsFrom")>
+			<cfset instance.failTo = variables.utils.configParam(variables.cfgFile,arguments.name,"failTo")>
 			<cfset instance.mailServer = variables.utils.configParam(variables.cfgFile,arguments.name,"mailserver")>
 			<cfset instance.mailusername = variables.utils.configParam(variables.cfgFile,arguments.name,"mailusername")>
 			<cfset instance.mailpassword = variables.utils.configParam(variables.cfgFile,arguments.name,"mailpassword")>
@@ -97,10 +98,14 @@
 			<cfset variables.utils.throw("#instance.blogDBType# is not a supported value (#getValidDBTypes()#)")>
 		</cfif>
 
+		<!--- If FailTo is blank, use Admin email --->
+		<cfif instance.failTo is "">
+			<cfset instance.failTo = instance.ownerEmail>
+		</cfif>
+		
 		<!--- get a copy of ping --->
 		<cfif variables.isColdFusionMX8>
-		<cfset variables.ping = createObject("component", "ping8")>
-
+			<cfset variables.ping = createObject("component", "ping8")>
 		<cfelse>
 			<cfset variables.ping = createObject("component", "ping7")>
 		</cfif>
@@ -2094,13 +2099,7 @@ To unsubscribe, please go to this URL:
 </p>
 			</cfoutput>
 			</cfsavecontent>
-
-			<cfif instance.mailserver is "">
-				<cfmail to="#email#" from="#instance.owneremail#" subject="#variables.utils.htmlToPlainText(htmlEditFormat(instance.blogtitle))# / #variables.utils.htmlToPlainText(entry.title)#" type="html">#theMessage#</cfmail>
-			<cfelse>
-				<cfmail to="#email#" from="#instance.owneremail#" subject="#variables.utils.htmlToPlainText(htmlEditFormat(instance.blogtitle))# / #variables.utils.htmlToPlainText(entry.title)#"
-						server="#instance.mailserver#" username="#instance.mailusername#" password="#instance.mailpassword#" type="html">#theMessage#</cfmail>
-			</cfif>
+			<cfset utils.mail(to=email,from=instance.owneremail,subject="#variables.utils.htmlToPlainText(htmlEditFormat(instance.blogtitle))# / #variables.utils.htmlToPlainText(entry.title)#",type=html,body=theMessage, failTo=instance.failTo, mailserver=instance.mailserver, mailusername=instance.mailusername, mailpassword=instance.mailpassword)>
 		</cfloop>
 
 		<!---
@@ -2355,13 +2354,8 @@ To unsubscribe, please go to this URL:
 					<cfset theMessage = arguments.message>
 				</cfif>
 
-				<!--- switch depending on server --->
-				<cfif instance.mailserver is "">
-					<cfmail to="#address#" from="#arguments.from#" subject="#variables.utils.htmlToPlainText(arguments.subject)#" type="#mailType#">#theMessage#</cfmail>
-				<cfelse>
-					<cfmail to="#address#" from="#arguments.from#" subject="#variables.utils.htmlToPlainText(arguments.subject)#"
-							server="#instance.mailserver#" username="#instance.mailusername#" password="#instance.mailpassword#" type="#mailType#">#theMessage#</cfmail>
-				</cfif>
+				<cfset utils.mail(to=address,from=instance.owneremail,subject=variables.utils.htmlToPlainText(arguments.subject),type=mailType,body=theMessage, failTo=instance.failTo, mailserver=instance.mailserver, mailusername=instance.mailusername, mailpassword=instance.mailpassword)>
+
 			</cfloop>
 		</cfif>
 

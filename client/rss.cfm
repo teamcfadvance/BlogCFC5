@@ -93,15 +93,7 @@
 	<cfif structKeyExists ( variables.headers, 'If-None-Match' ) and variables.headers['If-None-Match'] eq variables.ETag>
 		<cfheader statuscode="304" statustext="Not Modified" />
 		<cfexit />
-	<cfelse>
-		<!---
-		<cflog file="rss" text="ETag value don't match '#variables.eTag#'" />
-		--->
 	</cfif>
-<cfelse>
-	<!---
-	<cflog file="rss" text="Last modified dates don't match" />
-	--->
 </cfif>
 
 <cftry>
@@ -110,14 +102,6 @@
 	
 	<cfcontent type="text/xml; charset=utf-8"><cfoutput>#variables.feedXML#</cfoutput>
 	<cfcatch>
-		<cfmail to="#application.blog.getProperty("ownerEmail")#" from="#application.blog.getProperty("ownerEmail")#" subject="rss bug" type="html">
-		#application.resourceBundle.getResource("type")#=#cfcatch.type#
-		<hr />
-		#application.resourceBundle.getResource("message")#=#cfcatch.message#
-		<hr />
-		#application.resourceBundle.getResource("detail")#=#cfcatch.detail#
-		<cfdump var="#cfcatch#">
-		</cfmail>
 		<!--- Logic is - if they filtered incorrectly, revert to default, if not, abort --->
 		<cfif cgi.query_string neq "">
 			<cflocation url="rss.cfm">

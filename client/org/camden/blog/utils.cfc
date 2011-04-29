@@ -46,12 +46,13 @@
 		<cfargument name="mailserver" type="string" required="false" default="">
 		<cfargument name="mailusername" type="string" required="false" default="">
 		<cfargument name="mailpassword" type="string" required="false" default="">
-		
+		<cfargument name="failto" type="string" required="false" default="">
+
 		<cfif arguments.mailserver is "">
-			<cfmail to="#arguments.to#" from="#arguments.from#" cc="#arguments.cc#" bcc="#arguments.bcc#" subject="#arguments.subject#" type="#arguments.type#">#arguments.body#</cfmail>
+			<cfmail to="#arguments.to#" from="#arguments.from#" cc="#arguments.cc#" bcc="#arguments.bcc#" subject="#arguments.subject#" type="#arguments.type#" failto="#arguments.failto#">#arguments.body#</cfmail>
 		<cfelse>
 			<cfmail to="#arguments.to#" from="#arguments.from#" cc="#arguments.cc#" bcc="#arguments.bcc#" subject="#arguments.subject#" type="#arguments.type#"
-					server="#arguments.mailserver#" username="#arguments.mailusername#" password="#arguments.mailpassword#">#arguments.body#</cfmail>
+					server="#arguments.mailserver#" username="#arguments.mailusername#" password="#arguments.mailpassword#" failto="#arguments.failto#">#arguments.body#</cfmail>
 		</cfif>
 	
 	</cffunction>
