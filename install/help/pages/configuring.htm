@@ -36,6 +36,7 @@
 				locale=en_US 
 				users=admin 
 				commentsFrom= 
+				failTo=
 				mailserver= 
 				mailusername= 
 				mailpassword= 
@@ -157,6 +158,14 @@
 						By default, comments are emailed out using a &quot;from&quot; address of the person who sent the email. If you set a value for 
 						<code>commentsFrom</code>
 						, the email will instead be marked with that address. What that means is that when a user posts a comment to a blog entry, each email sent to the unique users of the thread will get an email from the address specified in that setting.
+					</td>
+				</tr>
+				<tr>
+					<td><code>
+							failTo
+						</code></td>
+					<td>
+					Specifies a failTo email address to be used for emails sent out from BlogCFC. Note that not 100% of all email operations make use of this feature yet.
 					</td>
 				</tr>
 				<tr>
