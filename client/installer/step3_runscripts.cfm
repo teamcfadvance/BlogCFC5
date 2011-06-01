@@ -1,7 +1,7 @@
 
 <cfif structKeyExists(form, "runscripts")>
 
-	<cfset scriptFile = expandPath("./#session.dbtype#/script.txt")>
+	<cfset scriptFile = expandPath("./#lcase(session.dbtype)#/script.txt")>
 	<cffile action="read" file="#scriptFile#" variable="sql">
 	<cfif session.dbtype is "mysql">
 		<cfset parts = listToArray(sql, ";")>
