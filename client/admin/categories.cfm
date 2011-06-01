@@ -20,7 +20,7 @@
 </cfif>
 
 
-<cfset categories = application.blog.getCategories()>
+<cfset categories = application.blog.getCategories(false)>
 
 <cfmodule template="../tags/adminlayout.cfm" title="Categories">
 

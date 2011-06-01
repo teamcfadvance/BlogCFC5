@@ -60,6 +60,7 @@
 		<cfif not arrayLen(errors)>
 			<!--- clear the archive pod cache --->
 			<cfmodule template="../tags/scopecache.cfm" action="clear" scope="application" cachename="pod_archives" />
+
 			<cflocation url="categories.cfm" addToken="false">
 		</cfif>
 	</cfif>
