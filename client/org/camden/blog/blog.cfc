@@ -2099,7 +2099,7 @@ To unsubscribe, please go to this URL:
 </p>
 			</cfoutput>
 			</cfsavecontent>
-			<cfset utils.mail(to=email,from=instance.owneremail,subject="#variables.utils.htmlToPlainText(htmlEditFormat(instance.blogtitle))# / #variables.utils.htmlToPlainText(entry.title)#",type=html,body=theMessage, failTo=instance.failTo, mailserver=instance.mailserver, mailusername=instance.mailusername, mailpassword=instance.mailpassword)>
+			<cfset utils.mail(to=email,from=instance.owneremail,subject="#variables.utils.htmlToPlainText(htmlEditFormat(instance.blogtitle))# / #variables.utils.htmlToPlainText(entry.title)#",type="html",body=theMessage, failTo=instance.failTo, mailserver=instance.mailserver, mailusername=instance.mailusername, mailpassword=instance.mailpassword)>
 		</cfloop>
 
 		<!---
@@ -2265,11 +2265,15 @@ To unsubscribe, please go to this URL:
 		<cfset var ulink = "">
 		<cfset var theMessage = "">
 		<cfset var comment = getComment(arguments.commentid)>
-
+		<cfset var fromtouse = arguments.from>
 		<cfset var mailType = "text">
 		
 		<cfif arguments.html>
 			<cfset mailType = "html">
+		</cfif>
+		
+		<cfif len(instance.commentsFrom)>
+			<cfset fromtouse = instance.commentsFrom>
 		</cfif>
 		
 		<!--- is it a valid entry? --->
@@ -2354,7 +2358,7 @@ To unsubscribe, please go to this URL:
 					<cfset theMessage = arguments.message>
 				</cfif>
 
-				<cfset utils.mail(to=address,from=instance.owneremail,subject=variables.utils.htmlToPlainText(arguments.subject),type=mailType,body=theMessage, failTo=instance.failTo, mailserver=instance.mailserver, mailusername=instance.mailusername, mailpassword=instance.mailpassword)>
+				<cfset utils.mail(to=address,from=fromtouse,subject=variables.utils.htmlToPlainText(arguments.subject),type=mailType,body=theMessage, failTo=instance.failTo, mailserver=instance.mailserver, mailusername=instance.mailusername, mailpassword=instance.mailpassword)>
 
 			</cfloop>
 		</cfif>
