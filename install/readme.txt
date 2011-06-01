@@ -1,5 +1,5 @@
 LICENSE 
-Copyright 2008-2010 Raymond Camden
+Copyright 2008-2011 Raymond Camden
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,7 +22,16 @@ Find your current version in the notes below, and read 'upwards' to determine wh
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
 
+
 =======================================================================================================================================================================================
+Last Updated: June 1, 2011 (BlogCFC 5.9.8.004)
+/client/admin/categories.cfm and category.cfm - work to address category caching (I believe this is from Scott Jibben!)
+/client/tags/layout.cfm - just removed an extra /.
+/client/installer/step3_runscripts.cfm - case issue - credit Aaron DeRenard
+/client/org/blog/blog.cfc - fix for html attribute, fix for using proper FROM address
+
+=======================================================================================================================================================================================
+
 Last Updated: April 25, 2011 (BlogCFC 5.9.8.003)
 /client/org/camden/blog.cfc - make more use of utils.mail - specifically for failto support
 /client/admin/entry_comments.cfm - needed to include jQuery
@@ -33,7 +42,7 @@ Last Updated: April 25, 2011 (BlogCFC 5.9.8.003)
 /client/org/camden/blog/blog.ini.cfm - new failto value
 /client/org/camden/utils.cfc - update mail() to support failto
 /rss.cfm - removed an old error handler there
-=======================================================================================================================================================================================
+
 Last Updated: March 31, 2011 (BlogCFC 5.9.8.002)
 /client/org/camden/blog.cfc - Fixed 2 cases where a var statement was in the middle of a method. That works fine in CF9, but not 8.
 
