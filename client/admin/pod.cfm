@@ -6,6 +6,7 @@
 	Created      : October 13, 2006
 	Last Updated : 
 	History      : initial
+				 : 7/2/2011  altered pad name to be lowercase.  Caused issue with pod xml when rendering pods.
 --->
 
 <cfset dir = expandPath("../includes/pods")>
@@ -15,6 +16,7 @@ Check for adding pods, return to the pods page after processing
 ---->
 <cfif structKeyExists(form,"newPod") and len(form.newpod)>
 	
+	<cfset form.newPod = lcase(form.newpod)>
 	<cfset newPodTitle = form.newPod>
 	<cfset form.newPod = reReplace(form.newPod," ","_","ALL")>
 	<cfset form.newPod = reReplace(form.newPod,",","","ALL")>
