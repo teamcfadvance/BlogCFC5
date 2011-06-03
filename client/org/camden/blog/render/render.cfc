@@ -69,7 +69,8 @@ matches[1].args[affiliate] = ...
 	<cfset var argPair = "">
 	<cfset var arg = "">
 	<cfset var value = "">
-	
+	<cfset var argStringRegEx = "">
+		
 	<cfif matches.pos[1] is not 0>
 	
 		<cfloop index="x" from="1" to="#arrayLen(matches.pos)#">
@@ -85,7 +86,14 @@ matches[1].args[affiliate] = ...
 			<cfset argString = trim(argString)>
 	
 			<cfif len(argString)>
-				<cfloop index="argPair" list="#argString#" delimiters=" ">
+				
+				<!---
+					find and replace a "_ (quote space) with a "|| (quote double pipe)
+				Then use the double pipe as the delimiter between attributes
+				--->
+				<cfset argStringRegEx = REReplaceNoCase(argString, '\"\s', '"||', "ALL")>
+				
+				<cfloop index="argPair" list="#argStringRegEx#" delimiters="||">
 					<cfif listLen(argPair, "=") is 2>
 						<cfset arg = listFirst(argPair, "=")>
 						<cfset value = listLast(argPair, "=")>
