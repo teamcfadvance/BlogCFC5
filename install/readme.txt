@@ -26,7 +26,7 @@ This is done by adding ?reinit=1 to the URL.
 =======================================================================================================================================================================================
 Last Updated: June 2, 2011 
 /client/admin/pod.cfm - Corrects issue with case sensitivity with pods.  Forces pod names to lowercase on creation / update.  This may cause issues with existing pods in case sensitive environments as an update to a pod may generate a new pod with a lowercase name. 
-
+/client/org/camden/blog/render/render.cfc - Corrects issue where spaces in a renderer attribute value would cause the wrong value to be returned. (previously myAtribute="this that" would have returned "this")
 
 
 =======================================================================================================================================================================================
