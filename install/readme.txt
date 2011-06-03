@@ -24,6 +24,12 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
+Last Updated: June 2, 2011 
+/client/admin/pod.cfm - Corrects issue with case sensitivity with pods.  Forces pod names to lowercase on creation / update.  This may cause issues with existing pods in case sensitive environments as an update to a pod may generate a new pod with a lowercase name. 
+
+
+
+=======================================================================================================================================================================================
 Last Updated: June 1, 2011 (BlogCFC 5.9.8.004)
 /client/admin/categories.cfm and category.cfm - work to address category caching (I believe this is from Scott Jibben!)
 /client/tags/layout.cfm - just removed an extra /.
