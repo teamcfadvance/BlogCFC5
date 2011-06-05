@@ -23,7 +23,9 @@
 	<cfif isQuery(thePostID.entries)> 
 		<!---have to do this because mobile breaks on ses urls--->
 		<cfset session.loadPost = thePostID.entries.id>
-		<cflocation url="http://#cgi.SERVER_NAME##cgi.SCRIPT_NAME#" addToken="false">
+		<cfheader statuscode="307" statustext="Temporary Redirect"> 
+		<meta http-equiv="refresh" content="0;url=<cfoutput>http://#cgi.SERVER_NAME##cgi.SCRIPT_NAME#</cfoutput>" />
+		<cfabort>
 	</cfif>
 <cfelseif isDefined('session.loadPost')>
 	<cfset loadpost = session.loadPost>
