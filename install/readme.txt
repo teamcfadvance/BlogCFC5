@@ -24,11 +24,12 @@ This is done by adding ?reinit=1 to the URL.
 
 
 =======================================================================================================================================================================================
-Last Updated: June 2, 2011 
+Last Updated: June 1, 2011 (BlogCFC 5.9.8.005)
 /client/admin/pod.cfm - Corrects issue with case sensitivity with pods.  Forces pod names to lowercase on creation / update.  This may cause issues with existing pods in case sensitive environments as an update to a pod may generate a new pod with a lowercase name. 
 /client/org/camden/blog/render/render.cfc - Corrects issue where spaces in a renderer attribute value would cause the wrong value to be returned. (previously myAtribute="this that" would have returned "this")
 /client/mobile/index.cfm - changed redirect to be a meta tag instead of cflocation.  This was to remove any hash anchor in url.
 /client/slideshow.cfm, /client/admin/slideshow.cfm - remove extra /, fix by Shaun Loether.
+/client/org/blog/blog.cfc - version number update
 
 =======================================================================================================================================================================================
 Last Updated: June 1, 2011 (BlogCFC 5.9.8.004)
