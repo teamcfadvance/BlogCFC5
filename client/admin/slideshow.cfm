@@ -177,7 +177,7 @@
 			<tr valign="middle" <cfif currentRow mod 2>bgcolor="##c0c0c0"</cfif>>
 				<td align="right">#name#</td>
 				<td>
-				<a href="javaScript:showImage('#urlEncodedFormat("../images/slideshows/#application.imageroot#/#url.id#/#name#")#')"><img src="../images/slideshows/#application.imageroot#/#url.id#/#name#" width="50" height"50" align="absmiddle" border="0"></a>
+				<a href="javaScript:showImage('#urlEncodedFormat("../images/slideshows#application.imageroot#/#url.id#/#name#")#')"><img src="../images/slideshows/#application.imageroot#/#url.id#/#name#" width="50" height"50" align="absmiddle" border="0"></a>
 				<input type="text" name="caption_#currentrow#" value="#value#" class="txtField">
 				<input type="hidden" name="image_#currentrow#" value="#name#">
 				<input type="submit" name="delete_#currentrow#" value="Delete">

@@ -47,7 +47,7 @@
 	<div class="date"><b>#title# - Picture #url.slide# of #images.recordCount#</b></div>
 	<div class="body">
 	<p align="center">
-	<img src="#application.rooturl#/images/slideshows/#application.imageroot#/#slideshowdir#/#images.name[url.slide]#" /><br />
+	<img src="#application.rooturl#/images/slideshows#application.imageroot#/#slideshowdir#/#images.name[url.slide]#" /><br />
 	<cfif structKeyExists(metadata.images, images.name[url.slide])>
 	<b>#metadata.images[images.name[url.slide]]#</b><br />
 	</cfif>
