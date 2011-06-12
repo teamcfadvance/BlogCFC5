@@ -102,6 +102,14 @@
 			#exitFooterButton .ui-icon { background:  url(./assets/icons/113-navigation.png) 50% 50% no-repeat;  background-size: 23px 23px; }
 			#searchFooterButton .ui-icon { background:  url(./assets/icons/06-magnify.png) 50% 50% no-repeat;  background-size: 24px 24px; }
 			
+			/* wrap text in pre tag (code output)*/
+			pre {
+			  white-space: pre-wrap;       /* css-3 */
+			  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+			  white-space: -pre-wrap;      /* Opera 4-6 */
+			  white-space: -o-pre-wrap;    /* Opera 7 */
+			  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+			}
 		</style>
     </head>
 </head> 
