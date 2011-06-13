@@ -21,7 +21,10 @@ UPGRADE NOTES:
 Find your current version in the notes below, and read 'upwards' to determine what files you have to copy. 
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
-
+=======================================================================================================================================================================================
+Last Updated: June 13, 2011
+/client/admin/latestversioncheck.cfm - added date of latest update
+/client/mobile/index.cfm - updated css to allow for word wrap of code output.
 
 =======================================================================================================================================================================================
 Last Updated: June 10, 2011 (BlogCFC 5.9.8.005)
