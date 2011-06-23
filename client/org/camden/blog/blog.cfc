@@ -20,7 +20,7 @@
 	<cfset validDBTypes = "MSACCESS,MYSQL,MSSQL,ORACLE">
 
 	<!--- current version --->
-	<cfset version = "5.9.8.005" />
+	<cfset version = "5.9.8.006" />
 
 	<!--- cfg file --->
 	<cfset variables.cfgFile = "#getDirectoryFromPath(GetCurrentTemplatePath())#/blog.ini.cfm">
@@ -768,7 +768,7 @@
 			<cfoutput>
 		  	<item rdf:about="#xmlFormat(makeLink(id))#">
 			<title>#xmlFormat(title)#</title>
-			<description><cfif arguments.mode is "short" and len(REReplaceNoCase(body,"<[^>]*>","","ALL")) gte arguments.excerpt>#xmlFormat(left(REReplaceNoCase(body,"<[^>]*>","","ALL"),arguments.excerpt))#...<cfelse>#xmlFormat(body)#</cfif><cfif len(morebody)> [More]</cfif></description>
+			<description><cfif arguments.mode is "short" and len(REReplaceNoCase(body,"<[^>]*>","","ALL")) gte arguments.excerpt>#xmlFormat(left(REReplaceNoCase(body,"<[^>]*>","","ALL"),arguments.excerpt))#...<cfelse>#xmlFormat(body & morebody)#</cfif></description>
 			<link>#xmlFormat(makeLink(id))#</link>
 			<dc:date>#dateStr#</dc:date>
 			<cfloop item="catid" collection="#categories#">
@@ -841,8 +841,7 @@
 				<!--- Regex operation removes HTML code from blog body output --->
 				<cfif arguments.mode is "short" and len(REReplaceNoCase(body,"<[^>]*>","","ALL")) gte arguments.excerpt>
 				#xmlFormat(left(REReplace(body,"<[^>]*>","","All"),arguments.excerpt))#...
-				<cfelse>#xmlFormat(body)#</cfif>
-				<cfif len(morebody)> [More]</cfif>
+				<cfelse>#xmlFormat(body & morebody)#</cfif>
 				</description>
 				<cfset lastid = listLast(structKeyList(categories))>
 				<cfloop item="catid" collection="#categories#">
