@@ -25,23 +25,45 @@
 	<cfset subject = rb("commentaddedtoblog") & ": " & application.blog.getProperty("blogTitle") & " / " & rb("entry") & ": " & entry.title>
 	<cfsavecontent variable="email">
 	<cfoutput>
-#rb("commentaddedtoblogentry")#:	#entry.title#
-#rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(now())# / #application.localeUtils.timeLocaleFormat(now())#
-#rb("commentmadeby")#:	 	#c.name# <cfif len(c.website)>(#c.website#)</cfif>
-#rb("ipofposter")#:			Moderated
-URL: #application.blog.makeLink(entry.id)###c#c.id#
-
-	
-#c.comment#
-	
-------------------------------------------------------------
-#rb("unsubscribe")#: %unsubscribe%
-This blog powered by BlogCFC #application.blog.getVersion()#
-Created by Raymond Camden (ray@camdenfamily.com)
-			</cfoutput>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Comment Subscription</title>
+</head>
+<body id="blogcommentmail" style="font:10pt Arial,sans-serif;padding: 10px;">
+	<table cellspacing=0>
+		<tr id="header">
+			<td colspan=2 style="font-size: 14pt;padding:0 0 6px 0;border-bottom:1px solid ##e4e8af;">Comment Added to <a href="#application.blog.makeLink(entry.id)###c#c.id#" style="color:##7d8524;text-decoration:none;">#htmlEditFormat(application.blog.getProperty("blogTitle"))# : #entry.title#</a></td>
+		</tr>
+		<tr><td colspan=2 style="height:10px"></td></tr>
+		<tr id="content" style="padding: 20px;">
+			<td id="comment" style="width:75%;">
+#paragraphformat2(htmlEditFormat(c.comment))#
+			</td>
+			<td id="commentor" valign=top style="width:25%;background-color: ##edf0c9;height:100%">
+				<div id="avatar" style="text-align: center;margin:30px 0 0 0;padding:20px 0 20px 0;width: 100%;height: 100%;">
+					<img src="http://www.gravatar.com/avatar/#lcase(hash(c.email))#?s=80&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" id="avatar_image" border=0 title="#c.name#'s Gravatar" style="width:80px;height:80px;padding:5px;background:white; border:1px solid ##e4e8af;" />
+					<div id="commentorname" style="text-align: center;padding:20 0 20px 0;"><cfif len(c.website)><a href="#c.website#" style="color:##7d8524;text-decoration:none;"></cfif>#c.name#<cfif len(c.website)></a></cfif></div>
+				</div>
+			</td>
+		</tr>
+		<tr><td colspan=2 style="height:10px"></td></tr>
+		<tr id="footer">
+			<td style="border-top:1px solid ##e4e8af;padding:0 10px 0 0;"><a href="http://blogcfc.com/" style="color:##7d8524;text-decoration:none;"><img src="#application.rooturl#/images/logo.png" border=0/></a></td>
+			<td id="footerlinks" nowrap style="margin:5px;text-align:right;border-top:1px solid ##e4e8af;padding:0 10px 0 0;">
+				%unsubscribe%
+				<div id="createdby" style="font-size:8pt;padding:20px 0 0 0;bottom:0px;text-align:right;">
+					Created by <a href="http://www.coldfusionjedi.com" style="color:##7d8524;text-decoration:none;">Raymond Camden</a>
+				</div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
+	</cfoutput>
 	</cfsavecontent>
 	
-	<cfset application.blog.notifyEntry(entryid=c.entryidfk, message=trim(email), subject=subject, from=c.email, noadmin=true, commentid=c.id)>
+	<cfset application.blog.notifyEntry(entryid=c.entryidfk, message=trim(email), subject=subject, from=c.email, noadmin=true, commentid=c.id, html=true)>
 
 </cfif>
 
