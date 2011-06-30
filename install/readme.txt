@@ -21,6 +21,13 @@ UPGRADE NOTES:
 Find your current version in the notes below, and read 'upwards' to determine what files you have to copy. 
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
+
+=======================================================================================================================================================================================
+Last Updated: June 29, 2011 (BlogCFC 5.9.8.007)
+/client/org/camden/blog/blog.cfc - just the version
+/client/admin/moderate.cfm - When we sent emails for moderated comments, we didn't use the new hot HTML
+
+
 =======================================================================================================================================================================================
 Last Updated: June 13, 2011 (BlogCFC 5.9.8.006)
 /client/admin/latestversioncheck.cfm - added date of latest update
