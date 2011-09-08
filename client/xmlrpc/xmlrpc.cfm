@@ -6,6 +6,8 @@
   <cfset getPageContext().getRequest().getHttpRequest().setCharacterEncoding("UTF-8") />
 </cfif>
 
+<cfcontent type="text/xml; charset=utf-8">
+
 <cfsetting enablecfoutputonly=true>
 <!---
 	Name         : C:\projects\blogcfc5\client\xmlrpc\xmlrpc.cfm
@@ -13,6 +15,8 @@
 	Created      : 09/15/06
 	Last Updated : 4/13/07
 	History      : Scott Pinkstonadded newMediaObject
+	       : fixed for newMediaObject to make sure new files don't overwrite each other (dgs 9/8/11)
+	       : fixes for some entities passed from WLW (dgs 9/8/11)
 				 : fix for categories (rkc 10/12/06)
 				 : multiple udpates related to Captivate (rkc 10/31/06)
 				 : Another fix. Did someone say XML-RPC was a spec? Bull-pucky. (rkc 11/30/06)
@@ -304,7 +308,10 @@
 		<!---// replace the em dash character with the HTML entity //--->
 		<cfset entry.body = replace(entry.body, chr(8212), "&##8212;", "all") />
 		<cfset entry.body = replace(entry.body, chr(151), "&##8212;", "all") />
-		<cfset entry.body = replace(entry.body, "�", "&##8212;", "all") />
+		<cfset entry.body = replace(entry.body, "—", "&##8212;", "all") />
+		<cfset entry.body = replace(entry.body, chr(8211), "&##8211;", "all") />
+		<cfset entry.body = replace(entry.body, chr(150), "&##8211;", "all") />
+		<cfset entry.body = replace(entry.body, "–", "&##8211;", "all") />
 
 		<cfif url.parseMarkup>
 			<cfset entry.body = xmlrpc.unescapeMarkup(entry.body) />
@@ -429,22 +436,28 @@
 		<cfset password = requestData.params[3]>
 	
 		<cfif application.blog.authenticate(username,password)>
-	
-			<cfset upFileData = requestData.params[4].bits>
-			<cfset upFileName = listlast(requestData.params[4].name, "/")>
-			<cfset upFileType = requestData.params[4].type>
-			
-			<cfset destination = expandPath("../enclosures")>
-	
+
+			<cfset upFileData = requestData.params[4].bits />
+			<!---//
+				create a unique filename for the media object, so files aren't overwritten.
+				we do this by hashing the file information passed from the client to create
+				a unique MD5. this should make re-posting the same file overwrite the existing
+				image, but make new media images have a unique file name.
+			//--->
+			<cfset upFileName = hash(requestData.params[4].name, "md5") & "." & listlast(requestData.params[4].name, ".") />
+			<cfset upFileType = requestData.params[4].type />
+
+			<cfset destination = expandPath("../enclosures") />
+
 			<cfif not directoryExists(destination)>
-				<cfdirectory action="create" directory="#destination#">
+				<cfdirectory action="create" directory="#destination#" />
 			</cfif>
-	
-			<cffile action="write" output="#upFileData#" file="#destination#/#upFileName#" nameconflict="makeunique">
-	
-			<cfset result = structNew()>
-			<cfset result["url"] = "$string" & "#application.rootURL#/enclosures/#upFileName#">
-	
+
+			<cffile action="write" output="#upFileData#" file="#destination#/#upFileName#" />
+
+			<cfset result = structNew() />
+			<cfset result["url"] = "$string" & "#application.rootURL#/enclosures/#upFileName#" />
+
 		<cfelse>
 		
 			<cfset result = "$boolean0">
