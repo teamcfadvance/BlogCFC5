@@ -22,6 +22,25 @@ Find your current version in the notes below, and read 'upwards' to determine wh
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
 
+Last Updated: September 28, 2011 (BlogCFC 5.9.8.009)
+Added a robots.txt file to block search engines from the mobile version. Credit goes to James Moberg
+
+Fix by Dan Switzer to xmlrpc/xmlrpc.cfm - his notes:
+
+The patch I just checked in to SVN fixes a problem where new media objects can incorrectly overwrite an existing entry. Here's what happens.
+
+When a user would copy/paste an image from the Windows clipboard into Windows Live Writer, WLW ends up giving the image a generic name like "image.gif".
+
+Now this isn't a problem in WLW as it stores the image for each blog entry in a separate space on disk.
+
+However, when you'd go to publish the code, the old xmlrpc.cfm would parse the file name information for the filename as it is on the local file system. So, everytime a "image.gif" file was found, it would overwrite the old one.
+
+To fix this, I MD5 hash the entire "name" value passed from the WLW--which includes pathing information. This should create a unique name that would correctly update existing images from the same blog entry.
+
+Hopefully this makes sense.
+
+-Dan
+
 =======================================================================================================================================================================================
 Last Updated: June 29, 2011 (BlogCFC 5.9.8.008)
 /client/includes/styles/style.css Removed a badly commented style that borked older IE. Thanks to Nick Hill.
