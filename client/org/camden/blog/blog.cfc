@@ -138,7 +138,7 @@
 
 	</cffunction>
 
-	<cffunction name="addCategory" access="remote" returnType="uuid" roles="admin" output="false"
+	<cffunction name="addCategory" access="remote" returnType="uuid" roles="admin,AddCategory,ManageCategory" output="false"
 				hint="Adds a category.">
 		<cfargument name="name" type="string" required="true">
 		<cfargument name="alias" type="string" required="true">
@@ -473,7 +473,7 @@
 	</cffunction>
 
 
-	<cffunction name="assignCategory" access="remote" returnType="void" roles="admin" output="false"
+	<cffunction name="assignCategory" access="remote" returnType="void" roles="admin,ReleaseEntries" output="false"
 				hint="Assigns entry ID to category X">
 		<cfargument name="entryid" type="uuid" required="true">
 		<cfargument name="categoryid" type="uuid" required="true">
@@ -495,7 +495,7 @@
 
 	</cffunction>
 
-	<cffunction name="assignCategories" access="remote" returnType="void" roles="admin" output="false"
+	<cffunction name="assignCategories" access="remote" returnType="void" roles="admin,ReleaseEntries" output="false"
 				hint="Assigns entry ID to multiple categories">
 		<cfargument name="entryid" type="uuid" required="true">
 		<cfargument name="categoryids" type="string" required="true">
@@ -584,7 +584,7 @@
 
 	</cffunction>
 
-	<cffunction name="deleteCategory" access="public" returnType="void" roles="admin" output="false"
+	<cffunction name="deleteCategory" access="public" returnType="void" roles="admin,ManageCategories" output="false"
 				hint="Deletes a category.">
 		<cfargument name="id" type="uuid" required="true">
 
@@ -600,7 +600,7 @@
 
 	</cffunction>
 
-	<cffunction name="deleteComment" access="public" returnType="void" roles="admin" output="false"
+	<cffunction name="deleteComment" access="public" returnType="void" roles="admin,ReleaseEntries" output="false"
 				hint="Deletes a comment based on the comment's uuid.">
 		<cfargument name="id" type="uuid" required="true">
 
@@ -611,7 +611,7 @@
 
 	</cffunction>
 
-	<cffunction name="deleteEntry" access="remote" returnType="void" roles="admin" output="false"
+	<cffunction name="deleteEntry" access="remote" returnType="void" roles="admin,ReleaseEntries" output="false"
 				hint="Deletes an entry, plus all comments.">
 		<cfargument name="id" type="uuid" required="true">
 		<cfset var entry = "">
