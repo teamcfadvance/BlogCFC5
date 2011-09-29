@@ -308,7 +308,7 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 				var text = $("##titlefilter").val()
 				text = $.trim(text)
 				if(id == "" && text == "") return
-				$("##entries_dropdown").ajaxAddOption("proxy.cfm?category="+id+"&text="+escape(text),{}, false)
+				$("##entries_dropdown").ajaxAddOption("proxy.cfm?category="+id+"&text="+escape(text)+'&rand='+ Math.round(new Date().getTime()),{}, false)
 			}
 					
 			$("##titlefilter").keyup(getEntries)

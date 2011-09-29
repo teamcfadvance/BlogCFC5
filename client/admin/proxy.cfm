@@ -29,11 +29,11 @@
 	
 	<!--- hand craft the json myself, still supporting cf7 --->
 	<cfset s.append("{")>
-
 	<cfloop query="entries">
 		<cfset s.append("""#id#"":""#htmlEditFormat(title)#"",")>
 	</cfloop>
 
 	<cfset s.append("}")>
+	<cfcontent reset="true" type="application/json">
 	<cfoutput>#s.toString()#</cfoutput>
 </cfif>

@@ -72,6 +72,7 @@
 </cfif>
 </ul>
 <ul>
+<cfif application.blog.isBlogAuthorized('PageAdmin')>
 <li><a href="pods.cfm">Pod Manager</a></li>
 <cfif application.filebrowse>
 <li><a href="filemanager.cfm">File Manager</a></li>
@@ -80,6 +81,7 @@
 <li><a href="slideshows.cfm">Slideshows</a></li>
 <li><a href="textblocks.cfm">Textblocks</a></li>
 </ul>
+</cfif>
 <ul>
 <li><a href="../">Your Blog</a></li>
 <li><a href="../" target="_new">Your Blog (New Window)</a></li>

@@ -1,14 +1,12 @@
 /*
  *
- * Copyright (c) 2006-2008 Sam Collett (http://www.texotela.co.uk)
+ * Copyright (c) 2006-2010 Sam Collett (http://www.texotela.co.uk)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version 2.2.2
+ * Version 2.2.5
  * Demo: http://www.texotela.co.uk/code/jquery/select/
  *
- * $LastChangedDate$
- * $Rev$
  *
  */
  
@@ -27,7 +25,7 @@
  */
 $.fn.addOption = function()
 {
-	var add = function(el, v, t, sO)
+	var add = function(el, v, t, sO, index)
 	{
 		var option = document.createElement("option");
 		option.value = v, option.text = t;
@@ -44,6 +42,22 @@ $.fn.addOption = function()
 				el.cache[o[i].value] = i;
 			}
 		}
+		if (index || index == 0)
+		{
+ 			// we're going to insert these starting  at a specific index...
+			// this has the side effect of el.cache[v] being the 
+			// correct value for the typeof check below
+			var ti = option;
+			for(var ii =index; ii <= oL; ii++)
+			{
+				var tmp = el.options[ii];
+				el.options[ii] = ti;
+				o[ii] = ti;
+				el.cache[o[ii].value] = ii;
+				ti = tmp;
+			}
+		}
+    
 		// add to cache if it isn't already
 		if(typeof el.cache[v] == "undefined") el.cache[v] = oL;
 		el.options[el.cache[v]] = option;
@@ -68,8 +82,20 @@ $.fn.addOption = function()
 	}
 	if(a.length >= 2)
 	{
-		if(typeof(a[1]) == "boolean") sO = a[1];
-		else if(typeof(a[2]) == "boolean") sO = a[2];
+		if(typeof(a[1]) == "boolean")
+		{
+			sO = a[1];
+			startindex = a[2];
+		}
+		else if(typeof(a[2]) == "boolean")
+		{
+			sO = a[2];
+			startindex = a[1];
+		}
+		else
+		{
+			startindex = a[1];
+		}
 		if(!m)
 		{
 			v = a[0];
@@ -84,12 +110,13 @@ $.fn.addOption = function()
 			{
 				for(var item in items)
 				{
-					add(this, item, items[item], sO);
+					add(this, item, items[item], sO, startindex);
+					startindex += 1;
 				}
 			}
 			else
 			{
-				add(this, v, t, sO);
+				add(this, v, t, sO, startindex);
 			}
 		}
 	);
@@ -109,7 +136,7 @@ $.fn.addOption = function()
  * @param    Array args      (optional) Array with params to pass to the function afterwards
  * @example  $("#myselect").ajaxAddOption("myoptions.php");
  * @example  $("#myselect").ajaxAddOption("myoptions.php", {"code" : "007"});
- * @example  $("#myselect").ajaxAddOption("myoptions.php", {"code" : "007"}, false, sortoptions, {"dir": "desc"});
+ * @example  $("#myselect").ajaxAddOption("myoptions.php", {"code" : "007"}, false, sortoptions, [{"dir": "desc"}]);
  *
  */
 $.fn.ajaxAddOption = function(url, params, select, fn, args)
@@ -157,6 +184,7 @@ $.fn.ajaxAddOption = function(url, params, select, fn, args)
  * @example  $("#myselect").removeOption(/./); // remove all options
  * @example  $("#myselect").removeOption(/./, true); // remove all options that have been selected
  * @example  $("#myselect").removeOption(0); // remove by index
+ * @example  $("#myselect").removeOption(["myselect_1","myselect_2"]); // values contained in passed array
  *
  */
 $.fn.removeOption = function()
@@ -166,7 +194,20 @@ $.fn.removeOption = function()
 	var ta = typeof(a[0]);
 	var v, index;
 	// has to be a string or regular expression (object in IE, function in Firefox)
-	if(ta == "string" || ta == "object" || ta == "function" ) v = a[0];
+	if(ta == "string" || ta == "object" || ta == "function" )
+	{
+		v = a[0];
+		// if an array, remove items
+		if(v.constructor == Array)
+		{
+			var l = v.length;
+			for(var i = 0; i<l; i++)
+			{
+				this.removeOption(v[i], a[1]); 
+			}
+			return this;
+		}
+	}
 	else if(ta == "number") index = a[0];
 	else return this;
 	this.each(
@@ -241,6 +282,8 @@ $.fn.removeOption = function()
  */
 $.fn.sortOptions = function(ascending)
 {
+	// get selected values first
+	var sel = $(this).selectedValues();
 	var a = typeof(ascending) == "undefined" ? true : !!ascending;
 	this.each(
 		function()
@@ -285,7 +328,7 @@ $.fn.sortOptions = function(ascending)
 				o[i].value = sA[i].v;
 			}
 		}
-	);
+	).selectOptions(sel, true); // select values, clearing existing ones
 	return this;
 };
 /**
@@ -295,10 +338,11 @@ $.fn.sortOptions = function(ascending)
  * @author   Mathias Bank (http://www.mathias-bank.de), original function
  * @author   Sam Collett (http://www.texotela.co.uk), addition of regular expression matching
  * @type     jQuery
- * @param    String|RegExp value  Which options should be selected
- * can be a string or regular expression
+ * @param    String|RegExp|Array value  Which options should be selected
+ * can be a string or regular expression, or an array of strings / regular expressions
  * @param    Boolean clear  Clear existing selected options, default false
  * @example  $("#myselect").selectOptions("val1"); // with the value 'val1'
+ * @example  $("#myselect").selectOptions(["val1","val2","val3"]); // with the values 'val1' 'val2' 'val3'
  * @example  $("#myselect").selectOptions(/^val/i); // with the value starting with 'val', case insensitive
  *
  */
@@ -306,6 +350,16 @@ $.fn.selectOptions = function(value, clear)
 {
 	var v = value;
 	var vT = typeof(value);
+	// handle arrays
+	if(vT == "object" && v.constructor == Array)
+	{
+		var $this = this;
+		$.each(v, function()
+			{
+      				$this.selectOptions(this, clear);
+    			}
+		);
+	};
 	var c = clear || false;
 	// has to be a string or regular expression (object in IE, function in Firefox)
 	if(vT != "string" && vT != "function" && vT != "object") return this;
@@ -374,7 +428,7 @@ $.fn.copyOptions = function(to, which)
 			var oL = o.length;
 			for(var i = 0; i<oL; i++)
 			{
-				if(w == "all" ||	(w == "selected" && o[i].selected))
+				if(w == "all" || (w == "selected" && o[i].selected))
 				{
 					$(to).addOption(o[i].value, o[i].text);
 				}
@@ -452,13 +506,48 @@ $.fn.containsOption = function(value, fn)
 $.fn.selectedValues = function()
 {
 	var v = [];
-	this.find("option:selected").each(
+	this.selectedOptions().each(
 		function()
 		{
 			v[v.length] = this.value;
 		}
 	);
 	return v;
+};
+
+/**
+ * Returns text which has been selected
+ *
+ * @name     selectedTexts
+ * @author   Sam Collett (http://www.texotela.co.uk)
+ * @type     Array
+ * @example  $("#myselect").selectedTexts();
+ *
+ */
+$.fn.selectedTexts = function()
+{
+	var t = [];
+	this.selectedOptions().each(
+		function()
+		{
+			t[t.length] = this.text;
+		}
+	);
+	return t;
+};
+
+/**
+ * Returns options which have been selected
+ *
+ * @name     selectedOptions
+ * @author   Sam Collett (http://www.texotela.co.uk)
+ * @type     jQuery
+ * @example  $("#myselect").selectedOptions();
+ *
+ */
+$.fn.selectedOptions = function()
+{
+	return this.find("option:selected");
 };
 
 })(jQuery);

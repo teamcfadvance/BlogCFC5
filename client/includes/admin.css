@@ -181,8 +181,11 @@ a:hover {
 		left: 50%;
 		margin-top: -135px;
 		margin-left: -250px;
-
 	}
+	
+/* Hack to make the login display correctly in IE7 as it doesn't support padding on tables */
+html>body #login { *padding: 8em 8em 3em 8em; }
+
 	#logintable {
 		color: #7d8524;
 		font-size: 12px;
@@ -262,3 +265,10 @@ a:hover {
 		text-align: right;
 	}
 
+/* hacks for IE 7 */
+	select {
+		min-width : 220px;
+	}
+	option {
+		min-width : 220px;
+	}

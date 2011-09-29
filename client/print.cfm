@@ -19,7 +19,7 @@
 	</cfcatch>
 </cftry>
 
-<cfheader name="Content-Disposition" value="inline; filename=print.pdf">
+<cfheader name="Content-Disposition" value="inline; filename=#entry.alias#.pdf">
 <cfdocument format="pdf">
 
 	<cfoutput>
