@@ -101,7 +101,7 @@
 <cfif entry.allowcomments>
 	
 	<cfif isDefined("errorStr") and len(errorStr)>
-		<cfoutput><b>#rb("correctissues")#:</b><ul>#errorStr#</ul></cfoutput>
+		<cfoutput><b>#rb("correctissues")#:</b><br/>#errorStr#</cfoutput>
 	</cfif>
 	<cfoutput>
 	<form action="#application.rootURL#/addsub.cfm?#cgi.query_string#" method="post">
