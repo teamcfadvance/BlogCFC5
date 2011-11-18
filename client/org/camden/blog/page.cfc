@@ -27,6 +27,28 @@
 	where	id = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
 	and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	</cfquery>
+
+	<!--- remove all cats --->
+	<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
+	delete from tblblogpagescategories
+	where pageidfk = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
+	</cfquery>
+
+</cffunction>
+
+<cffunction name="getCategoriesForPage" returnType="query" output="false" access="public">
+	<cfargument name="id" type="uuid" required="true">
+	<cfset var q = "">
+
+	<cfquery name="q" datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
+
+
+	select	tblblogcategories.categoryID, tblblogcategories.categoryname
+	from	tblblogcategories, tblblogpagescategories
+	where	tblblogcategories.categoryID = tblblogpagescategories.categoryidfk
+	and		tblblogpagescategories.pageidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+	</cfquery>
+	<cfreturn q>	
 </cffunction>
 
 <cffunction name="getPage" returnType="struct" output="false" access="public">
@@ -48,6 +70,7 @@
 		<cfset s.alias = q.alias>
 		<cfset s.body = q.body>
 		<cfset s.showlayout = q.showlayout>
+		<cfset s.categories = getCategoriesForPage(q.id)>
 	</cfif>
 
 	<cfreturn s>
@@ -96,7 +119,10 @@
 	<cfargument name="alias" type="string" required="true">
 	<cfargument name="body" type="string" required="true">
 	<cfargument name="showlayout" type="boolean" required="true">
+	<cfargument name="categories" type="string" required="true">
 
+	<cfset var c = "">
+	
 	<cfif arguments.id is 0>
 		<cfset arguments.id = createUUID()>
 
@@ -126,6 +152,22 @@
 
 	</cfif>
 
+	<!--- remove all cats --->
+	<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
+	delete from tblblogpagescategories
+	where pageidfk = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
+	</cfquery>
+	
+	<cfloop index="c" list="#arguments.categories#">
+		<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
+		insert into tblblogpagescategories(pageidfk,categoryidfk)
+		values(
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">,
+			<cfqueryparam cfsqltype="cf_sql_varchar" value="#c#" maxlength="35">
+			)
+		</cfquery>
+	</cfloop>
+	
 </cffunction>
 
 </cfcomponent>
