@@ -211,6 +211,12 @@ INSERT INTO `tblblogroles` (role,id,description) VALUES  ('AddCategory','7F183B2
 
 INSERT INTO `tbluserroles`(username,roleidfk,blog) VALUES ('admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default');
 
+CREATE TABLE tblblogpagescategories  (
+       categoryidfk    varchar(35) NOT NULL,
+       pageidfk        varchar(35) NOT NULL
+       )
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

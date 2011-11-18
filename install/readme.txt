@@ -1,5 +1,5 @@
 LICENSE 
-Copyright 2008-2011 Raymond Camden
+Copyright 2008-2012 Raymond Camden
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,6 +21,17 @@ UPGRADE NOTES:
 Find your current version in the notes below, and read 'upwards' to determine what files you have to copy. 
 Note - if your blog is running RIGHT now, you will want to ensure your first hit on your blog (after you copied files and made any other changes) refreshes the blog cache.
 This is done by adding ?reinit=1 to the URL.
+
+=======================================================================================================================================================================================
+Last Updated: November 18, 2011 (BlogCFC 5.9.8.011)
+/tags/parseses.cfm - potential DOS attack fix by Dan Wilson.
+/admin/page.cfm - Support categories for pages.
+/org/camden/blog/page.cfc - see above
+/org/camden/blog/blog.cfc - version
+SQL files updated for new table.
+
+WARNING!!!!!!!!!! New table. ;)
+
 
 =======================================================================================================================================================================================
 Last Updated: November 2, 2011 (BlogCFC 5.9.8.010)

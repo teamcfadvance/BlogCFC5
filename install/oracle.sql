@@ -232,6 +232,11 @@ CREATE TABLE tblusers (
 )
 ;
 
+CREATE TABLE tblblogpagescategories (
+  categoryidfk VARCHAR2(35) NULL,
+  pageidfk VARCHAR2(35) NULL
+)
+;
 --
 -- Definition for indices : 
 --

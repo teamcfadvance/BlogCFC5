@@ -268,6 +268,13 @@ CREATE TABLE [dbo].[tblusers] (
 ON [PRIMARY]
 GO
 
+CREATE TABLE [dbo].[tblblogpagescategories] (
+  [categoryidfk] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+  [pageidfk] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+)
+ON [PRIMARY]
+GO
+
 --
 -- Definition for indices : 
 --
