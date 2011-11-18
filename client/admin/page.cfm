@@ -27,11 +27,21 @@
 	<cfif not isBoolean(form.showlayout)>
 		<cfset form.showlayout = true>
 	</cfif>
+	<!---
+		Logic here. On first hit, save isn't there, so default to db.
+		On second hit, we param to nothing, not the db, cuz if it is empty, it means they cleared their selection.
+	--->
+	<cfif not structKeyExists(form, "save")>
+		<cfset form.categories = valueList(page.categories.categoryid)>
+	<cfelse>
+		<cfparam name="form.categories" default="">
+	</cfif>
 <cfelse>
 	<cfparam name="form.title" default="">
 	<cfparam name="form.body" default="">
 	<cfparam name="form.alias" default="">
 	<cfparam name="form.showlayout" default="1">
+	<cfparam name="form.categories" default="">
 </cfif>
 
 <cfif structKeyExists(form, "cancel")>
@@ -52,13 +62,15 @@
 	</cfif>
 
 	<cfif not arrayLen(errors)>
-		<cfset application.page.savePage(url.id, left(form.title,255), left(form.alias,50), form.body, form.showlayout)>
+		<cfset application.page.savePage(url.id, left(form.title,255), left(form.alias,50), form.body, form.showlayout, form.categories)>
 		<!--- I could make this more specific, but for now it should be acceptable --->
 		<cfmodule template="../tags/scopecache.cfm" scope="application" clearall="true">		
 		<cflocation url="pages.cfm" addToken="false">
 	</cfif>
 
 </cfif>
+
+<cfset categories = application.blog.getCategories()>
 
 <cfmodule template="../tags/adminlayout.cfm" title="Page Editor">
 
@@ -117,6 +129,14 @@
 			</select>
 
 			</td>
+		</tr>
+		<tr valign="top">
+			<td align="right">categories:</td>
+			<td><select name="categories" multiple size="4">
+			<cfloop query="categories">
+				<option value="#categoryid#" <cfif listFind(form.categories,categoryid)>selected</cfif>>#categoryname#</option>
+			</cfloop>
+			</select></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
