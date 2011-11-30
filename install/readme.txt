@@ -23,6 +23,12 @@ Note - if your blog is running RIGHT now, you will want to ensure your first hit
 This is done by adding ?reinit=1 to the URL.
 
 =======================================================================================================================================================================================
+Last Updated: November 30, 2011 (BlogCFC 5.9.8.012)
+/tags/parseses.cfm - corrected the security fix.
+/org/camden/blog/blog.cfc - version
+/tags/layout.cfm - minor SEO change
+
+=======================================================================================================================================================================================
 Last Updated: November 18, 2011 (BlogCFC 5.9.8.011)
 /tags/parseses.cfm - potential DOS attack fix by Dan Wilson.
 /admin/page.cfm - Support categories for pages.

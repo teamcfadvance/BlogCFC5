@@ -24,7 +24,7 @@ function parseMySES() {
 	var r = structNew();
 	var theLen = listLen(urlVars,"/");
 
-	if(len(urlVars) is 0 or urlvars is "/" or len(urlVars) GT 4) return r;
+	if(len(urlVars) is 0 or urlvars is "/" or len(theLen) GT 4) return r;
 	
 	//handles categories
 	if(theLen is 1) {

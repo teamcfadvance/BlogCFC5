@@ -56,14 +56,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<title>#htmlEditFormat(application.blog.getProperty("blogTitle"))##additionalTitle#</title>
-	<!--- RBB 6/23/05: Push crawlers to follow links, but only index content on individual entry pages --->
-	<cfif isDefined("url.mode") and url.mode is "entry">
-	<!--- index entry page --->
-	<meta name="robots" content="index,follow" />
-	<cfelse>
-	<!--- don't index other pages --->
-	<meta name="robots" content="noindex,follow" />	  
-	</cfif>
 	<meta name="title" content="#application.blog.getProperty("blogTitle")##additionalTitle#" />
 	<meta name="description" content="#application.blog.getProperty("blogDescription")##additionalTitle#" />
 	<meta name="keywords" content="#application.blog.getProperty("blogKeywords")#" />
