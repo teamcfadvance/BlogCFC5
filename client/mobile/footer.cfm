@@ -5,7 +5,7 @@
 
 <cfif thisTag.executionMode is "start">
 
-		<div data-role="footer" data-position="fixed" data-id="blogFooterP"  class="nav-footer-custom-icons"> 
+		<div data-role="footer" data-theme="<cfoutput>#application.primaryTheme#</cfoutput>" data-position="fixed" data-id="blogFooterP"  class="nav-footer-custom-icons"> 
 
 			
 			<div data-role="navbar" class="nav-footer-custom-icons"> 

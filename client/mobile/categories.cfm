@@ -6,7 +6,7 @@
 
 <cfoutput>
 
-<div data-role="page" data-theme="#application.primaryTheme#">
+<div data-role="page" data-theme="a">
 
 	<cf_header title="Categories" showHome="2" id="blogHeader">
 	

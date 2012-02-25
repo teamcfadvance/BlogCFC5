@@ -41,9 +41,9 @@
 	<head> 
 	<title><cfoutput>#application.blog.getProperty("blogTitle")#</cfoutput></title> 
 	
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4/jquery.mobile-1.0a4.min.css" />
-	<script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0a4/jquery.mobile-1.0a4.min.js"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
 	
 	<script src="./js/jquery.cookie.js"></script>
 	<script src="./js/jquery-textfill-0.1.js"></script>
@@ -113,7 +113,7 @@
 		</style>
     </head>
 </head> 
-<body class="ui-body-b"> 
+<body> 
 
 <cfparam name="url.page" default="1" >
 
@@ -138,21 +138,22 @@
 
 	<cf_header title="#application.blog.getProperty("blogTitle")#" showHome="#curPage#" id="blogHeader">
 	
-	<div data-role="content" data-theme="a">		
+	<div data-role="content" data-theme="c">		
 		<ul data-role="listview">
+			
 			<cfinclude template="posts.cfm">
 		</ul>			
 	</div><!-- /content -->	
 	<!---paging nav--->
-	<fieldset class="ui-grid-a">
-		<div class="ui-block-a"> 
+	<fieldset class="ui-grid-<cfoutput>#application.primaryTheme#</cfoutput>">
+		<div class="ui-block-<cfoutput>#application.primaryTheme#</cfoutput>"> 
 			<cfif curPage NEQ 1>
 				<a href="index.cfm?page=<cfoutput>#curPage-1#</cfoutput>" data-role="button"  data-direction="reverse" data-icon="arrow-l">Previous</a>	
 			<cfelse>
 				&nbsp;
 			</cfif>		
 		</div>
-		<div class="ui-block-b">
+		<div class="ui-block-<cfoutput>#application.primaryTheme#</cfoutput>">
 			<cfif curPage NEQ pages>
 				<a href="index.cfm?page=<cfoutput>#curPage+1#</cfoutput>" data-role="button" data-icon="arrow-r" data-iconpos="right">More</a></div>
 			<cfelse>

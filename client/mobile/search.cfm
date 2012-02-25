@@ -35,7 +35,7 @@
 			<cfset articleData = application.blog.getEntries(params)>
 			<cfset articles = articleData.entries>
 			
-			<ul data-role="listview">
+			<ul data-role="listview" data-theme="c">
 				<cfinclude template="posts.cfm">
 			</ul>		
 			
