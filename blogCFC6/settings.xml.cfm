@@ -1,0 +1,9 @@
+<!---
+<settings>
+	<dsn>blogcfc6utopia</dsn>
+	<username></username>
+	<password></password>
+	<dbtype>mysql</dbtype>
+	<blog>default</blog>
+</settings>
+--->
