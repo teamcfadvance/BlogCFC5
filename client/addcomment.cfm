@@ -151,7 +151,7 @@
 			</td>
 			<td id="commentor" valign=top style="width:25%;background-color: ##edf0c9;height:100%">
 				<div id="avatar" style="text-align: center;margin:30px 0 0 0;padding:20px 0 20px 0;width: 100%;height: 100%;">
-					<img src="http://www.gravatar.com/avatar/#lcase(hash(form.email))#?s=80&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" id="avatar_image" border=0 title="#form.name#'s Gravatar" style="width:80px;height:80px;padding:5px;background:white; border:1px solid ##e4e8af;" />
+					<img src="http://www.gravatar.com/avatar/#hash(lcase(trim(form.email)))#?s=80&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" id="avatar_image" border=0 title="#form.name#'s Gravatar" style="width:80px;height:80px;padding:5px;background:white; border:1px solid ##e4e8af;" />
 					<div id="commentorname" style="text-align: center;padding:20 0 20px 0;"><cfif len(form.website)><a href="#form.website#" style="color:##7d8524;text-decoration:none;"></cfif>#form.name#<cfif len(form.website)></a></cfif></div>
 				</div>
 			</td>
