@@ -10,6 +10,8 @@
 		<cfset application.iniFile = expandPath("../org/camden/blog/blog.ini.cfm")>
 	<cfelseif fileExists(expandPath("/org/camden/blog/blog.ini.cfm"))>
 		<cfset application.iniFile = expandPath("/org/camden/blog/blog.ini.cfm")>
+	<cfelseif fileExists(expandPath("/client/org/camden/blog/blog.ini.cfm"))>
+		<cfset application.iniFile = expandPath("/client/org/camden/blog/blog.ini.cfm")>
 	<cfelse>
 		<cfoutput>
 		<p>
