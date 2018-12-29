@@ -31,7 +31,7 @@
 	<cfset params.searchTerms = form.keywords>
 	<cfset params.dontlogsearch = true>
 </cfif>
-<cfset params.maxEntries = application.maxEntries>
+<cfset params.maxEntries = application.maxentriesadmin>
 <cfset params.startRow = url.start>
 <cfif not application.blog.isBlogAuthorized('ReleaseEntries')>
 	<cfset params.released = false>

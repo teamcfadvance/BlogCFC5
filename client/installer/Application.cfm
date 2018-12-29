@@ -1,4 +1,4 @@
-<cfset prefix = hash(getCurrentTemplatePath())>
+Installer has been disabled.<cfabort> <cfset prefix = hash(getCurrentTemplatePath())>
 <cfset prefix = reReplace(prefix, "[^a-zA-Z]","","all")>
 <cfset prefix = right(prefix, 64)>
 <cfapplication name="#prefix#" sessionManagement="true" loginStorage="session">
@@ -42,5 +42,6 @@
 	</cfoutput>
 	<cfabort>
 </cfif>
+
 
 

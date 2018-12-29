@@ -69,6 +69,10 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset arrayAppend(errors, "Max entries must be numeric.")>
 	</cfif>
 
+	<cfif len(trim(form.maxentriesadmin)) and not isNumeric(form.maxentriesadmin)>
+		<cfset arrayAppend(errors, "Max entries Admin must be numeric.")>
+	</cfif>
+
 	<cfif len(trim(form.offset)) and not isNumeric(form.offset)>
 		<cfset arrayAppend(errors, "Offset must be numeric.")>
 	</cfif>
@@ -92,7 +96,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset form.password = form.dsn_password>
 
 		<!--- make a list of the keys we will send. --->
-		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit,usecfp,failto">
+		<cfset keylist = "blogtitle,blogdescription,blogkeywords,blogurl,commentsfrom,maxentries,maxentriesadmin,offset,pingurls,dsn,blogdbtype,locale,ipblocklist,moderate,usetweetbacks,trackbackspamlist,mailserver,mailusername,mailpassword,usecaptcha,allowgravatars,owneremail,username,password,filebrowse,imageroot,itunessubtitle,itunessummary,ituneskeywords,itunesauthor,itunesimage,itunesexplicit,usecfp,failto">
 		<cfloop index="key" list="#keylist#">
 			<cfif structKeyExists(form, key)>
 				<cfset application.blog.setProperty(key, trim(form[key]))>
@@ -157,6 +161,7 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<ul>		
 			<li><label for="commentsfrom">comments sent from:</label><input type="text" name="commentsfrom" value="#form.commentsfrom#" class="txtField" maxlength="255"></li>
 			<li><label for="maxentries">max entries:</label><input type="text" name="maxentries" value="#form.maxentries#" class="txtField" maxlength="255"></li>
+		    <li><label for="maxentriesadmin">max entries admin:</label><input type="text" name="maxentriesadmin" value="#form.maxentriesadmin#" class="txtField" maxlength="255"></li>
 			<li><label for="offset">offset:</label><input type="text" name="offset" value="#form.offset#" class="txtField" maxlength="255"></li>
 			<li><label for="pingurls">ping urls:</label><textarea name="pingurls" class="txtAreaShort">#toLines(form.pingurls)#</textarea></li>
 			<li><label for="locale">locale:</label><input type="text" name="locale" value="#form.locale#" class="txtField" maxlength="50"></li>

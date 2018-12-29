@@ -109,7 +109,9 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- how many entries? --->
 	<cfset application.maxEntries = application.blog.getProperty("maxentries")>
 
-	<!--- Gravatars allowed? --->
+	<cfset application.maxEntriesAdmin = application.blog.getProperty("maxentriesadmin")>
+
+<!--- Gravatars allowed? --->
 	<cfset application.gravatarsAllowed = application.blog.getProperty("allowgravatars")>
 
 	<!--- Load the Utils CFC --->

@@ -69,6 +69,7 @@
 			<cfset instance.blogkeywords = variables.utils.configParam(variables.cfgFile, arguments.name, "blogkeywords")>
 			<cfset instance.ipblocklist = variables.utils.configParam(variables.cfgFile, arguments.name, "ipblocklist")>
 			<cfset instance.maxentries = variables.utils.configParam(variables.cfgFile, arguments.name, "maxentries")>
+			<cfset instance.maxentriesadmin = variables.utils.configParam(variables.cfgFile, arguments.name, "maxentriesadmin")>
 			<cfset instance.moderate = variables.utils.configParam(variables.cfgFile, arguments.name, "moderate")>
 			<cfset instance.usecaptcha = variables.utils.configParam(variables.cfgFile, arguments.name, "usecaptcha")>
 			<cfset instance.usecfp = variables.utils.configParam(variables.cfgFile, arguments.name, "usecfp")>
@@ -87,7 +88,6 @@
 			<cfset instance.saltalgorithm = variables.utils.configParam(variables.cfgFile, arguments.name, "saltalgorithm")>
 			<cfset instance.saltkeysize = variables.utils.configParam(variables.cfgFile, arguments.name, "saltkeysize")>
 			<cfset instance.hashalgorithm = variables.utils.configParam(variables.cfgFile, arguments.name, "hashalgorithm")>
-
 		</cfif>
 
 		<!--- Name the blog --->

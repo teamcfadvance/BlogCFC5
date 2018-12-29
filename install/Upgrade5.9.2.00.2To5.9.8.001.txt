@@ -1,0 +1,178 @@
+
+For version 5.9.4:
+
+First off, the new features of this release are NOT documented in the doc/pdf yet. They will be. Check the blog entry for full details. This file will mainly describe what you have to do to get
+the new build up and running. Also be sure to copy all the files listed below. Ok, so let's begin.
+
+First, create the tblblogroles table. You will find this in the install scripts for MySQL and SQL Server. Note that you also need to run the seed statements as well.
+
+----------
+TSQL Code:
+
+CREATE TABLE [dbo].[tblblogroles] (
+  [id] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+  [role] nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+  [description] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+)
+ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblblogroles]
+ADD PRIMARY KEY CLUSTERED ([id])
+WITH (
+  PAD_INDEX = OFF,
+  IGNORE_DUP_KEY = OFF,
+  STATISTICS_NORECOMPUTE = OFF,
+  ALLOW_ROW_LOCKS = ON,
+  ALLOW_PAGE_LOCKS = ON)
+ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [tblblogroles_blogRoles_role] ON [dbo].[tblblogroles]
+  ([role])
+WITH (
+  PAD_INDEX = OFF,
+  DROP_EXISTING = OFF,
+  STATISTICS_NORECOMPUTE = OFF,
+  SORT_IN_TEMPDB = OFF,
+  ONLINE = OFF,
+  ALLOW_ROW_LOCKS = ON,
+  ALLOW_PAGE_LOCKS = ON)
+ON [PRIMARY]
+GO
+
+INSERT INTO [tblblogroles](role,id,description) VALUES ('AddCategory','7F183B27-FEDE-0D6F-E2E9C35DBC7BFF19','The ability to create a new category when editing a blog entry.')
+go
+INSERT INTO [tblblogroles](role,id,description) VALUES('ManageCategories','7F197F53-CFF7-18C8-53D0C85FCC2CA3F9','The ability to manage blog categories.')
+go
+INSERT INTO [tblblogroles](role,id,description) VALUES('Admin','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','A special role for the admin. Allows all functionality.')
+go
+INSERT INTO [tblblogroles](role,id,description) VALUES('ManageUsers','7F26DA6C-9F03-567F-ACFD34F62FB77199','The ability to manage blog users.')
+go
+INSERT INTO [tblblogroles](role,id,description) VALUES('ReleaseEntries','800CA7AA-0190-5329-D3C7753A59EA2589','The ability to both release a new entry and edit any released entry.')
+go
+
+
+------
+
+Second, the tblusers table now has a blog column. THIS IS CRITICAL. You must add the blog column, and for each user, you must enter their blog. This associates
+the user with a blog. In the past, we used the "users" property in blog.ini.cfm to say which users were matched to a blog. That property is now gone (ignored). So
+if you currently have one user in N blogs, you need to create N rows in the database, one for each blog he used to belong to.
+
+
+---
+TSQL Code:
+
+ALTER TABLE [dbo].[tblusers]
+ADD [blog] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+
+
+update [dbo].[tblUsers]
+set blog = 'Default'
+
+
+---
+
+
+Third, run the create script for tbluserroles. This table sets roles for users.
+
+
+---
+TSL Code:
+CREATE TABLE [dbo].[tbluserroles] (
+  [username] nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+  [roleidfk] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+  [blog] nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+)
+ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [tbluserroles_blogUserRoles_blog] ON [dbo].[tbluserroles]
+  ([blog])
+WITH (
+  PAD_INDEX = OFF,
+  DROP_EXISTING = OFF,
+  STATISTICS_NORECOMPUTE = OFF,
+  SORT_IN_TEMPDB = OFF,
+  ONLINE = OFF,
+  ALLOW_ROW_LOCKS = ON,
+  ALLOW_PAGE_LOCKS = ON)
+ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [tbluserroles_blogUserRoles_roleidfk] ON [dbo].[tbluserroles]
+  ([roleidfk])
+WITH (
+  PAD_INDEX = OFF,
+  DROP_EXISTING = OFF,
+  STATISTICS_NORECOMPUTE = OFF,
+  SORT_IN_TEMPDB = OFF,
+  ONLINE = OFF,
+  ALLOW_ROW_LOCKS = ON,
+  ALLOW_PAGE_LOCKS = ON)
+ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [tbluserroles_blogUserRoles_username] ON [dbo].[tbluserroles]
+  ([username])
+WITH (
+  PAD_INDEX = OFF,
+  DROP_EXISTING = OFF,
+  STATISTICS_NORECOMPUTE = OFF,
+  SORT_IN_TEMPDB = OFF,
+  ONLINE = OFF,
+  ALLOW_ROW_LOCKS = ON,
+  ALLOW_PAGE_LOCKS = ON)
+ON [PRIMARY]
+GO
+
+
+
+---
+
+
+
+
+At minimum, you want to set up your Admin user to have the Admin role. You can take this line:
+
+
+---
+INSERT INTO [tbluserroles] VALUES ('jhouser','7F25A20B-EE6D-612D-24A7C0CEE6483EC2','Default')
+go
+---
+
+
+and modify the first value (admin) to match your username. Once you've done that, you have a 'real' admin user with a 'admin' role who can set up your other users.
+
+
+I'm going to repeat the above to ensure it makes sense. You have one table that lists all roles - you must create and seed it.
+Your users table now has a blog column. And lastly, tbluserroles creates a relationship between the two.
+
+Ok - so in theory, thats it. Please the blog entry for a description of how these changes are used.
+
+
+--------------------
+
+Last Updated: November 18, 2011 (BlogCFC 5.9.8.011)
+
+WARNING!!!!!!!!!! New table. ;)
+
+My Note: Ugh they don't say which one
+
+----
+
+No docs on this, but:
+
+ALTER TABLE [dbo].[tblblogpages]
+ADD showlayout  tinyint NULL
+
+
+CREATE TABLE [dbo].[tblblogpagescategories] (
+  [categoryidfk] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+  [pageidfk] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+)
+ON [PRIMARY]
+GO
+
+-------------------
+
+
