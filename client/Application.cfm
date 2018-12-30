@@ -38,7 +38,9 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- load and init blog --->
 	<cfset application.blog = createObject("component","org.camden.blog.blog").init(blogname)>
 
-	<!--- Do we need to run the installer? --->
+	<cfset application.downloadTracker = createObject("component","org.camden.blog.downloadtracker").init()>
+
+<!--- Do we need to run the installer? --->
 	<cfif application.blog.getProperty("installed") is 0>
 		<cflocation url="./installer/index.cfm?blog=#urlEncodedFormat(blogname)#" addToken="false">
 	</cfif>
@@ -132,13 +134,16 @@ The prefix is now dynamic in case 2 people want to run blog.cfc on the same mach
 	<!--- Do we allow settings in the admin? --->
 	<cfset application.settings = application.blog.getProperty("settings")>
 
+	<cfset application.tableprefix = application.blog.getProperty("tableprefix")>
+
 	<!--- load pod --->
 	<cfset application.pod = createObject("component", "org.camden.blog.pods")>
 
 	<!--- Finally, do a DSN check --->
 	<!--- We end up throwing away this call, but it should be lightweight --->
 	<cfset foo = application.blog.getNameForUser(createUUID())>
-		
+
+
 	<!--- We are initialized --->
 	<cfset application.init = true>
 

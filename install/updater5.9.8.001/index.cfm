@@ -7,7 +7,7 @@
 	1. Choose hash and salt algorithms
 	2. Get DSN information
 	3. Validate database hasn't already been converted
-	4. Change the length of the password field in tblusers table from 50 to 256 for MySQL, MSSQL, and Oracle or 255 for MSACCESS
+	4. Change the length of the password field in tblUsers table from 50 to 256 for MySQL, MSSQL, and Oracle or 255 for MSACCESS
 	5. Add a new field called Salt to the tblusers table (256 varchar for MySQL, MSSQL, and Oracle or 255 text for MSACCESS)
 	6. Generate random Salt and hash the passwords for every user in the table
 	7. Update the blogcfc.ini.cfm with the crypto info used.
@@ -131,7 +131,7 @@
 				dbname="blogCFC" 
 				name="myDSN" 
 				type="Columns" 
-				table="tblusers">
+				table="#application.tableprefix#tblUsers">
 				
 				<!--- see if the Salt field already exists. If so, there's no need 
 				      to run these steps again as they'll just cause errors. --->
@@ -175,7 +175,7 @@
 					<cftransaction>
 					<cftry>
 						<cfquery name="updateDB" datasource="#session.dsn#" username="#session.username#" password="#session.password#">
-							ALTER TABLE `tblusers` CHANGE COLUMN `password` `password` VARCHAR(256) NULL DEFAULT NULL  ;
+							ALTER TABLE `#application.tableprefix#tblUsers` CHANGE COLUMN `password` `password` VARCHAR(256) NULL DEFAULT NULL  ;
 						</cfquery>
 						
 						<cfcatch type="any">
@@ -188,7 +188,7 @@
 					<cfif proceed>
 						<cftry>
 							<cfquery name="updateDB" datasource="#session.dsn#" username="#session.username#" password="#session.password#">
-								ALTER TABLE `tblusers` ADD COLUMN `salt` VARCHAR(256) NULL DEFAULT NULL AFTER `password` ;
+								ALTER TABLE `#application.tableprefix#tblUsers` ADD COLUMN `salt` VARCHAR(256) NULL DEFAULT NULL AFTER `password` ;
 							</cfquery>				
 						
 							<cfcatch type="any">
@@ -204,15 +204,15 @@
 				<cfcase value="Microsoft SQL Server">
 					<cftry>
 						<cfquery name="updateDB" datasource="#session.dsn#" username="#session.username#" password="#session.password#">				
-							ALTER TABLE tblusers
+							ALTER TABLE #application.tableprefix#tblUsers
 							ADD salt varchar(256) NULL;
 								
-							ALTER TABLE tblusers
+							ALTER TABLE #application.tableprefix#tblUsers
 							ALTER COLUMN password varchar(256);		
 						</cfquery>		
 						<cfcatch type="any">
 							<cfset proceed = false>
-							Unable to modify tblusers.
+							Unable to modify #application.tableprefix#tblUsers.
 							<cfdump var="#cfcatch#">
 						</cfcatch>
 					</cftry>
@@ -223,7 +223,7 @@
 					<cftry>
 						<cfquery name="updateDB" datasource="#session.dsn#" username="#session.username#" password="#session.password#">
 							ALTER TABLE
-							   tblusers
+							   #application.tableprefix#tblUsers
 							MODIFY
 							   (
 							   password VARCHAR2(256) NULL
@@ -242,7 +242,7 @@
 						<cftry>
 							<cfquery name="updateDB" datasource="#session.dsn#" username="#session.username#" password="#session.password#">
 								ALTER TABLE
-								   tblusers
+								   #application.tableprefix#tblUsers
 								ADD
 								   (
 								   salt VARCHAR2(256) NULL
@@ -265,7 +265,7 @@
 					<cftry>
 						<!--- access only supports 255 chars in a text field. Not a problem now but it will be if we get to 256 charter values --->
 						<cfquery name="updateDB" datasource="#session.dsn#" username="#session.username#" password="#session.password#">					
-							ALTER TABLE tblusers
+							ALTER TABLE #application.tableprefix#tblUsers
 							ALTER COLUMN Password TEXT(255)
 						</cfquery>
 
@@ -279,7 +279,7 @@
 					<cfif proceed>
 						<cftry>
 							<cfquery name="updateDB" datasource="#session.dsn#" username="#session.username#" password="#session.password#">
-								ALTER TABLE tblusers
+								ALTER TABLE #application.tableprefix#tblUsers
 								ADD COLUMN Salt TEXT(255)  
 							</cfquery>				
 						
@@ -321,14 +321,14 @@
 		<cftry>
 		<cfquery name="getRecords" datasource="#session.dsn#" username="#session.username#" password="#session.password#">
 			SELECT username, blog, password
-			from tblusers
+			from #application.tableprefix#tblUsers
 		</cfquery>
 
 		<cftransaction>	<!--- all or nothing as far as converting the database goes --->
 		<cfloop query="getRecords">
 			<cfset salt = generateSecretKey(session.saltalgorithm, session.saltkeySize)>
 			<cfquery name="updateRecord" datasource="#session.dsn#" username="#session.username#" password="#session.password#">
-				UPDATE tblusers
+				UPDATE #application.tableprefix#tblUsers
 				SET password = <cfqueryparam value="#hash(salt & getRecords.password, session.hashAlgorithm)#" cfsqltype="cf_sql_varchar" maxlength="256">,
 				    salt = <cfqueryparam value="#salt#" cfsqltype="cf_sql_varchar" maxlength="256">
 				WHERE 	username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#getRecords.username#" maxlength="50">

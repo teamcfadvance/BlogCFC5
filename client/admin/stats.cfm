@@ -34,8 +34,8 @@
 
 	<cfquery name="getTotalSubscribers" datasource="#dsn#" username="#username#" password="#password#">
 		select	count(email) as totalsubscribers 
-		from	tblblogsubscribers
-		where 	tblblogsubscribers.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		from	#application.tableprefix#tblBlogSubscribers
+		where 	#application.tableprefix#tblBlogSubscribers.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		and		verified = 1
 	</cfquery>
 
@@ -66,22 +66,22 @@
 	</cfquery>
 	
 	<cfquery name="getTotalComments" datasource="#dsn#" username="#username#" password="#password#">
-		select	count(tblblogcomments.id) as totalcomments
-		from	tblblogcomments, tblblogentries
-		where	tblblogcomments.entryidfk = tblblogentries.id
+		select	count(#application.tableprefix#tblBlogComments.id) as totalcomments
+		from	#application.tableprefix#tblBlogComments, tblblogentries
+		where	#application.tableprefix#tblBlogComments.entryidfk = tblblogentries.id
 		and		tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif application.commentmoderation>
-		and		tblblogcomments.moderated = 1
+		and		#application.tableprefix#tblBlogComments.moderated = 1
 		</cfif>
 	</cfquery>
 	
 	<!--- gets num of entries per category --->
 	<cfquery name="getCategoryCount" datasource="#dsn#" username="#username#" password="#password#">
 		select	categoryid, categoryname, count(categoryidfk) as total
-		from	tblblogcategories, tblblogentriescategories
-		where	tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
-		and		tblblogcategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
-		group by tblblogcategories.categoryid, tblblogcategories.categoryname
+		from	#application.tableprefix#tblBlogCategories, #application.tableprefix#tblBlogEntriesCategories
+		where	#application.tableprefix#tblBlogEntriesCategories.categoryidfk = #application.tableprefix#tblBlogCategories.categoryid
+		and		#application.tableprefix#tblBlogCategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		group by #application.tableprefix#tblBlogCategories.categoryid, #application.tableprefix#tblBlogCategories.categoryname
 		<cfif dbtype is not "msaccess">
 			order by total desc
 		<cfelse>
@@ -93,7 +93,7 @@
 	<cfquery name="topCommentedEntries" datasource="#dsn#" username="#username#" password="#password#">
 		select 
 		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif>
-		tblblogentries.id, tblblogentries.title, count(tblblogcomments.id) as commentcount
+		tblblogentries.id, tblblogentries.title, count(#application.tableprefix#tblBlogComments.id) as commentcount
 		from			tblblogentries, tblblogcomments
 		where			tblblogcomments.entryidfk = tblblogentries.id
 		<cfif dbtype is "oracle">
@@ -117,20 +117,20 @@
 	<cfquery name="topCommentedCategories" datasource="#dsn#" username="#username#" password="#password#">
 		select 
 		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif>
-						tblblogcategories.categoryid, 
-						tblblogcategories.categoryname, 
+						#application.tableprefix#tblBlogCategories.categoryid,
+						#application.tableprefix#tblBlogCategories.categoryname,
 						count(tblblogcomments.id) as commentcount
-		from			tblblogcategories, tblblogcomments, tblblogentriescategories
-		where			tblblogcomments.entryidfk = tblblogentriescategories.entryidfk
+		from			#application.tableprefix#tblBlogCategories, tblblogcomments, #application.tableprefix#tblBlogEntriesCategories
+		where			tblblogcomments.entryidfk = #application.tableprefix#tblBlogEntriesCategories.entryidfk
 		<cfif dbtype is "oracle">
 		and		rownum <= 10
 		</cfif>		
-		and				tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
-		and				tblblogcategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		and				#application.tableprefix#tblBlogEntriesCategories.categoryidfk = #application.tableprefix#tblBlogCategories.categoryid
+		and				#application.tableprefix#tblBlogCategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif application.commentmoderation>
 		and				tblblogcomments.moderated = 1
 		</cfif>		
-		group by		tblblogcategories.categoryid, tblblogcategories.categoryname
+		group by		#application.tableprefix#tblBlogCategories.categoryid, #application.tableprefix#tblBlogCategories.categoryname
 		<cfif dbtype is not "msaccess">
 			order by	commentcount desc
 		<cfelse>
@@ -143,7 +143,7 @@
 		select		
 		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif>
 					searchterm, count(searchterm) as total
-		from		tblblogsearchstats
+		from		#application.tableprefix#tblBlogSearchStats
 		where		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif dbtype is "oracle">
 		and		rownum <= 10

@@ -31,7 +31,7 @@
 	<cfargument name="id" type="uuid" required="true">
 	
 	<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
-	delete from tblblogtextblocks
+	delete from #application.tableprefix#tblblogtextblocks
 	where	id = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
 	and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	</cfquery>
@@ -45,7 +45,7 @@
 	
 	<cfquery name="q" datasource="#variables.dsn#"  username="#variables.username#" password="#variables.password#">
 	select		id, label, body
-	from		tblblogtextblocks
+	from		#application.tableprefix#tblblogtextblocks
 	where		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	<cfif structKeyExists(arguments, "label")>
 	and		label = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.label#" maxlength="255">
@@ -70,7 +70,7 @@
 	
 	<cfquery name="q" datasource="#variables.dsn#"  username="#variables.username#" password="#variables.password#">
 	select		id, label, body
-	from		tblblogtextblocks
+	from		#application.tableprefix#tblblogtextblocks
 	where		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	and		  	label = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.label#" maxlength="255">
 	</cfquery>
@@ -84,7 +84,7 @@
 	
 	<cfquery name="q" datasource="#variables.dsn#"  username="#variables.username#" password="#variables.password#">
 	select		id, label, body
-	from		tblblogtextblocks
+	from		#application.tableprefix#tblblogtextblocks
 	where		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">	
 	order by 	label asc
 	</cfquery>
@@ -101,7 +101,7 @@
 		<cfset arguments.id = createUUID()>
 
 		<cfquery datasource="#variables.dsn#"  username="#variables.username#" password="#variables.password#">
-		insert into tblblogtextblocks(id, label, body, blog)
+		insert into #application.tableprefix#tblblogtextblocks(id, label, body, blog)
 		values(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.label#" maxlength="255">,
@@ -113,7 +113,7 @@
 	<cfelse>
 	
 		<cfquery datasource="#variables.dsn#"  username="#variables.username#" password="#variables.password#">
-		update tblblogtextblocks
+		update #application.tableprefix#tblblogtextblocks
 		set
 				label = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.label#" maxlength="255">,
 				body = <cfqueryparam cfsqltype="cf_sql_longvarchar" value="#arguments.body#">
