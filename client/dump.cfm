@@ -1,1 +1,3 @@
-<cfdump var="#application#" />
+<cfdump var="#application#" expand="false">
+
+<cfdump var="#cgi#" expand="false">

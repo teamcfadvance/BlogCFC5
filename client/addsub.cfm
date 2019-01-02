@@ -45,8 +45,8 @@
 	
 	<cfset errorStr = "">
 
-	<cfif not len(form.email) or not isEmail(form.email)>
-		<cfset errorStr = errorStr & rb("mustincludeemail") & "<br />">
+	<cfif not len(form.email) or not application.utils.isEmail(form.email)>
+		<cfset errorStr = errorStr & request.rb("mustincludeemail") & "<br />">
 	</cfif>
 
 	<!--- captcha validation --->
@@ -86,7 +86,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-	<cfoutput><title>#application.blog.getProperty("blogTitle")# : #rb("addsub")#</title></cfoutput>
+	<cfoutput><title>#application.blog.getProperty("blogTitle")# : #request.rb("addsub")#</title></cfoutput>
 	<link rel="stylesheet" href="includes/style.css" type="text/css" />
 	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 </head>
@@ -94,39 +94,39 @@
 <body id="popUpFormBody">
 
 <cfoutput>
-<div class="date">#rb("comments")#: #entry.title#</div>
+<div class="date">#request.rb("comments")#: #entry.title#</div>
 <div class="body">
 </cfoutput>
 
 <cfif entry.allowcomments>
 	
 	<cfif isDefined("errorStr") and len(errorStr)>
-		<cfoutput><b>#rb("correctissues")#:</b><br/>#errorStr#</cfoutput>
+		<cfoutput><b>#request.rb("correctissues")#:</b><br/>#errorStr#</cfoutput>
 	</cfif>
 	<cfoutput>
 	<form action="#application.rootURL#/addsub.cfm?#cgi.query_string#" method="post">
 
   <fieldset id="commentForm">
-    	<legend>#rb("addsub")#</legend>
+    	<legend>#request.rb("addsub")#</legend>
   <div>
-		<label for="email">#rb("emailaddress")#:</label>
+		<label for="email">#request.rb("emailaddress")#:</label>
 		<input type="text" id="email" name="email" value="#form.email#" />
   </div>
 	<cfif application.useCaptcha>
     <div>
 		<cfset variables.captcha = application.captcha.createHashReference() />
 		<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />
-		<label for="captchaText" class="longLabel">#rb("captchatext")#:</label>
+		<label for="captchaText" class="longLabel">#request.rb("captchatext")#:</label>
 		<input type="text" name="captchaText" id="captchaText" size="6" /><br />
 		<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" align="right" alt="Captcha" vspace="5" />
   </div>
 	</cfif>
   <div>
-		<label for="rememberMe" class="longLabel">#rb("remembermyinfo")#:</label>
+		<label for="rememberMe" class="longLabel">#request.rb("remembermyinfo")#:</label>
 		<input type="checkbox" class="checkBox" id="rememberMe" name="rememberMe" value="1" <cfif isBoolean(form.rememberMe) and form.rememberMe>checked="checked"</cfif> />
   </div>
   <div style="text-align:center">
-		<input type="reset" id="reset" value="#rb("cancel")#" onclick="if(confirm('#rb("cancelconfirm")#')) { window.close(); } else { return false; }" /> <input type="submit" id="submit" name="addsub" value="#rb("subscribe")#" />
+		<input type="reset" id="reset" value="#request.rb("cancel")#" onclick="if(confirm('#request.rb("cancelconfirm")#')) { window.close(); } else { return false; }" /> <input type="submit" id="submit" name="addsub" value="#request.rb("subscribe")#" />
     </div>
 </fieldset>
 	</form>
@@ -135,7 +135,7 @@
 <cfelse>
 
 	<cfoutput>
-	<p>#rb("subnotallowed")#</p>
+	<p>#request.rb("subnotallowed")#</p>
 	</cfoutput>
 	
 </cfif>

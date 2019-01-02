@@ -113,7 +113,8 @@ popular view
 							// unique ID
 							flashvars.playerID = "#alternative#";
 							// load the file
-							flashvars.soundFile= "#application.rooturl#/enclosures/#getFileFromPath(enclosure)#";
+//							flashvars.soundFile= "#application.rooturl#/enclosures/#getFileFromPath(enclosure)#";
+                            flashvars.soundFile= "#application.rooturl#/download.cfm/id/#id#/online/1/#urlEncodedFormat(getFileFromPath(enclosure))#";
 							// Load width and Height again to fix IE bug
 							flashvars.width = "470";
 							flashvars.height = "24";
@@ -130,7 +131,7 @@ popular view
 					</cfif>
 					<cfif len(morebody) and url.mode is not "entry">
 					<p align="right">
-					<a href="#application.blog.makeLink(id)###more">[#rb("more")#]</a>
+					<a href="#application.blog.makeLink(id)###more">[#request.rb("more")#]</a>
 					</p>
 					<cfelseif len(morebody)>
 					#application.blog.renderEntry(morebody)#
@@ -140,7 +141,11 @@ popular view
 
 					<p class="post-metadata">
 					This entry was posted on #dateFormat(posted, "mmmm d, yyyy")# at #timeFormat(posted, "h:mm tt")# and has received #views# views. There are currently <cfif commentCount is "">0<cfelse>#commentCount#</cfif> comments. 
-					<a href="#application.rooturl#/print.cfm?id=#id#" rel="nofollow">Print this entry.</a> <cfif len(enclosure)><a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">Download attachment.</a></cfif>
+					<a href="#application.rooturl#/print.cfm?id=#id#" rel="nofollow">Print this entry.</a>
+					<cfif len(enclosure)>
+                        <a href="#application.rooturl#/download.cfm/id/#id#/#urlEncodedFormat(getFileFromPath(enclosure))#">Download attachment.</a>
+<!---						<a href="#application.rooturl#/enclosures/#urlEncodedFormat(getFileFromPath(enclosure))#">Download attachment.</a>--->
+					</cfif>
 					</p>
 
 
@@ -159,7 +164,7 @@ popular view
 				<cfoutput>
 				<div id="relatedentries">
 				<p>
-				<div class="relatedentriesHeader">#rb("relatedblogentries")#</div>
+				<div class="relatedentriesHeader">#request.rb("relatedblogentries")#</div>
 				</p>
 			
   				<ul id="relatedEntriesList">
@@ -186,15 +191,15 @@ popular view
 
 
 			<cfoutput>
-			<h3 class="commentHeader">#rb("comments")# <cfif application.commentmoderation>(#rb("moderation")#)</cfif></h3>
+			<h3 class="commentHeader">#request.rb("comments")# <cfif application.commentmoderation>(#request.rb("moderation")#)</cfif></h3>
 			</cfoutput>
 			<cfset comments = application.blog.getComments(id)>
 
 			<cfif allowComments>
 				<cfoutput>
 				<div style="font-size:12px">
-				[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
-				[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]
+				[<a href="javaScript:launchComment('#id#')">#request.rb("addcomment")#</a>]
+				[<a href="javaScript:launchCommentSub('#id#')">#request.rb("addsub")#</a>]
 				</div>
 				</cfoutput>
 			</cfif>
@@ -221,7 +226,7 @@ popular view
 					   <div class="comment-body clearfix" id="comment-body-#currentRow#">
 						<div class="avatar"><img src="http://www.gravatar.com/avatar/#lcase(hash(lcase(email)))#?s=64&amp;r=pg&amp;d=#application.rooturl#/images/gravatar.gif" title="#name#'s Gravatar" border="0" class="avatar avatar-64 photo" height="64" width="64" /></div>
 						<div class="comment-text">
-						#paragraphFormat2(replaceLinks(comment))#
+						#application.utils.ParagraphFormat2(application.utils.replaceLinks(comment))#
 						</div>
 				       </div>
 				      </div>
@@ -235,11 +240,11 @@ popular view
 
 			<cfif allowComments and comments.recordCount gte 5>
 				<div style="font-size:12px">
-				[<a href="javaScript:launchComment('#id#')">#rb("addcomment")#</a>]
-				[<a href="javaScript:launchCommentSub('#id#')">#rb("addsub")#</a>]
+				[<a href="javaScript:launchComment('#id#')">#request.rb("addcomment")#</a>]
+				[<a href="javaScript:launchCommentSub('#id#')">#request.rb("addsub")#</a>]
 				</div>
 			<cfelseif not allowcomments>
-				<cfoutput><div>#rb("commentsnotallowed")#</div></cfoutput>
+				<cfoutput><div>#request.rb("commentsnotallowed")#</div></cfoutput>
 			</cfif>
 			
 		    <div class="clear"></div>
@@ -254,13 +259,13 @@ popular view
 	
 	<cfif articles.recordCount is 0>
 	
-		<cfoutput><h3>#rb("sorry")#</h3></cfoutput>
+		<cfoutput><h3>#request.rb("sorry")#</h3></cfoutput>
 		<cfoutput>
 		<p>
 		<cfif url.mode is "">
-			#rb("noentries")#
+			#request.rb("noentries")#
 		<cfelse>
-			#rb("noentriesforcriteria")#
+			#request.rb("noentriesforcriteria")#
 		</cfif>
 		</p>
 		</cfoutput>
@@ -293,7 +298,7 @@ popular view
 			<cfset prevqs = qs & "&amp;startRow=" & (url.startRow - application.maxEntries)>
 	
 			<cfoutput>
-			<a href="#application.rooturl#/index.cfm#path#?#prevqs#">#rb("preventries")#</a>
+			<a href="#application.rooturl#/index.cfm#path#?#prevqs#">#request.rb("preventries")#</a>
 			</cfoutput>
 
 		</cfif>
@@ -307,7 +312,7 @@ popular view
 			<cfset nextqs = qs & "&amp;startRow=" & (url.startRow + application.maxEntries)>
 	
 			<cfoutput>
-			<a href="#application.rooturl#/index.cfm#path#?#nextqs#">#rb("moreentries")#</a>
+			<a href="#application.rooturl#/index.cfm#path#?#nextqs#">#request.rb("moreentries")#</a>
 			</cfoutput>
 
 		</cfif>

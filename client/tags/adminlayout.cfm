@@ -17,6 +17,9 @@
  
 <cfparam name="attributes.title" default="">
 
+<!---- added JH DotComIt to allow for admin w/ multiple directory levels --->
+<cfparam name="attributes.dirlevel" default="">
+
 <cfif thisTag.executionMode is "start">
 
 <cfoutput>
@@ -36,7 +39,7 @@
 <script type="text/javascript" src="#application.rooturl#/includes/uni-form/js/uni-form.jquery.js"></script>
 
 <script type="text/javascript" src="#application.rooturl#/includes/jqueryui/jqueryui.js"></script>
-<cfif NOT caller.isLoggedIn()>
+<cfif NOT application.utils.isLoggedIn()>
   <style type="text/css">
     body{background:none;}
   </style>
@@ -47,49 +50,53 @@
 <body>
 
 <!--- TODO: Switch to request scope --->
-<cfif caller.isLoggedIn()>
+<cfif application.utils.isLoggedIn()>
 <div id="menu">
 <ul>
-<li><a href="index.cfm">Home</a></li>
-<li><a href="entry.cfm?id=0">Add Entry</a></li>
-<li><a href="entries.cfm">Entries</a></li>
+<li><a href="#attributes.dirlevel#index.cfm">Home</a></li>
+<li><a href="#attributes.dirlevel#entry.cfm?id=0">Add Entry</a></li>
+<li><a href="#attributes.dirlevel#entries.cfm">Entries</a></li>
 <cfif application.blog.isBlogAuthorized('ManageCategories')>
-<li><a href="categories.cfm">Categories</a></li>
+<li><a href="#attributes.dirlevel#categories.cfm">Categories</a></li>
 </cfif>
-<li><a href="comments.cfm">Comments</a></li>
+<li><a href="#attributes.dirlevel#comments.cfm">Comments</a></li>
 <cfif application.commentmoderation>
-<li><a href="moderate.cfm">Moderate Comments (<cfoutput>#application.blog.getNumberUnmoderated()#</cfoutput>)</a></li>
+<li><a href="#attributes.dirlevel#moderate.cfm">Moderate Comments (<cfoutput>#application.blog.getNumberUnmoderated()#</cfoutput>)</a></li>
 </cfif>
-<li><a href="index.cfm?reinit=1">Refresh Blog Cache</a></li>
-<li><a href="stats.cfm">Stats</a></li>
+<li><a href="#attributes.dirlevel#index.cfm?reinit=1">Refresh Blog Cache</a></li>
 <cfif application.settings>
-<li><a href="settings.cfm">Settings</a></li>
+<li><a href="#attributes.dirlevel#settings.cfm">Settings</a></li>
 </cfif>
-<li><a href="subscribers.cfm">Subscribers</a></li>
-<li><a href="mailsubscribers.cfm">Mail Subscribers</a></li>
+<li><a href="#attributes.dirlevel#subscribers.cfm">Subscribers</a></li>
+<li><a href="#attributes.dirlevel#mailsubscribers.cfm">Mail Subscribers</a></li>
 <cfif application.blog.isBlogAuthorized('ManageUsers')>
-<li><a href="users.cfm">Users</a></li>
+<li><a href="#attributes.dirlevel#users.cfm">Users</a></li>
 </cfif>
 </ul>
 <ul>
 <cfif application.blog.isBlogAuthorized('PageAdmin')>
-<li><a href="pods.cfm">Pod Manager</a></li>
+<li><a href="#attributes.dirlevel#pods.cfm">Pod Manager</a></li>
 <cfif application.filebrowse>
-<li><a href="filemanager.cfm">File Manager</a></li>
+<li><a href="#attributes.dirlevel#filemanager.cfm">File Manager</a></li>
 </cfif>
-<li><a href="pages.cfm">Pages</a></li>
-<li><a href="slideshows.cfm">Slideshows</a></li>
-<li><a href="textblocks.cfm">Textblocks</a></li>
+<li><a href="#attributes.dirlevel#pages.cfm">Pages</a></li>
+<li><a href="#attributes.dirlevel#slideshows.cfm">Slideshows</a></li>
+<li><a href="#attributes.dirlevel#textblocks.cfm">Textblocks</a></li>
 </ul>
 </cfif>
 <ul>
-<li><a href="../">Your Blog</a></li>
+<!---<li><a href="../">Your Blog</a></li>--->
 <li><a href="../" target="_new">Your Blog (New Window)</a></li>
-<li><a href="stats.cfm">Your Blog Stats</a></li>
+</ul>
+<ul>
+<li><a href="#attributes.dirlevel#stats.cfm">Your Blog Stats</a></li>
+<li><a href="#attributes.dirlevel#stats2.cfm">Your Blog Stats 2</a></li>
+<li><a href="#attributes.dirlevel#statsbyyear.cfm">Your Blog Stats By Year</a></li>
+<li><a href="#attributes.dirlevel#downloads.cfm">Download Reports</a></li>
 </ul>
 <ul style="border-bottom: none;">
-<li><a href="updatepassword.cfm">Update Password</a><li>
-<li><a href="index.cfm?logout=youbetterbelieveit">Logout</a></li>
+<li><a href="#attributes.dirlevel#updatepassword.cfm">Update Password</a><li>
+<li><a href="#attributes.dirlevel#index.cfm?logout=youbetterbelieveit">Logout</a></li>
 </ul>
 </div>
 <div id="content">

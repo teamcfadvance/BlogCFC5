@@ -479,6 +479,12 @@ Enclosure logic move out to always run. Thinking is that it needs to run on prev
 			<input type="hidden" name="oldenclosure" value="#form.oldenclosure#">
 			<input type="hidden" name="oldfilesize" value="#form.oldfilesize#">
 			<input type="hidden" name="oldmimetype" value="#form.oldmimetype#">
+				<cfif len(form.oldenclosure)>#listLast(form.oldenclosure,"/\")# <input type="submit" name="delete_enclosure" value="#application.resourceBundle.getResource("deleteenclosure")#"><br/>
+					<!--- JH dotComIT 11/7/07 added download link --->
+					Download Link: <a href="#application.rooturl#/download.cfm/id/#id#/online/1/#urlEncodedFormat(getFileFromPath(oldenclosure))#">#application.rooturl#/download.cfm/id/#id#/online/1/#urlEncodedFormat(getFileFromPath(oldenclosure))#</a>
+				<Cfelse>
+					Download Link: Won't show up until you save the entry and the UniqueID is generated
+				</cfif>
 			<label for="enclosure">Enclosure: </label>
 			<input name="enclosure" id="enclosure" size="30" type="file" class="fileUpload" />
 		</div>	

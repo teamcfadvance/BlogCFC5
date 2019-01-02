@@ -120,7 +120,7 @@
 
 			</cfif>
 			</td>
-			<td><cfif type is not "Dir">#kbytes(size)#<cfelse>&nbsp;</cfif></td>
+			<td><cfif type is not "Dir">#application.utils.KBytes(size)#<cfelse>&nbsp;</cfif></td>
 			<td>#dateFormat(datelastmodified)# #timeFormat(datelastmodified)#</td>
 			<td width="50" align="center">
 			<cfif type is not "Dir">

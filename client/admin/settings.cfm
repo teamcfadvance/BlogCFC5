@@ -57,11 +57,11 @@ http://blogcfc.riaforge.org/index.cfm?event=page.issue&issueid=4CEC3A8A-C919-ED1
 		<cfset arrayAppend(errors, "The blogurl setting must end with index.cfm.")>
 	</cfif>
 
-	<cfif len(trim(form.commentsfrom)) and not isEmail(form.commentsfrom)>
+	<cfif len(trim(form.commentsfrom)) and not application.utils.isEmail(form.commentsfrom)>
 		<cfset arrayAppend(errors, "The commentsfrom setting must be a valid email address.")>
 	</cfif>
 
-	<cfif len(trim(form.failto)) and not isEmail(form.failto)>
+	<cfif len(trim(form.failto)) and not application.utils.isEmail(form.failto)>
 		<cfset arrayAppend(errors, "The failto setting must be a valid email address.")>
 	</cfif>
 

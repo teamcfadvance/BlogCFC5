@@ -11,7 +11,7 @@ GO
 --
 
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[tblblogcomments]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)
-  DROP TABLE [dbo].[tblblogcomments]
+  DROP TABLE [dbo].[#application.tableprefix#tblBlogComments]
 GO
 
 --
@@ -111,7 +111,7 @@ GO
 -- Definition for table tblblogcomments : 
 --
 
-CREATE TABLE [dbo].[tblblogcomments] (
+CREATE TABLE [dbo].[#application.tableprefix#tblBlogComments] (
   [id] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
   [entryidfk] nvarchar(35) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
   [name] nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
@@ -329,7 +329,7 @@ WITH (
 ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[tblblogcomments]
+ALTER TABLE [dbo].[#application.tableprefix#tblBlogComments]
 ADD PRIMARY KEY CLUSTERED ([id])
 WITH (
   PAD_INDEX = OFF,
@@ -340,7 +340,7 @@ WITH (
 ON [PRIMARY]
 GO
 
-CREATE NONCLUSTERED INDEX [tblblogcomments_blogComments_email] ON [dbo].[tblblogcomments]
+CREATE NONCLUSTERED INDEX [#application.tableprefix#tblBlogComments_blogComments_email] ON [dbo].[#application.tableprefix#tblBlogComments]
   ([email])
 WITH (
   PAD_INDEX = OFF,
@@ -353,7 +353,7 @@ WITH (
 ON [PRIMARY]
 GO
 
-CREATE NONCLUSTERED INDEX [tblblogcomments_blogComments_entryid] ON [dbo].[tblblogcomments]
+CREATE NONCLUSTERED INDEX [#application.tableprefix#tblBlogComments_blogComments_entryid] ON [dbo].[#application.tableprefix#tblBlogComments]
   ([entryidfk])
 WITH (
   PAD_INDEX = OFF,
@@ -366,7 +366,7 @@ WITH (
 ON [PRIMARY]
 GO
 
-CREATE NONCLUSTERED INDEX [tblblogcomments_blogComments_moderated] ON [dbo].[tblblogcomments]
+CREATE NONCLUSTERED INDEX [#application.tableprefix#tblBlogComments_blogComments_moderated] ON [dbo].[#application.tableprefix#tblBlogComments]
   ([moderated])
 WITH (
   PAD_INDEX = OFF,
@@ -379,7 +379,7 @@ WITH (
 ON [PRIMARY]
 GO
 
-CREATE NONCLUSTERED INDEX [tblblogcomments_blogComments_name] ON [dbo].[tblblogcomments]
+CREATE NONCLUSTERED INDEX [#application.tableprefix#tblBlogComments_blogComments_name] ON [dbo].[#application.tableprefix#tblBlogComments]
   ([name])
 WITH (
   PAD_INDEX = OFF,
@@ -392,7 +392,7 @@ WITH (
 ON [PRIMARY]
 GO
 
-CREATE NONCLUSTERED INDEX [tblblogcomments_blogComments_posted] ON [dbo].[tblblogcomments]
+CREATE NONCLUSTERED INDEX [#application.tableprefix#tblBlogComments_blogComments_posted] ON [dbo].[#application.tableprefix#tblBlogComments]
   ([posted])
 WITH (
   PAD_INDEX = OFF,
@@ -756,3 +756,148 @@ go
 insert into [tblUsers](username,password,salt,name,blog) values('admin','74FAE06F4B7BB31F16FA3CB4C873C88FB3669E413603CD103D714CC8C6B153188CEE84D3172F60027D96BAB4A79F275543865C80A927312D5CF00F7DD3F1753A','2XlAbs2fFEESboQCMue3N7yATpwT1QKAFNGIU0hZ35g=','name','Default')
 go
 
+
+
+--
+-- Definition for views used for advanced reporting:
+--
+
+CREATE VIEW [dbo].[NumberOfBlogEntriesByCategory]
+AS
+SELECT        dbo.tblBlogCategories.categoryid, dbo.tblBlogCategories.categoryname, COUNT(dbo.tblBlogEntriesCategories.entryidfk) AS numberOfPosts
+FROM            dbo.tblBlogCategories LEFT OUTER JOIN
+                         dbo.tblBlogEntriesCategories ON dbo.tblBlogCategories.categoryid = dbo.tblBlogEntriesCategories.categoryidfk
+GROUP BY dbo.tblBlogCategories.categoryid, dbo.tblBlogCategories.categoryname
+GO
+
+CREATE VIEW [dbo].[NumberOfBlogEntriesByYear]
+AS
+SELECT        YEAR(posted) AS yearPosted, COUNT(id) AS numberOfEntries
+FROM            dbo.tblBlogEntries
+GROUP BY YEAR(posted)
+GO
+
+CREATE VIEW [dbo].[NumberOfBlogEntriesByYearThenCategory]
+AS
+SELECT        TOP (100) PERCENT YEAR(dbo.tblBlogEntries.posted) AS yearPosted, dbo.tblBlogCategories.categoryname, COUNT(dbo.tblBlogEntries.id) AS numberOfEntries
+FROM            dbo.tblBlogEntries LEFT OUTER JOIN
+                         dbo.tblBlogEntriesCategories ON dbo.tblBlogEntries.id = dbo.tblBlogEntriesCategories.entryidfk LEFT OUTER JOIN
+                         dbo.tblBlogCategories ON dbo.tblBlogCategories.categoryid = dbo.tblBlogEntriesCategories.categoryidfk
+GROUP BY dbo.tblBlogCategories.categoryname, YEAR(dbo.tblBlogEntries.posted)
+ORDER BY yearPosted, dbo.tblBlogCategories.categoryname
+GO
+
+
+--
+-- New SQL Objects added here 12/30/2018
+--
+
+/****** Object:  View [dbo].[NumberOfBlogEntriesByYearThenCategory]    Script Date: 12/30/2018 11:20:38 PM ******/
+DROP VIEW [dbo].[NumberOfBlogEntriesByYearThenCategory]
+GO
+/****** Object:  View [dbo].[NumberOfBlogEntriesByYear]    Script Date: 12/30/2018 11:20:38 PM ******/
+DROP VIEW [dbo].[NumberOfBlogEntriesByYear]
+GO
+/****** Object:  View [dbo].[NumberOfBlogEntriesByCategory]    Script Date: 12/30/2018 11:20:38 PM ******/
+DROP VIEW [dbo].[NumberOfBlogEntriesByCategory]
+GO
+/****** Object:  Table [dbo].[tblblogenclosuredownloads]    Script Date: 12/30/2018 11:20:38 PM ******/
+DROP TABLE [dbo].[tblblogenclosuredownloads]
+GO
+/****** Object:  Table [dbo].[Ad_MimeTypes]    Script Date: 12/30/2018 11:20:38 PM ******/
+DROP TABLE [dbo].[Ad_MimeTypes]
+GO
+/****** Object:  Table [dbo].[Ad_MediaLog]    Script Date: 12/30/2018 11:20:38 PM ******/
+DROP TABLE [dbo].[Ad_MediaLog]
+GO
+/****** Object:  Table [dbo].[Ad_Media]    Script Date: 12/30/2018 11:20:38 PM ******/
+DROP TABLE [dbo].[Ad_Media]
+GO
+/****** Object:  Table [dbo].[Ad_Media]    Script Date: 12/30/2018 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Ad_Media](
+	[MediaID] [int] NOT NULL,
+	[MediaText] [nvarchar](255) NULL,
+	[Description] [nvarchar](255) NULL,
+	[MimeTypeID] [int] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Ad_MediaLog]    Script Date: 12/30/2018 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Ad_MediaLog](
+	[MediaLogID] [int] NOT NULL,
+	[DateDisplayed] [datetime] NULL,
+	[MediaID] [int] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Ad_MimeTypes]    Script Date: 12/30/2018 11:20:39 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Ad_MimeTypes](
+	[MimeTypeID] [int] NOT NULL,
+	[MimeType] [nvarchar](50) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tblblogenclosuredownloads]    Script Date: 12/30/2018 11:20:39 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tblblogenclosuredownloads](
+	[id] [nvarchar](35) NOT NULL,
+	[entryid] [nvarchar](35) NULL,
+	[ipaddress] [nvarchar](15) NULL,
+	[http_referrer] [nvarchar](255) NULL,
+	[http_user_agent] [nvarchar](255) NULL,
+	[downloaddate] [datetime] NULL,
+	[downloadtime] [datetime] NULL,
+	[enclosure] [nvarchar](255) NULL,
+	[Path] [nvarchar](255) NULL,
+	[Online] [bit] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[NumberOfBlogEntriesByCategory]    Script Date: 12/30/2018 11:20:39 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[NumberOfBlogEntriesByCategory]
+AS
+SELECT        dbo.tblBlogCategories.categoryid, dbo.tblBlogCategories.categoryname, COUNT(dbo.tblBlogEntriesCategories.entryidfk) AS numberOfPosts
+FROM            dbo.tblBlogCategories LEFT OUTER JOIN
+                         dbo.tblBlogEntriesCategories ON dbo.tblBlogCategories.categoryid = dbo.tblBlogEntriesCategories.categoryidfk
+GROUP BY dbo.tblBlogCategories.categoryid, dbo.tblBlogCategories.categoryname
+GO
+/****** Object:  View [dbo].[NumberOfBlogEntriesByYear]    Script Date: 12/30/2018 11:20:39 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[NumberOfBlogEntriesByYear]
+AS
+SELECT        YEAR(posted) AS yearPosted, COUNT(id) AS numberOfEntries
+FROM            dbo.tblBlogEntries
+GROUP BY YEAR(posted)
+GO
+/****** Object:  View [dbo].[NumberOfBlogEntriesByYearThenCategory]    Script Date: 12/30/2018 11:20:39 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[NumberOfBlogEntriesByYearThenCategory]
+AS
+SELECT        TOP (100) PERCENT YEAR(dbo.tblBlogEntries.posted) AS yearPosted, dbo.tblBlogCategories.categoryname, COUNT(dbo.tblBlogEntries.id) AS numberOfEntries
+FROM            dbo.tblBlogEntries LEFT OUTER JOIN
+                         dbo.tblBlogEntriesCategories ON dbo.tblBlogEntries.id = dbo.tblBlogEntriesCategories.entryidfk LEFT OUTER JOIN
+                         dbo.tblBlogCategories ON dbo.tblBlogCategories.categoryid = dbo.tblBlogEntriesCategories.categoryidfk
+GROUP BY dbo.tblBlogCategories.categoryname, YEAR(dbo.tblBlogEntries.posted)
+ORDER BY yearPosted, dbo.tblBlogCategories.categoryname
+GO

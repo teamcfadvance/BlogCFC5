@@ -22,8 +22,8 @@
 
 <cfquery name="topByViews" datasource="#dsn#" maxrows="5" username="#username#" password="#password#">
 select	id, title, views, posted
-from	tblblogentries
-where 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+from	#application.tableprefix#tblBlogEntries
+where 	#application.tableprefix#tblBlogEntries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 and		posted > <cfqueryparam cfsqltype="cf_sql_timestamp" value="#sevendaysago#">
 order by views desc
 </cfquery>

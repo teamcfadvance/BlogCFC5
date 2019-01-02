@@ -47,9 +47,9 @@
 	<cfoutput>
 	<h1>#entry.title#</h1>
 
-	<div class="byline">#rb("postedat")# : #application.localeUtils.dateLocaleFormat(entry.posted)# #application.localeUtils.timeLocaleFormat(entry.posted)# 
-		<cfif len(entry.name)>| #rb("postedby")# : #entry.name#</cfif><br />
-		#rb("relatedcategories")#:
+	<div class="byline">#request.rb("postedat")# : #application.localeUtils.dateLocaleFormat(entry.posted)# #application.localeUtils.timeLocaleFormat(entry.posted)#
+		<cfif len(entry.name)>| #request.rb("postedby")# : #entry.name#</cfif><br />
+		#request.rb("relatedcategories")#:
 		<cfloop item="cat" collection="#entry.categories#">
 		#entry.categories[cat]#<cfif cat is not listLast(structKeyList(entry.categories))>,</cfif>
 		</cfloop>
