@@ -12,10 +12,10 @@
 		<div class="tweetback">
 		<div class="tweetbackBody">
 		<img src="#tb.profile_image_url#" title="#tb.from_user#'s Profile" border="0" align="left" />
-		#paragraphFormat2(tb.text)#
+		#application.utils.ParagraphFormat2(tb.text)#
 		</div>
 		<div class="tweetbackByLine">
-		#rb("postedby")# <a href="http://www.twitter.com/#tb.from_user#">#tb.from_user#</a> 
+		#request.rb("postedby")# <a href="http://www.twitter.com/#tb.from_user#">#tb.from_user#</a>
 		| #application.localeUtils.dateLocaleFormat(tb.created_at,"short")# #application.localeUtils.timeLocaleFormat(tb.created_at)#
 		</div>
 		<br clear="left">

@@ -43,9 +43,9 @@
 	<cfquery name="q" datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
 
 
-	select	tblblogcategories.categoryID, tblblogcategories.categoryname
-	from	tblblogcategories, #application.tableprefix#tblblogpagescategories
-	where	tblblogcategories.categoryID = #application.tableprefix#tblblogpagescategories.categoryidfk
+	select	#application.tableprefix#tblblogcategories.categoryID, #application.tableprefix#tblblogcategories.categoryname
+	from	#application.tableprefix#tblblogcategories, #application.tableprefix#tblblogpagescategories
+	where	#application.tableprefix#tblblogcategories.categoryID = #application.tableprefix#tblblogpagescategories.categoryidfk
 	and		#application.tableprefix#tblblogpagescategories.pageidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 	</cfquery>
 	<cfreturn q>	

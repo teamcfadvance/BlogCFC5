@@ -24,7 +24,7 @@
 		<cfif len(formattedComment) gt len(lenComment)>
 			<cfset formattedComment = left(formattedComment, lenComment)>
 		</cfif>
-		<cfset formattedComment = caller.replaceLinks(formattedComment,25)>
+		<cfset formattedComment = application.utils.replaceLinks(formattedComment,25)>
 		<cfoutput><p><a href="#application.blog.makeLink(getComments.entryID)#">#getComments.title#</a><br />
 		#getComments.name# #application.resourceBundle.getResource("said")#: #formattedComment#<cfif len(comment) gt lenComment>...</cfif>
 		<a href="#application.blog.makeLink(getComments.entryID)###c#getComments.id#">[#application.resourceBundle.getResource("more")#]</a></p></cfoutput>

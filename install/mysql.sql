@@ -31,9 +31,9 @@ CREATE TABLE `tblblogcategories` (
 
 /*Table structure for table `tblblogcomments` */
 
-DROP TABLE IF EXISTS `tblblogcomments`;
+DROP TABLE IF EXISTS `#application.tableprefix#tblBlogComments`;
 
-CREATE TABLE `tblblogcomments` (
+CREATE TABLE `#application.tableprefix#tblBlogComments` (
   `id` varchar(35) NOT NULL,
   `entryidfk` varchar(35) DEFAULT NULL,
   `name` varchar(50) DEFAULT NULL,

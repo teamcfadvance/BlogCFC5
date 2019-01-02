@@ -1,3 +1,5 @@
+<cfparam name="attributes.dirlevel" default="">
+
 <cfsetting enablecfoutputonly=true>
 <cfprocessingdirective pageencoding="utf-8">
 <!---
@@ -8,6 +10,11 @@
 	Purpose		 : Add pod controls
 	History      : Added fileExists check
 				   boyzoid -changed structSort to numeric sort 
+
+JH DotComIt 2/21/09 
+Hacked to work w/ Flextras site outside of BlogCFC.  Also turned pod calls into custom tags so i could pass in the dirlevel variable and other values
+
+12/30/2018: Merged into main blogCFC code and a bunch of those previous hacks removed as no longer relevant. Left the dirlevel variable, though, even though not used in current form.
 
 --->
   
@@ -20,7 +27,9 @@
 	<cfif arraylen(podlist)>
 		<cfloop from="1" to="#arraylen(podlist)#" index="pod">
 			<cfif fileExists(podDir & "/#podlist[pod]#")>
-				<cfinclude template="../includes/pods/#podlist[pod]#">
+<!--- 				<cfinclude template="../includes/pods/#podlist[pod]#">
+ --->
+		<cfmodule template="../includes/pods/#podlist[pod]#" dirlevel="#attributes.dirlevel#">
 			</cfif>
 		</cfloop>
 
@@ -29,7 +38,8 @@
 
 			<cfoutput query="pods">
 				<cfif fileExists(podDir & "/#name#")>
-					<cfinclude template="../includes/pods/#name#">
+<!--- 					<cfinclude template="../includes/pods/#name#"> --->
+		<cfmodule template="../includes/pods/#podlist[pod]#" dirlevel="#attributes.dirlevel#">
 				</cfif>
 			</cfoutput>
 	</cfif>	

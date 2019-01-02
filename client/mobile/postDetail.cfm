@@ -96,7 +96,7 @@
 						</div>
 						<div class="ui-body ui-body-b">
 							<p>
-								#paragraphFormat2(replaceLinks(comments.comment))#
+								#application.utils.ParagraphFormat2(application.utils.replaceLinks(comments.comment))#
 							</p>
 						</div>	
 					</cfloop>

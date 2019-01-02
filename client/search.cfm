@@ -52,7 +52,7 @@
 	<cfset searched = false>
 </cfif>
 
-<cfset title = rb("search")>
+<cfset title = request.rb("search")>
 
 <cfmodule template="tags/layout.cfm" title="#title#">
 

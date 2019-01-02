@@ -22,13 +22,13 @@
 </cfif>
 
 
-<cfmodule template="tags/layout.cfm" title="#rb("subscribeconfirm")#">
+<cfmodule template="tags/layout.cfm" title="#request.rb("subscribeconfirm")#">
 	
 	<cfoutput>
-	<div class="date"><b>#rb("subscribeconfirm")#</b></div>
+	<div class="date"><b>#request.rb("subscribeconfirm")#</b></div>
 	
 	<div class="body">
-	#rb("subscribeconfirmbody")#
+	#request.rb("subscribeconfirmbody")#
 	</div>
 	</cfoutput>
 	

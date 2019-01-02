@@ -18,13 +18,13 @@
 <cfif structKeyExists(form, "send")>
 	<cfset aErrors = arrayNew(1) />
 	<cfif not len(trim(form.name))>
-		<cfset arrayAppend(aErrors, rb("mustincludename")) />
+		<cfset arrayAppend(aErrors, request.rb("mustincludename")) />
 	</cfif>
-	<cfif not len(trim(form.email)) or not isEmail(form.email)>
-		<cfset arrayAppend(aErrors, rb("mustincludeemail")) />
+	<cfif not len(trim(form.email)) or not application.utils.isEmail(form.email)>
+		<cfset arrayAppend(aErrors, request.rb("mustincludeemail")) />
 	</cfif>
 	<cfif not len(trim(form.comments))>
-		<cfset arrayAppend(aErrors, rb("mustincludecomments")) />
+		<cfset arrayAppend(aErrors, request.rb("mustincludecomments")) />
 	</cfif>
 
 	<!--- captcha validation --->
@@ -40,9 +40,9 @@
 		<cfset commentTime = dateAdd("h", application.blog.getProperty("offset"), now())>
 		<cfsavecontent variable="body">
 			<cfoutput>
-#rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(commentTime)# / #application.localeUtils.timeLocaleFormat(commentTime)#
-#rb("commentmadeby")#:	 	#form.name# (#form.email#)
-#rb("ipofposter")#:			#cgi.REMOTE_ADDR#
+#request.rb("commentadded")#: 		#application.localeUtils.dateLocaleFormat(commentTime)# / #application.localeUtils.timeLocaleFormat(commentTime)#
+#request.rb("commentmadeby")#:	 	#form.name# (#form.email#)
+#request.rb("ipofposter")#:			#cgi.REMOTE_ADDR#
 
 #form.comments#
 	
@@ -55,7 +55,7 @@ Created by Raymond Camden (ray@camdenfamily.com)
 		<cfset application.utils.mail(
 				to=application.blog.getProperty("owneremail"),
 				from=form.email,
-				subject="#rb("contactform")#",
+				subject="#request.rb("contactform")#",
 				body=body,
 				mailserver=application.blog.getProperty("mailserver"),
 				mailusername=application.blog.getProperty("mailusername"),
@@ -68,49 +68,49 @@ Created by Raymond Camden (ray@camdenfamily.com)
 	
 </cfif>
 
-<cfmodule template="tags/layout.cfm" title="#rb("contactowner")#">
+<cfmodule template="tags/layout.cfm" title="#request.rb("contactowner")#">
 	
 	
 	<cfoutput>
-	<div class="date"><b>#rb("contactowner")#</b></div>
+	<div class="date"><b>#request.rb("contactowner")#</b></div>
 	
 	<div class="body">
 	
 	<cfif showForm>
 
 	<p>
-	#rb("contactownerform")#
+	#request.rb("contactownerform")#
 	</p>
 
 	<cfif isDefined("aErrors") and arrayLen(aErrors)>
-		<cfoutput><b>#rb("correctissues")#:</b><ul class="error"><li>#arrayToList(aErrors, "</li><li>")#</li></ul></cfoutput>
+		<cfoutput><b>#request.rb("correctissues")#:</b><ul class="error"><li>#arrayToList(aErrors, "</li><li>")#</li></ul></cfoutput>
 	</cfif>
 	
 		<form action="#cgi.script_name#?#cgi.query_string#" method="post">
     <fieldset id="sendForm">
 	     <div>
-	      <label for="name">#rb("name")#:</label><br/>
+	      <label for="name">#request.rb("name")#:</label><br/>
 	      <input type="text" id="name" name="name" value="#form.name#" style="width:300px;" />
 	    </div>
 	     <div>
-	      <label for="email">#rb("youremailaddress")#:</label><br/>
+	      <label for="email">#request.rb("youremailaddress")#:</label><br/>
 	      <input type="text" id="email" name="email" value="#form.email#" style="width:300px;" />
 	    </div>
 	     <div>
-	      <label for="comments">#rb("comments")#:</label><br/>
+	      <label for="comments">#request.rb("comments")#:</label><br/>
 	      <textarea name="comments" id="comments" style="width: 400px; height: 300px;" rows="15" cols="45">#form.comments#</textarea>
 	    </div>
 		<cfif application.useCaptcha>
 			<cfset variables.captcha = application.captcha.createHashReference() />
 	    <div>
 				<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />
-				<label for="captchaText" class="longLabel">#rb("captchatext")#:</label>
+				<label for="captchaText" class="longLabel">#request.rb("captchatext")#:</label>
 				<input type="text" name="captchaText" id="captchaText" size="6" /><br />
 				<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" alt="Captcha" vspace="5" />
 	    </div>
 		</cfif>	
 	    <div>
-	      <input type="submit" id="submit" name="send" value="#rb("sendcontact")#" />
+	      <input type="submit" id="submit" name="send" value="#request.rb("sendcontact")#" />
 	     </div>
     </fieldset>
 
@@ -119,7 +119,7 @@ Created by Raymond Camden (ray@camdenfamily.com)
 	<cfelse>
 	
 		<p>
-		#rb("contactsent")#
+		#request.rb("contactsent")#
 		</p>
 		
 	</cfif>

@@ -1932,7 +1932,7 @@
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	username, password, name
-		from	tblusers
+		from	#application.tableprefix#tblusers
 		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		and		username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
@@ -1954,7 +1954,7 @@
 		
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	username
-		from	tblusers
+		from	#application.tableprefix#tblusers
 		where	name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#replace(arguments.name,"_"," ","all")#" maxlength="50">
 		</cfquery>
 		
@@ -1971,17 +1971,17 @@
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		<cfif instance.blogDBType is "MSACCESS">
 		select #application.tableprefix#tblblogroles.id
-		from #application.tableprefix#tblblogroles, #application.tableprefix#tbluserroles, tblusers
-		where (#application.tableprefix#tblblogroles.id = #application.tableprefix#tbluserroles.roleidfk and #application.tableprefix#tbluserroles.username = tblusers.username)
-		and tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
-		and tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		from #application.tableprefix#tblblogroles, #application.tableprefix#tbluserroles, #application.tableprefix#tblusers
+		where (#application.tableprefix#tblblogroles.id = #application.tableprefix#tbluserroles.roleidfk and #application.tableprefix#tbluserroles.username = #application.tableprefix#tblusers.username)
+		and #application.tableprefix#tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and #application.tableprefix#tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		<cfelse>
 		select	#application.tableprefix#tblblogroles.id
 		from	#application.tableprefix#tblblogroles
 		left join #application.tableprefix#tbluserroles on #application.tableprefix#tbluserroles.roleidfk = #application.tableprefix#tblblogroles.id
-		left join tblusers on #application.tableprefix#tbluserroles.username = tblusers.username
-		where tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
-		and tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		left join #application.tableprefix#tblusers on #application.tableprefix#tbluserroles.username = #application.tableprefix#tblusers.username
+		where #application.tableprefix#tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and #application.tableprefix#tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfif>
 		</cfquery>
 
@@ -1993,7 +1993,7 @@
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	username, name
-		from	tblusers
+		from	#application.tableprefix#tblusers
 		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
 
@@ -2568,7 +2568,7 @@ To unsubscribe, please go to this URL:
 			</cfif>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			update	tblblogcategories
+			update	#application.tableprefix#tblblogcategories
 			set		categoryname = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar" maxlength="50">,
 					categoryalias = <cfqueryparam value="#arguments.alias#" cfsqltype="cf_sql_varchar" maxlength="50">
 			where	categoryid = <cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar" maxlength="35">
@@ -2785,7 +2785,7 @@ To unsubscribe, please go to this URL:
 		<cfset var salt = generateSalt()>
 		
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		update	tblusers
+		update	#application.tableprefix#tblusers
 		set		name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">
 				<!--- RBB 1/17/11: if no password is passed in, we can assume that only the user's name is being updated --->
 				<cfif structKeyExists(arguments, "password")>

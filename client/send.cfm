@@ -32,11 +32,11 @@
 
 <cfif structKeyExists(form, "send")>
 	<cfset errorStr = "">
-	<cfif not len(trim(form.email)) or not isEmail(form.email)>
-		<cfset errorStr = errorStr & rb("mustincludeemail") & "<br />">
+	<cfif not len(trim(form.email)) or not application.utils.isEmail(form.email)>
+		<cfset errorStr = errorStr & request.rb("mustincludeemail") & "<br />">
 	</cfif>
-	<cfif not len(trim(form.remail)) or not isEmail(form.remail)>
-		<cfset errorStr = errorStr & rb("mustincludereceiveremail") & "<br />">
+	<cfif not len(trim(form.remail)) or not application.utils.isEmail(form.remail)>
+		<cfset errorStr = errorStr & request.rb("mustincludereceiveremail") & "<br />">
 	</cfif>
 
 	<!--- captcha validation --->
@@ -77,7 +77,7 @@
 				to=form.remail,
 				from=form.email,
 				cc=application.blog.getProperty("owneremail"),
-				subject="#rb("blogentryfrom")#: #application.blog.getProperty("blogtitle")#",
+				subject="#request.rb("blogentryfrom")#: #application.blog.getProperty("blogtitle")#",
 				type="html",
 				body=body,
 				mailserver=application.blog.getProperty("mailserver"),
@@ -91,49 +91,49 @@
 	
 </cfif>
 
-<cfmodule template="tags/layout.cfm" title="#rb("send")#">
+<cfmodule template="tags/layout.cfm" title="#request.rb("send")#">
 	
 	
 	<cfoutput>
-	<div class="date"><b>#rb("sendentry")#: #entry.title#</b></div>
+	<div class="date"><b>#request.rb("sendentry")#: #entry.title#</b></div>
 	
 	<div class="body">
 	
 	<cfif showForm>
 
 	<p>
-	#rb("sendform")#
+	#request.rb("sendform")#
 	</p>
 
 	<cfif isDefined("errorStr") and len(errorStr)>
-		<cfoutput><b>#rb("correctissues")#:</b><ul>#errorStr#</ul></cfoutput>
+		<cfoutput><b>#request.rb("correctissues")#:</b><ul>#errorStr#</ul></cfoutput>
 	</cfif>
 	
 		<form action="#cgi.script_name#?#cgi.query_string#" method="post">
     <fieldset id="sendForm">
 	     <div>
-	      <label for="email">#rb("youremailaddress")#:</label>
+	      <label for="email">#request.rb("youremailaddress")#:</label>
 	      <input type="text" id="email" name="email" value="#form.email#" style="width:300px;" />
 	    </div>
 	     <div>
-	      <label for="remail">#rb("receiveremailaddress")#:</label>
+	      <label for="remail">#request.rb("receiveremailaddress")#:</label>
 	      <input type="text" id="remail" name="remail" value="#form.remail#" style="width:300px;" />
 	    </div>
 	     <div>
-	      <label for="remail">#rb("optionalnotes")#:</label>
+	      <label for="remail">#request.rb("optionalnotes")#:</label>
 	      <textarea name="notes" id="notes">#form.notes#</textarea>
 	    </div>
 		<cfif application.useCaptcha>
 			<cfset variables.captcha = application.captcha.createHashReference() />
 	    <div>
 				<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />
-				<label for="captchaText" class="longLabel">#rb("captchatext")#:</label>
+				<label for="captchaText" class="longLabel">#request.rb("captchatext")#:</label>
 				<input type="text" name="captchaText" size="6" /><br />
 				<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" vspace="5" />
 	    </div>
 		</cfif>	
 	    <div>
-	      <input type="submit" id="submit" name="send" value="#rb("sendentry")#" />
+	      <input type="submit" id="submit" name="send" value="#request.rb("sendentry")#" />
 	     </div>
     </fieldset>
 
@@ -142,7 +142,7 @@
 	<cfelse>
 	
 		<p>
-		#rb("entrysent")#
+		#request.rb("entrysent")#
 		</p>
 		
 	</cfif>
