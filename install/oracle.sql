@@ -8,7 +8,7 @@ DROP TABLE tblblogcategories;
 -- Dropping table tblblogcomments : 
 --
 
-DROP TABLE tblblogcomments;
+DROP TABLE #application.tableprefix#tblBlogComments;
 
 --
 -- Dropping table tblblogentries : 
@@ -86,7 +86,7 @@ CREATE TABLE tblblogcategories (
 -- Definition for table tblblogcomments : 
 --
 
-CREATE TABLE tblblogcomments (
+CREATE TABLE #application.tableprefix#tblBlogComments (
   id VARCHAR2(35) NOT NULL,
   entryidfk VARCHAR2(35) NULL,
   name VARCHAR2(50) NULL,
@@ -249,17 +249,17 @@ CREATE INDEX blogCategories_categoryalias ON tblblogcategories (categoryalias);
 
 CREATE INDEX blogCategories_categoryname ON tblblogcategories (categoryname);
 
-ALTER TABLE tblblogcomments ADD CONSTRAINT tblblogcomments_pk PRIMARY KEY (id);
+ALTER TABLE #application.tableprefix#tblBlogComments ADD CONSTRAINT #application.tableprefix#tblBlogComments_pk PRIMARY KEY (id);
 
-CREATE INDEX blogComments_email ON tblblogcomments (email);
+CREATE INDEX blogComments_email ON #application.tableprefix#tblBlogComments (email);
 
-CREATE INDEX blogComments_entryid ON tblblogcomments (entryidfk);
+CREATE INDEX blogComments_entryid ON #application.tableprefix#tblBlogComments (entryidfk);
 
-CREATE INDEX blogComments_moderated ON tblblogcomments (moderated);
+CREATE INDEX blogComments_moderated ON #application.tableprefix#tblBlogComments (moderated);
 
-CREATE INDEX blogComments_name ON tblblogcomments (name);
+CREATE INDEX blogComments_name ON #application.tableprefix#tblBlogComments (name);
 
-CREATE INDEX blogComments_posted ON tblblogcomments (posted);
+CREATE INDEX blogComments_posted ON #application.tableprefix#tblBlogComments (posted);
 
 ALTER TABLE tblblogentries ADD CONSTRAINT tblblogentries_pk PRIMARY KEY (id);
 

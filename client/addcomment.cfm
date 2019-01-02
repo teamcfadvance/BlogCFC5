@@ -83,21 +83,21 @@
 	<cfset aErrors = arrayNew(1) />
 	
 	<cfif not len(form.name)>
-		<cfset arrayAppend(aErrors, rb("mustincludename")) />
+		<cfset arrayAppend(aErrors, request.rb("mustincludename")) />
 	</cfif>
-	<cfif not len(form.email) or not isEmail(form.email)>
-		<cfset arrayAppend(aErrors, rb("mustincludeemail")) />
+	<cfif not len(form.email) or not application.utils.isEmail(form.email)>
+		<cfset arrayAppend(aErrors, request.rb("mustincludeemail")) />
 	</cfif>
-	<cfif len(form.website) and not isURL(form.website)>
-		<cfset arrayAppend(aErrors, rb("invalidurl")) />
+	<cfif len(form.website) and not application.utils.isURL(form.website)>
+		<cfset arrayAppend(aErrors, request.rb("invalidurl")) />
 	</cfif>
 		
 	<cfif not len(form.comments)>
-		<cfset arrayAppend(aErrors, rb("mustincludecomments")) />
+		<cfset arrayAppend(aErrors, request.rb("mustincludecomments")) />
 	</cfif>
 		
 	<!--- captcha validation --->
-	<cfif application.useCaptcha and not isLoggedIn()>
+	<cfif application.useCaptcha and not application.utils.isLoggedIn()>
 		<cfif not len(form.captchaText)>
 			<cfset arrayAppend(aErrors, "Please enter the Captcha text.") />
 		<cfelseif NOT application.captcha.validateCaptcha(form.captchaHash,form.captchaText)>
@@ -105,7 +105,7 @@
 		</cfif>
 	</cfif>
 	<!--- cfformprotect --->
-	<cfif application.usecfp and not isLoggedIn()>
+	<cfif application.usecfp and not application.utils.isLoggedIn()>
 		<cfset cffp = createObject("component","cfformprotect.cffpVerify").init() />
 		<!--- now we can test the form submission --->
 		<cfif not cffp.testSubmission(form)>
@@ -123,7 +123,7 @@
 				<cfinvokeargument name="website" value="#left(form.website, 255)#">
 				<cfinvokeargument name="comments" value="#form.comments#">
 				<cfinvokeargument name="subscribe" value="#form.subscribe#">
-				<cfif isLoggedIn()>
+				<cfif application.utils.isLoggedIn()>
 					<cfinvokeargument name="overridemoderation" value="true">
 				</cfif>
 			</cfinvoke>								
@@ -147,7 +147,7 @@
 		<tr><td colspan=2 style="height:10px"></td></tr>
 		<tr id="content" style="padding: 20px;">
 			<td id="comment" style="width:75%;">
-#paragraphformat2(htmlEditFormat(form.comments))#
+#application.utils.ParagraphFormat2(htmlEditFormat(form.comments))#
 			</td>
 			<td id="commentor" valign=top style="width:25%;background-color: ##edf0c9;height:100%">
 				<div id="avatar" style="text-align: center;margin:30px 0 0 0;padding:20px 0 20px 0;width: 100%;height: 100%;">
@@ -229,7 +229,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-	<cfoutput><title>#application.blog.getProperty("blogTitle")# : #rb("addcomments")#</title></cfoutput>
+	<cfoutput><title>#application.blog.getProperty("blogTitle")# : #request.rb("addcomments")#</title></cfoutput>
 	<link rel="stylesheet" href="includes/style.css" type="text/css" />
 	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 </head>
@@ -237,7 +237,7 @@
 <body id="popUpFormBody">
 
 <cfoutput>
-<div class="date">#rb("comments")#: #entry.title#</div>
+<div class="date">#request.rb("comments")#: #entry.title#</div>
 <div class="body">
 </cfoutput>
 
@@ -247,7 +247,7 @@
 		<cfif isDefined("aErrors") and arrayLen(aErrors)>
 			<cfoutput>
 				<div id="CommentError">
-					<b>#rb("correctissues")#:</b>
+					<b>#request.rb("correctissues")#:</b>
 					<ul class="error"><li>#arrayToList(aErrors, "</li><li>")#</li></ul>
 				</div>
 			</cfoutput>
@@ -258,43 +258,43 @@
 		<cfinclude template="cfformprotect/cffp.cfm">
 	</cfif>
   <fieldset id="commentForm">
-    	<legend>#rb("postyourcomments")#</legend>
+    	<legend>#request.rb("postyourcomments")#</legend>
   <div>
-		<label for="name">#rb("name")#:</label>
+		<label for="name">#request.rb("name")#:</label>
 		<input type="text" id="name" name="name" value="#form.name#" />
   </div>
   <div>
-		<label for="email">#rb("emailaddress")#:</label>
+		<label for="email">#request.rb("emailaddress")#:</label>
 		<input type="text" id="email" name="email" value="#form.email#" />
   </div>
   <div>
-		<label for="website">#rb("website")#:</label>
+		<label for="website">#request.rb("website")#:</label>
 		<input type="text" id="website" name="website" value="#form.website#" />
   </div>
   <div>
-		<label for="comments">#rb("comments")#:</label>
+		<label for="comments">#request.rb("comments")#:</label>
 		<textarea name="comments" id="comments" rows="5" cols="45">#form.comments#</textarea>
   </div>
-	<cfif application.useCaptcha and not isLoggedIn()>
+	<cfif application.useCaptcha and not application.utils.isLoggedIn()>
     <div>
 		<cfset variables.captcha = application.captcha.createHashReference() />
 		<input type="hidden" name="captchaHash" value="#variables.captcha.hash#" />
-		<label for="captchaText" class="longLabel">#rb("captchatext")#:</label>
+		<label for="captchaText" class="longLabel">#request.rb("captchatext")#:</label>
 		<input type="text" name="captchaText" id="captchaText" size="6" /><br />
 		<img src="#application.blog.getRootURL()#showCaptcha.cfm?hashReference=#variables.captcha.hash#" alt="Captcha" align="right" vspace="5" />
   </div>
 	</cfif>
   <div>
-		<label for="rememberMe" class="longLabel">#rb("remembermyinfo")#:</label>
+		<label for="rememberMe" class="longLabel">#request.rb("remembermyinfo")#:</label>
 		<input type="checkbox" class="checkBox" id="rememberMe" name="rememberMe" value="1" <cfif isBoolean(form.rememberMe) and form.rememberMe>checked="checked"</cfif> />
   </div>
   <div>
-		<label for="subscribe" class="longLabel">#rb("subscribe")#:</label>
+		<label for="subscribe" class="longLabel">#request.rb("subscribe")#:</label>
 		<input type="checkbox" class="checkBox" id="subscribe" name="subscribe" value="1" <cfif isBoolean(form.subscribe) and form.subscribe>checked="checked"</cfif> />
   </div>
-	<p style="clear:both">#rb("subscribetext")#</p>
+	<p style="clear:both">#request.rb("subscribetext")#</p>
   <div style="text-align:center">
-		<input type="reset" id="reset" value="#rb("cancel")#" onclick="if(confirm('#rb("cancelconfirm")#')) { window.close(); } else { return false; }" /> <input type="submit" id="submit" name="addcomment" value="#rb("post")#" />
+		<input type="reset" id="reset" value="#request.rb("cancel")#" onclick="if(confirm('#request.rb("cancelconfirm")#')) { window.close(); } else { return false; }" /> <input type="submit" id="submit" name="addcomment" value="#request.rb("post")#" />
     </div>
 </fieldset>
 	</form>
@@ -303,7 +303,7 @@
 <cfelse>
 
 	<cfoutput>
-	<p>#rb("commentsnotallowed")#</p>
+	<p>#request.rb("commentsnotallowed")#</p>
 	</cfoutput>
 	
 </cfif>

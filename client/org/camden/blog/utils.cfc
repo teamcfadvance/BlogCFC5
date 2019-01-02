@@ -92,4 +92,250 @@
 		
 		<cfreturn reReplace(arguments.url, "\/{2,}", "/", "all")>
 	</cffunction>
+
+	<cfscript>
+/**
+ * When given an email address this function will return the address in a format safe from email harvesters.
+ * Minor edit by Rob Brooks-Bilson (rbils@amkor.com)
+ * Update now converts all characters in the email address to unicode, not just the @ symbol. (by author)
+ *
+ * @param EmailAddress 	 Email address you want to make safe. (Required)
+ * @param Mailto 	 Boolean (Yes/No). Indicates whether to return formatted email address as a mailto link.  Default is No. (Optional)
+ * @return Returns a string
+ * @author Seth Duffey (rbils@amkor.comsduffey@ci.davis.ca.us)
+ * @version 2, May 2, 2002
+ */
+		function EmailAntiSpam(EmailAddress) {
+			var i = 1;
+			var antiSpam = "";
+			for (i=1; i LTE len(EmailAddress); i=i+1) {
+				antiSpam = antiSpam & "&##" & asc(mid(EmailAddress,i,1)) & ";";
+			}
+			if ((ArrayLen(Arguments) eq 2) AND (Arguments[2] is "Yes")) return "<a href=" & "mailto:" & antiSpam & ">" & antiSpam & "</a>";
+			else return antiSpam;
+		}
+	</cfscript>
+
+	<cffunction name="toHTML" returntype="string">
+		<cfargument name="source" type="string" required="true" />
+<!---- Change greater than and less than back into non-HTML escaped characters --->
+		<cfset var result = replacenocase(replacenocase(source,'&lt;','<','all'),'&gt;','>','all')>
+<!---- Change %22 back into quotes --->
+		<cfset result = replacenocase(result,"&quot;","""","all")>
+		<cfreturn result>
+	</cffunction>
+
+	<cfscript>
+		function titleCase(str) {
+			return uCase(left(str,1)) & right(str,len(str)-1);
+		}
+
+/**
+* Tests passed value to see if it is a valid e-mail address (supports subdomain nesting and new top-level domains).
+* Update by David Kearns to support '
+* SBrown@xacting.com pointing out regex still wasn't accepting ' correctly.
+* More TLDs
+* Version 4 by P Farrel, supports limits on u/h
+* Added mobi
+* v6 more tlds
+*
+* @param str      The string to check. (Required)
+* @return Returns a boolean.
+* @author Jeff Guillaume (SBrown@xacting.comjeff@kazoomis.com)
+* @version 6, July 29, 2008
+* Note this is different from CFLib as it has the "allow +" support
+*/
+		function isEmail(str) {
+			return (REFindNoCase("^['_a-z0-9-]+(\.['_a-z0-9-]+)*(\+['_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*\.(([a-z]{2,3})|(aero|asia|biz|cat|coop|info|museum|name|jobs|post|pro|tel|travel|mobi))$",arguments.str) AND len(listGetAt(arguments.str, 1, "@")) LTE 64 AND
+				len(listGetAt(arguments.str, 2, "@")) LTE 255) IS 1;
+		}
+
+		function isLoggedIn() {
+			return structKeyExists(session,"loggedin");
+		}
+
+/**
+ * An &quot;enhanced&quot; version of ParagraphFormat.
+ * Added replacement of tab with nonbreaking space char, idea by Mark R Andrachek.
+ * Rewrite and multiOS support by Nathan Dintenfas.
+ *
+ * @param string 	 The string to format. (Required)
+ * @return Returns a string.
+ * @author Ben Forta (ben@forta.com)
+ * @version 3, June 26, 2002
+ */
+		function ParagraphFormat2(str) {
+//first make Windows style into Unix style
+			str = replace(str,chr(13)&chr(10),chr(10),"ALL");
+//now make Macintosh style into Unix style
+			str = replace(str,chr(13),chr(10),"ALL");
+//now fix tabs
+			str = replace(str,chr(9),"&nbsp;&nbsp;&nbsp;","ALL");
+//now return the text formatted in HTML
+			return replace(str,chr(10),"<br />","ALL");
+		}
+
+/**
+ * A quick way to test if a string is a URL
+ *
+ * @param stringToCheck 	 The string to check.
+ * @return Returns a boolean.
+ * @author Nathan Dintenfass (nathan@changemedia.com)
+ * @version 1, November 22, 2001
+ */
+		function isURL(stringToCheck){
+			return REFindNoCase("^(((https?:|ftp:|gopher:)\/\/))[-[:alnum:]\?%,\.\/&##!@:=\+~_]+[A-Za-z0-9\/]$",stringToCheck) NEQ 0;
+		}
+
+/**
+ * Converts a byte value into kb or mb if over 1,204 bytes.
+ *
+ * @param bytes 	 The number of bytes. (Required)
+ * @return Returns a string.
+ * @author John Bartlett (jbartlett@strangejourney.net)
+ * @version 1, July 31, 2005
+ */
+		function KBytes(bytes) {
+			var b=0;
+
+			if(arguments.bytes lt 1024) return trim(numberFormat(arguments.bytes,"9,999")) & " bytes";
+
+			b=arguments.bytes / 1024;
+
+			if (b lt 1024) {
+				if(b eq int(b)) return trim(numberFormat(b,"9,999")) & " KB";
+				return trim(numberFormat(b,"9,999.9")) & " KB";
+			}
+			b= b / 1024;
+			if (b eq int(b)) return trim(numberFormat(b,"999,999,999")) & " MB";
+			return trim(numberFormat(b,"999,999,999.9")) & " MB";
+		}
+
+/* copied from soundings UDFs
+ to deal with the merging of the two apps
+*/
+		function arrayDefinedAt(arr,pos) {
+			var temp = "";
+			try {
+				temp = arr[pos];
+				return true;
+			}
+			catch(coldfusion.runtime.UndefinedElementException ex) {
+				return false;
+			}
+			catch(coldfusion.runtime.CfJspPage$ArrayBoundException ex) {
+				return false;
+			}
+		}
+
+	</cfscript>
+
+	<cfscript>
+/**
+ * Returns a relative path from the current template to an absolute file path.
+ *
+ * @param abspath 	 Absolute path. (Required)
+ * @return Returns a string.
+ * @author Isaac Dealey (info@turnkey.to)
+ * @version 1, May 2, 2003
+ */
+		function getRelativePath(abspath){
+			var aHere = listtoarray(expandPath("/"),"\/");
+			var aThere = ""; var lenThere = 0;
+			var aRel = ArrayNew(1); var x = 0;
+			var newpath = "";
+
+			aThere = ListToArray(abspath,"\/"); lenThere = arraylen(aThere);
+
+			for (x = 1; x lte arraylen(aHere); x = x + 1) {
+				if (x GT lenThere OR comparenocase(aHere[x],aThere[x])) {
+					ArrayPrepend(aRel,".."); if (x lte lenThere) { ArrayAppend(aRel,aThere[x]); }
+				}
+			}
+
+			for (; x lte arraylen(aThere); x = x + 1) { ArrayAppend(aRel,aThere[x]); }
+
+			newpath = "/" & ArrayToList(aRel,"/");
+
+			return newpath;
+		}
+	</cfscript>
+<!---
+	  This UDF from Steven Erat, http://www.talkingtree.com/blog
+--->
+	<cffunction name="replaceLinks" access="public" output="yes" returntype="string">
+		<cfargument name="input" required="Yes" type="string">
+		<cfargument name="linkmax" type="numeric" required="false" default="50">
+		<cfscript>
+			var inputReturn = arguments.input;
+			var pattern = "";
+			var urlMatches = structNew();
+			var inputCopy = arguments.input;
+			var result = "";
+			var rightStart = "";
+			var rightInputCopyLen = "";
+			var targetNameMax = "";
+			var targetLinkName = "";
+			var i = "";
+
+			pattern = "(((https?:|ftp:|gopher:)\/\/)|(www\.|ftp\.))[-[:alnum:]\?%,\.\/&##!;@:=\+~_]+[A-Za-z0-9\/]";
+
+			while (len(inputCopy)) {
+				result = refind(pattern,inputCopy,1,'true');
+				if (result.pos[1]){
+					match = mid(inputCopy,result.pos[1],result.len[1]);
+					urlMatches[match] = "";
+					rightStart = result.len[1] + result.pos[1];
+					rightInputCopyLen = len(inputCopy)-rightStart;
+					if (rightInputCopyLen GT 0){
+						inputCopy = right(inputCopy,rightInputCopyLen);
+					} else break;
+				} else break;
+			}
+
+//convert back to array
+			urlMatches = structKeyArray(urlMatches);
+
+			targetNameMax = arguments.linkmax;
+			for (i=1; i LTE arraylen(urlMatches);i=i+1) {
+				targetLinkName = urlMatches[i];
+				if (len(targetLinkName) GTE targetNameMax) {
+					targetLinkName = left(targetLinkName,targetNameMax) & "...";
+				}
+				inputReturn = replace(inputReturn,urlMatches[i],'<a href="#urlMatches[i]#" target="_blank">#targetLinkName#</a>',"all");
+			}
+		</cfscript>
+		<cfreturn inputReturn>
+	</cffunction>
+
+
+<!---- Modified from parseMySES function in parseses.cfm from BlogCFC; modified to be more generic and also moved to tag from script ---->
+	<cffunction name="parseSES" returntype="struct">
+		<cfset var urlVars=reReplaceNoCase(trim(cgi.path_info), '.+\.cfm/? *', '')>
+		<cfset var r = structNew()>
+		<cfset var theLen = listLen(urlVars,"/")>
+		<cfset var TempIndex = "">
+
+<!---- if the list length is 0 or the only element of the URL vars is the delimiter, return the empty struct ---->
+		<cfif (len(urlVars) is 0 or urlvars is "/")>
+			<cfreturn r>
+		</cfif>
+
+<!---- this is the new stuff --->
+		<cfloop from="1" to="#theLen#" index="TempIndex" step="2">
+<!--- the try catches URL variables that are off ---->
+			<cftry>
+				<cfset r[ListGetAt(urlVars,Tempindex,"/")] = ListGetAt(urlVars,Tempindex+1,"/")>
+				<cfcatch type="any">
+					<cfset r[ListGetAt(urlVars,Tempindex,"/")] = "">
+				</cfcatch>
+			</cftry>
+
+		</cfloop>
+
+		<cfreturn r>
+
+	</cffunction>
+
+
 </cfcomponent>

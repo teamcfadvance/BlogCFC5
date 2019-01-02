@@ -36,6 +36,7 @@
 
 		<cfargument name="name" type="string" required="false" default="default" hint="Blog name, defaults to default in blog.ini">
 		<cfargument name="instanceData" type="struct" required="false" hint="Allows you to specify BlogCFC info at runtime.">
+		<cfargument name="BlogDBName" type="string" required="false" hint="I am the blog name in the DB.  If I am specified, I will use the name argument to find the config settings, but the blogDBName to find the database data">
 
 		<cfset var renderDir = "">
 		<cfset var renderCFCs = "">
@@ -69,6 +70,7 @@
 			<cfset instance.blogkeywords = variables.utils.configParam(variables.cfgFile, arguments.name, "blogkeywords")>
 			<cfset instance.ipblocklist = variables.utils.configParam(variables.cfgFile, arguments.name, "ipblocklist")>
 			<cfset instance.maxentries = variables.utils.configParam(variables.cfgFile, arguments.name, "maxentries")>
+			<cfset instance.maxentriesadmin = variables.utils.configParam(variables.cfgFile, arguments.name, "maxentriesadmin")>
 			<cfset instance.moderate = variables.utils.configParam(variables.cfgFile, arguments.name, "moderate")>
 			<cfset instance.usecaptcha = variables.utils.configParam(variables.cfgFile, arguments.name, "usecaptcha")>
 			<cfset instance.usecfp = variables.utils.configParam(variables.cfgFile, arguments.name, "usecfp")>
@@ -82,16 +84,20 @@
 			<cfset instance.itunesAuthor = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesAuthor")>
 			<cfset instance.itunesImage = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesImage")>
 			<cfset instance.itunesExplicit = variables.utils.configParam(variables.cfgFile, arguments.name, "itunesExplicit")>
+			<cfset instance.tableprefix = variables.utils.configParam(variables.cfgFile, arguments.name, "tableprefix")>
 			<cfset instance.usetweetbacks = variables.utils.configParam(variables.cfgFile, arguments.name, "usetweetbacks")>
 			<cfset instance.installed = variables.utils.configParam(variables.cfgFile, arguments.name, "installed")>
 			<cfset instance.saltalgorithm = variables.utils.configParam(variables.cfgFile, arguments.name, "saltalgorithm")>
 			<cfset instance.saltkeysize = variables.utils.configParam(variables.cfgFile, arguments.name, "saltkeysize")>
 			<cfset instance.hashalgorithm = variables.utils.configParam(variables.cfgFile, arguments.name, "hashalgorithm")>
-
 		</cfif>
 
 		<!--- Name the blog --->
-		<cfset instance.name = arguments.name>
+		<cfif IsDefined('arguments.BlogDBName')>
+			<cfset instance.name = arguments.BlogDBName>
+		<cfelse>
+			<cfset instance.name = arguments.name>
+		</cfif>
 
 		<!--- Only real validation we do on instance data. --->
 		<cfif not isValidDBType(instance.blogDBType)>
@@ -153,7 +159,7 @@
 			</cfif>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				insert into tblblogcategories(categoryid,categoryname,categoryalias,blog)
+				insert into #application.tableprefix#tblBlogCategories(categoryid,categoryname,categoryalias,blog)
 				values(
 					<cfqueryparam value="#id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 					<cfqueryparam value="#arguments.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">,
@@ -221,7 +227,7 @@
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		<!--- RBB 11/02/2005:  Added website element --->
-		insert into tblblogcomments(id,entryidfk,name,email,website,comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>,posted,subscribe,moderated,killcomment,subscribeonly)
+		insert into #application.tableprefix#tblblogcomments(id,entryidfk,name,email,website,comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>,posted,subscribe,moderated,killcomment,subscribeonly)
 		values(<cfqueryparam value="#newID#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 			   <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,
 			   <cfqueryparam value="#arguments.name#" maxlength="50">,
@@ -255,7 +261,7 @@
 		<cfif not arguments.subscribe>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			update	tblblogcomments
+			update	#application.tableprefix#tblBlogComments
 			set		subscribe = 0
 			where	entryidfk = <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and		email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar" maxlength="100">
@@ -289,7 +295,7 @@
 		<cfset var theURL = "">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			insert into tblblogentries(id,title,body,posted
+			insert into #application.tableprefix#tblBlogEntries(id,title,body,posted
 				<cfif len(arguments.morebody)>,morebody</cfif>
 				<cfif len(arguments.alias)>,alias</cfif>
 				,username,blog,allowcomments,enclosure,summary,subtitle,keywords,duration,filesize,mimetype,released,views,mailed)
@@ -394,14 +400,14 @@
 		<!--- First, lets see if this guy is already subscribed. --->
 		<cfquery name="getMe" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	email
-		from	tblblogsubscribers
+		from	#application.tableprefix#tblBlogSubscribers
 		where	email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar" maxlength="50">
 		and		blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="50">
 		</cfquery>
 
 		<cfif getMe.recordCount is 0>
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			insert into tblblogsubscribers(email,
+			insert into #application.tableprefix#tblBlogSubscribers(email,
 			token,
 			blog,
 			verified)
@@ -432,7 +438,7 @@
 		<cflock name="blogcfc.adduser" type="exclusive" timeout="60">
 			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	username
-			from	tblusers
+			from	#application.tableprefix#tblUsers
 			where	username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
 			and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
 			</cfquery>
@@ -442,7 +448,7 @@
 			</cfif>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			insert into tblusers(username, name, password, blog, salt)
+			insert into #application.tableprefix#tblUsers(username, name, password, blog, salt)
 			values(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">,
@@ -460,8 +466,8 @@
 		<cfargument name="commentid" type="uuid" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		update tblblogcomments
-		set	   moderated =
+		update #application.tableprefix#tblBlogComments
+		set	   moderated = 
 			<cfif instance.blogDBType is "MSSQL" or instance.blogDBType is "MSACCESS">
 				<cfqueryparam value="true" cfsqltype="CF_SQL_BIT">
 			<cfelse>
@@ -481,14 +487,14 @@
 
 		<cfquery name="checkEC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	categoryidfk
-			from	tblblogentriescategories
+			from	#application.tableprefix#tblBlogEntriesCategories
 			where	categoryidfk = <cfqueryparam value="#arguments.categoryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and		entryidfk = <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 
 		<cfif entryExists(arguments.entryid) and categoryExists(id=arguments.categoryID) and not checkEC.recordCount>
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				insert into tblblogentriescategories(categoryidfk,entryidfk)
+				insert into #application.tableprefix#tblBlogEntriesCategories(categoryidfk,entryidfk)
 				values(<cfqueryparam value="#arguments.categoryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">,<cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">)
 			</cfquery>
 		</cfif>
@@ -518,7 +524,7 @@
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select 	username, password, salt
-			from	tblusers
+			from	#application.tableprefix#tblusers
 			where	username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
@@ -549,8 +555,8 @@
 
 		<cfquery name="checkC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	categoryid
-			from	tblblogcategories
-			where
+			from	#application.tableprefix#tblBlogCategories
+			where	
 				<cfif isDefined("arguments.id")>
 				categoryid = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 				</cfif>
@@ -571,7 +577,7 @@
 		<cfargument name="email" type="string" required="false">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		update	tblblogsubscribers
+		update	#application.tableprefix#tblBlogSubscribers
 		set		verified = 1
 		<cfif structKeyExists(arguments, "token")>
 		where	token = <cfqueryparam cfsqltype="cf_sql_varchar" maxlength="35" value="#arguments.token#">
@@ -589,12 +595,12 @@
 		<cfargument name="id" type="uuid" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete from tblblogentriescategories
+			delete from #application.tableprefix#tblBlogEntriesCategories
 			where categoryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete from tblblogcategories
+			delete from #application.tableprefix#tblBlogCategories
 			where categoryid = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 
@@ -605,7 +611,7 @@
 		<cfargument name="id" type="uuid" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete from tblblogcomments
+			delete from #application.tableprefix#tblBlogComments
 			where id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 
@@ -629,18 +635,18 @@
 			</cfif>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				delete from tblblogentries
+				delete from #application.tableprefix#tblblogentries
 				where id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 				and	  blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			</cfquery>
 
-			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				delete from tblblogentriescategories
+			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">	
+				delete from #application.tableprefix#tblBlogEntriesCategories
 				where entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfquery>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				delete from tblblogcomments
+				delete from #application.tableprefix#tblblogcomments
 				where entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfquery>
 
@@ -652,16 +658,19 @@
 		<cfargument name="username" type="string" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		delete from tblusers
+		delete from #application.tableprefix#tblUsers
 		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		and		username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
 
 	</cffunction>
 
+	<!--- JH DotComIt modified slightly to allow a "true" result if the item exists but is not available --->
 	<cffunction name="entryExists" access="private" returnType="boolean" output="false"
 				hint="Returns true or false if an entry exists.">
 		<cfargument name="id" type="uuid" required="true">
+		<cfargument name="isAvailable" type="Boolean" required="false" default="1">
+
 		<cfset var getIt = "">
 
 		<cfif not structKeyExists(variables, "existsCache")>
@@ -673,13 +682,15 @@
 		</cfif>
 		
 		<cfquery name="getIt" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select		tblblogentries.id
-			from		tblblogentries
-			where		tblblogentries.id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
-			and			tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
-			<cfif not isUserInRole("admin")>
-			and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
-			and			released = 1
+			select		#application.tableprefix#tblBlogEntries.id
+			from		#application.tableprefix#tblBlogEntries
+			where		#application.tableprefix#tblBlogEntries.id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			and			#application.tableprefix#tblBlogEntries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			<cfif (arguments.IsAvailable is 1)>
+				<cfif (not isUserInRole("admin"))>
+                    and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
+                    and			released = 1
+				</cfif>
 			</cfif>
 		</cfquery>
 
@@ -790,7 +801,7 @@
 			<cfoutput>
 			<?xml version="1.0" encoding="utf-8"?>
 
-			<rss version="2.0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns##" xmlns:cc="http://web.resource.org/cc/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+			<rss version="2.0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns##" xmlns:cc="http://web.resource.org/cc/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:media="http://search.yahoo.com/mrss/">
 
 			<channel>
 			<title>#xmlFormat(instance.blogTitle)##xmlFormat(arguments.additionalTitle)#</title>
@@ -801,11 +812,20 @@
 			<lastBuildDate>{LAST_BUILD_DATE}</lastBuildDate>
 			<generator>BlogCFC</generator>
 			<docs>http://blogs.law.harvard.edu/tech/rss</docs>
-			<managingEditor>#xmlFormat(instance.owneremail)#</managingEditor>
-			<webMaster>#xmlFormat(instance.owneremail)#</webMaster>
+			<!---- JH DotComIt added code to turn e-mails into unitext, removed xmlformat ---->
+			<managingEditor>#(variables.utils.EmailAntiSpam(instance.owneremail))#</managingEditor>
+			<webMaster>#(variables.utils.EmailAntiSpam(instance.owneremail))#</webMaster>
+			<media:copyright>Copyright 2008-#year(now())#, DotComIt LLC</media:copyright>
+			<media:thumbnail url="#xmlFormat(instance.itunesImage)#" />
+            <media:keywords>#xmlFormat(instance.itunesKeywords)#</media:keywords>
+            <media:category scheme="http://www.itunes.com/dtds/podcast-1.0.dtd">Technology/Software How-To</media:category>
+            <media:category scheme="http://www.itunes.com/dtds/podcast-1.0.dtd">Technology/Tech News</media:category>
 			<itunes:subtitle>#xmlFormat(instance.itunesSubtitle)#</itunes:subtitle>
 			<itunes:summary>#xmlFormat(instance.itunesSummary)#</itunes:summary>
 			<itunes:category text="Technology" />
+			<itunes:category text="Technology">
+				<itunes:category text="Software How-To" />
+			</itunes:category>
 			<itunes:category text="Technology">
 				<itunes:category text="Podcasting" />
 			</itunes:category>
@@ -849,11 +869,8 @@
 				</cfloop>
 				<pubDate>#dateStr#</pubDate>
 				<guid>#xmlFormat(makeLink(id))#</guid>
-				<!---
-				<author>
-				<name>#xmlFormat(name)#</name>
-				</author>
-				--->
+				<!--- JH, DotComIt Adding this back in; no idea why it was commented out --->
+                <author>#xmlFormat(instance.owneremail)# (#xmlFormat(instance.itunesAuthor)#)</author>
 				<cfif len(enclosure)>
 				<enclosure url="#xmlFormat("#rootURL#/enclosures/#getFileFromPath(enclosure)#")#" length="#filesize#" type="#mimetype#"/>
 				<cfif mimetype IS "audio/mpeg">
@@ -890,15 +907,15 @@
 		<cfset var posted = "">
 
 		<cfif instance.blogDBType is "MSSQL">
-			<cfset posted = "dateAdd(hh, #instance.offset#, tblblogentries.posted)">
+			<cfset posted = "dateAdd(hh, #instance.offset#, #application.tableprefix#tblBlogEntries.posted)">
 		<cfelseif instance.blogDBType is "MSACCESS">
-			<cfset posted = "dateAdd('h', #instance.offset#, tblblogentries.posted)">
+			<cfset posted = "dateAdd('h', #instance.offset#, #application.tableprefix#tblBlogEntries.posted)">
 		<cfelseif instance.blogDBType is "MYSQL">
 			<cfset posted = "date_add(posted, interval #instance.offset# hour)">
 		<cfelseif instance.blogDBType is "ORACLE">
-			<cfset posted = "tblblogentries.posted + (#instance.offset#/24)">
-		</cfif>
-
+			<cfset posted = "#application.tableprefix#tblBlogEntries.posted + (#instance.offset#/24)">
+		</cfif>				
+		
 		<cfquery datasource="#instance.dsn#" name="days" username="#instance.username#" password="#instance.password#">
 			select distinct
 				<cfif instance.blogDBType is "MSSQL">
@@ -910,8 +927,8 @@
 				<cfelseif instance.blogDBType is "ORACLE">
 					to_char(#preserveSingleQuotes(posted)#, 'dd')
 				</cfif> as posted_day
-			from tblblogentries
-			where
+			from #application.tableprefix#tblBlogEntries
+			where 
 				#preserveSingleQuotes(posted)# >= <cfqueryparam value="#dtMonth#" cfsqltype="CF_SQL_TIMESTAMP">
 				and
 				#preserveSingleQuotes(posted)# <= <cfqueryparam value="#dtEndOfMonth#" cfsqltype="CF_SQL_TIMESTAMP">
@@ -930,15 +947,15 @@
 		<cfset var fromYear = year(now()) - arguments.archiveYears />
 		
 		<cfquery name="getMonthlyArchives" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			SELECT MONTH(tblblogentries.posted) AS PreviousMonths, 
-			       YEAR(tblblogentries.posted) AS PreviousYears, 
-				   COUNT(tblblogentries.id) AS entryCount
-			FROM tblblogentries
-			WHERE tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			SELECT MONTH(#application.tableprefix#tblblogentries.posted) AS PreviousMonths,
+			       YEAR(#application.tableprefix#tblblogentries.posted) AS PreviousYears,
+				   COUNT(#application.tableprefix#tblblogentries.id) AS entryCount
+			FROM #application.tableprefix#tblblogentries
+			WHERE #application.tableprefix#tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			<cfif arguments.archiveYears gt 0>
-			AND YEAR(tblblogentries.posted) >= #fromYear#
+			AND YEAR(#application.tableprefix#tblblogentries.posted) >= #fromYear#
 			</cfif>
-			GROUP BY YEAR(tblblogentries.posted), MONTH(tblblogentries.posted) 
+			GROUP BY YEAR(#application.tableprefix#tblblogentries.posted), MONTH(#application.tableprefix#tblblogentries.posted)
 			ORDER BY PreviousYears DESC, PreviousMonths DESC				
 		</cfquery>	
 		
@@ -950,7 +967,7 @@
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	id, role, description
-		from	tblblogroles
+		from	#application.tableprefix#tblblogroles
 		</cfquery>
 
 		<cfreturn q>
@@ -980,39 +997,40 @@
 		<cfif instance.blogDBType is "mssql">
 
 			<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				select	tblblogcategories.categoryid, tblblogcategories.categoryname, tblblogcategories.categoryalias, count(tblblogentriescategories.entryidfk) as entryCount
-				from	(tblblogcategories
+				select	#application.tableprefix#tblBlogCategories.categoryid, #application.tableprefix#tblBlogCategories.categoryname, #application.tableprefix#tblBlogCategories.categoryalias, count(#application.tableprefix#tblBlogEntriesCategories.entryidfk) as entryCount
+				from	(#application.tableprefix#tblBlogCategories
 				left outer join
-				tblblogentriescategories ON tblblogcategories.categoryid = tblblogentriescategories.categoryidfk)
-				left join tblblogentries on tblblogentriescategories.entryidfk = tblblogentries.id
-				where	tblblogcategories.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+				#application.tableprefix#tblBlogEntriesCategories ON #application.tableprefix#tblBlogCategories.categoryid = #application.tableprefix#tblBlogEntriesCategories.categoryidfk)
+				left join #application.tableprefix#tblBlogEntries on #application.tableprefix#tblBlogEntriesCategories.entryidfk = #application.tableprefix#tblBlogEntries.id
+				where	#application.tableprefix#tblBlogCategories.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 				<!--- Don't allow future posts unless logged in. --->
 				<cfif not isUserInRole("admin")>
-						and isNull(tblblogentries.posted, '1/1/1900') < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#blogNow()#">
-					 	and isNull(tblblogentries.released, 1) = 1
+						and isNull(#application.tableprefix#tblBlogEntries.posted, '1/1/1900') < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#blogNow()#">
+					 	and isNull(#application.tableprefix#tblBlogEntries.released, 1) = 1 
 				</cfif>
-				group by tblblogcategories.categoryid, tblblogcategories.categoryname, tblblogcategories.categoryalias
-				order by tblblogcategories.categoryname
+				group by #application.tableprefix#tblBlogCategories.categoryid, #application.tableprefix#tblBlogCategories.categoryname, #application.tableprefix#tblBlogCategories.categoryalias
+				order by #application.tableprefix#tblBlogCategories.categoryname
 			</cfquery>
 
 		<cfelse>
 
 			<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select	tblblogcategories.categoryid, tblblogcategories.categoryname, tblblogcategories.categoryalias
-			from	tblblogcategories
-			where	tblblogcategories.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
-			order by tblblogcategories.categoryname
+			select	#application.tableprefix#tblBlogCategories.categoryid, #application.tableprefix#tblBlogCategories.categoryname, 
+					#application.tableprefix#tblBlogCategories.categoryalias
+			from	#application.tableprefix#tblBlogCategories
+			where	#application.tableprefix#tblBlogCategories.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			order by #application.tableprefix#tblBlogCategories.categoryname
 			</cfquery>
 
 			<cfset queryAddColumn(getC, "entrycount", arrayNew(1))>
 
 			<cfloop query="getC">
 				<cfquery name="getTotal" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				select	count(tblblogentriescategories.entryidfk) as total
-				from	tblblogentriescategories, tblblogentries
-				where	tblblogentriescategories.categoryidfk = <cfqueryparam value="#categoryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
-				and    tblblogentriescategories.entryidfk = tblblogentries.id
-				and    tblblogentries.released = 1
+				select	count(#application.tableprefix#tblBlogEntriescategories.entryidfk) as total
+				from	#application.tableprefix#tblBlogEntriescategories, #application.tableprefix#tblBlogEntries
+				where	#application.tableprefix#tblBlogEntriescategories.categoryidfk = <cfqueryparam value="#categoryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+				and    #application.tableprefix#tblBlogEntriescategories.entryidfk = #application.tableprefix#tblBlogEntries.id
+				and    #application.tableprefix#tblBlogEntries.released = 1				
 				</cfquery>
 				<cfif getTotal.recordCount>
 					<cfset querySetCell(getC, "entrycount", getTotal.total, currentRow)>
@@ -1037,10 +1055,10 @@
 
 		<!--- updated "variables.dsn" to "instance.dsn" (DS 8/22/06) --->
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select	tblblogcategories.categoryID, tblblogcategories.categoryname
-			from	tblblogcategories, tblblogentriescategories
-			where	tblblogcategories.categoryID = tblblogentriescategories.categoryidfk
-			and		tblblogentriescategories.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			select	#application.tableprefix#tblBlogCategories.categoryID, #application.tableprefix#tblBlogCategories.categoryname
+			from	#application.tableprefix#tblBlogCategories, #application.tableprefix#tblBlogEntriescategories
+			where	#application.tableprefix#tblBlogCategories.categoryID = #application.tableprefix#tblBlogEntriescategories.categoryidfk
+			and		#application.tableprefix#tblBlogEntriescategories.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 		<cfreturn getC>
 
@@ -1052,7 +1070,7 @@
 
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	categoryname, categoryalias
-			from	tblblogcategories
+			from	#application.tableprefix#tblBlogCategories
 			where	categoryid = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
@@ -1071,7 +1089,7 @@
 
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	categoryid
-			from	tblblogcategories
+			from	#application.tableprefix#tblBlogCategories
 			where	categoryalias = <cfqueryparam value="#arguments.alias#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
@@ -1087,7 +1105,7 @@
 
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	categoryid
-			from	tblblogcategories
+			from	#application.tableprefix#tblBlogCategories
 			where	categoryname = <cfqueryparam value="#arguments.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			and		blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
@@ -1103,7 +1121,7 @@
 
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select		id, entryidfk, name, email, website, comment<cfif instance.blogDBTYPE is "ORACLE">s</cfif>, posted, subscribe, moderated, killcomment
-			from		tblblogcomments
+			from		#application.tableprefix#tblBlogComments
 			where		id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 
@@ -1125,7 +1143,7 @@
 				
 		<cfquery name="getCommentCount" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select count(id) as commentCount
-			from 	tblblogcomments
+			from 	#application.tableprefix#tblblogcomments
 			where	entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 
 			<cfif instance.moderate>
@@ -1157,34 +1175,34 @@
 
 		<!--- RBB 11/02/2005: Added website to query --->
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select		tblblogcomments.id, tblblogcomments.name, tblblogcomments.email, tblblogcomments.website,
-						<cfif instance.blogDBTYPE is NOT "ORACLE">tblblogcomments.comment<cfelse>to_char(tblblogcomments.comments) as comments</cfif>, tblblogcomments.posted, tblblogcomments.subscribe, tblblogentries.title as entrytitle, tblblogcomments.entryidfk
-			from		tblblogcomments, tblblogentries
-			where		tblblogcomments.entryidfk = tblblogentries.id
+			select		#application.tableprefix#tblBlogComments.id, #application.tableprefix#tblBlogComments.name, #application.tableprefix#tblBlogComments.email, #application.tableprefix#tblBlogComments.website, 
+						<cfif instance.blogDBTYPE is NOT "ORACLE">#application.tableprefix#tblBlogComments.comment<cfelse>to_char(#application.tableprefix#tblBlogComments.comments) as comments</cfif>, #application.tableprefix#tblBlogComments.posted, #application.tableprefix#tblBlogComments.subscribe, #application.tableprefix#tblBlogEntries.title as entrytitle, #application.tableprefix#tblBlogComments.entryidfk
+			from		#application.tableprefix#tblBlogComments, #application.tableprefix#tblBlogEntries
+			where		#application.tableprefix#tblBlogComments.entryidfk = #application.tableprefix#tblBlogEntries.id
 			<cfif structKeyExists(arguments, "search")>
 			and
 						(
 						<cfif instance.blogDBTYpe is not "ORACLE">
-						tblblogcomments.comment
+						#application.tableprefix#tblBlogComments.comment
 						<cfelse>
 						comments
 						</cfif> like <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.search#%">
 						or
-						tblblogcomments.name like <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.search#%">
+						#application.tableprefix#tblBlogComments.name like <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.search#%">
 						)
 			</cfif>
 			<cfif structKeyExists(arguments, "id")>
-			and			tblblogcomments.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			and			#application.tableprefix#tblBlogComments.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfif>
-			and			tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			and			#application.tableprefix#tblBlogEntries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			<!--- added 12/5/2006 by Trent Richardson --->
 			<cfif instance.moderate>
-				and tblblogcomments.moderated = 1
+				and #application.tableprefix#tblBlogComments.moderated = 1 
 			</cfif>
 			<cfif not arguments.includesubscribers>
 			and (subscribeonly = 0 or subscribeonly is null)
 			</cfif>
-			order by	tblblogcomments.posted #arguments.sortdir#
+			order by	#application.tableprefix#tblBlogComments.posted #arguments.sortdir#
 		</cfquery>
 
 		<!--- DS 8/22/06: if this is oracle, do a q of q to return the data with column named "comment" --->
@@ -1208,42 +1226,44 @@
 				hint="Returns one particular entry.">
 		<cfargument name="id" type="uuid" required="true">
 		<cfargument name="dontlog" type="boolean" required="false" default="false">
+		<cfargument name="IsAvailable" type="boolean" required="false" default="true">
+
 		<cfset var getIt = "">
 		<cfset var s = structNew()>
 		<cfset var col = "">
 		<cfset var getCategories = "">
 
-		<cfif not entryExists(arguments.id)>
+		<cfif not entryExists(arguments.id,arguments.IsAvailable)>
 			<cfset variables.utils.throw("#arguments.id# does not exist.")>
 		</cfif>
 
 		<cfquery name="getIt" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select		tblblogentries.id, tblblogentries.title,
+			select		#application.tableprefix#tblBlogEntries.id, #application.tableprefix#tblBlogEntries.title, 
 						<!--- Handle offset --->
 						<cfif instance.blogDBType is "MSACCESS">
-						dateAdd('h', #instance.offset#, tblblogentries.posted) as posted,
+						dateAdd('h', #instance.offset#, #application.tableprefix#tblBlogEntries.posted) as posted, 
 						<cfelseif instance.blogDBType is "MSSQL">
-						dateAdd(hh, #instance.offset#, tblblogentries.posted) as posted,
+						dateAdd(hh, #instance.offset#, #application.tableprefix#tblBlogEntries.posted) as posted, 
 						<cfelseif instance.blogDBType is "ORACLE">
-						tblblogentries.posted + (#instance.offset#/24) as posted,
+						#application.tableprefix#tblBlogEntries.posted + (#instance.offset#/24) as posted,
 						<cfelse>
-						date_add(posted, interval #instance.offset# hour) as posted,
+						date_add(posted, interval #instance.offset# hour) as posted, 
 						</cfif>
-						tblblogentries.body,
-						tblblogentries.morebody, tblblogentries.alias, tblusers.name, tblblogentries.allowcomments,
-						tblblogentries.enclosure, tblblogentries.filesize, tblblogentries.mimetype, tblblogentries.released, tblblogentries.mailed,
-						tblblogentries.summary, tblblogentries.keywords, tblblogentries.subtitle, tblblogentries.duration
-			from		tblblogentries, tblusers
-			where		tblblogentries.id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
-			and			tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
-			and			tblblogentries.username = tblusers.username
+						#application.tableprefix#tblBlogEntries.body, 
+						#application.tableprefix#tblBlogEntries.morebody, #application.tableprefix#tblBlogEntries.alias, #application.tableprefix#tblUsers.name, #application.tableprefix#tblBlogEntries.allowcomments,
+						#application.tableprefix#tblBlogEntries.enclosure, #application.tableprefix#tblBlogEntries.filesize, #application.tableprefix#tblBlogEntries.mimetype, #application.tableprefix#tblBlogEntries.released, #application.tableprefix#tblBlogEntries.mailed,
+						#application.tableprefix#tblBlogEntries.summary, #application.tableprefix#tblBlogEntries.keywords, #application.tableprefix#tblBlogEntries.subtitle, #application.tableprefix#tblBlogEntries.duration
+			from		#application.tableprefix#tblBlogEntries, #application.tableprefix#tblUsers
+			where		#application.tableprefix#tblBlogEntries.id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			and			#application.tableprefix#tblBlogEntries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			and			#application.tableprefix#tblBlogEntries.username = #application.tableprefix#tblUsers.username
 		</cfquery>
 
 		<cfquery name="getCategories" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	categoryid,categoryname
-			from	tblblogcategories, tblblogentriescategories
-			where	tblblogentriescategories.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
-			and		tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
+			from	#application.tableprefix#tblBlogCategories, #application.tableprefix#tblBlogEntriescategories
+			where	#application.tableprefix#tblBlogEntriescategories.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			and		#application.tableprefix#tblBlogEntriescategories.categoryidfk = #application.tableprefix#tblBlogCategories.categoryid
 		</cfquery>
 
 		<cfloop index="col" list="#getIt.columnList#">
@@ -1258,7 +1278,7 @@
 		<!--- Handle view --->
 		<cfif not arguments.dontlog>
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			update	tblblogentries
+			update	#application.tableprefix#tblBlogEntries
 			set		views = views + 1
 			where	id = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfquery>
@@ -1355,26 +1375,26 @@
 
 		<!--- I get JUST the ids --->
 		<cfquery name="getIds" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		select	tblblogentries.id
-		from	tblblogentries, tblusers
-			<cfif structKeyExists(arguments.params,"byCat")>,tblblogentriescategories</cfif>
+		select	#application.tableprefix#tblblogentries.id
+		from	#application.tableprefix#tblblogentries, #application.tableprefix#tblusers
+			<cfif structKeyExists(arguments.params,"byCat")>,#application.tableprefix#tblblogentriescategories</cfif>
 			where		1=1
-						and tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
-						and tblblogentries.username = tblusers.username
+						and #application.tableprefix#tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+						and #application.tableprefix#tblblogentries.username = #application.tableprefix#tblusers.username
 						<!--- fix suggested by William Steiner --->
-						and	tblblogentries.blog = tblusers.blog
+						and	#application.tableprefix#tblblogentries.blog = #application.tableprefix#tblusers.blog
 			<cfif structKeyExists(arguments.params,"lastXDays")>
-				and tblblogentries.posted >= <cfqueryparam value="#dateAdd("d",-1*arguments.params.lastXDays,blogNow())#" cfsqltype="CF_SQL_DATE">
+				and #application.tableprefix#tblblogentries.posted >= <cfqueryparam value="#dateAdd("d",-1*arguments.params.lastXDays,blogNow())#" cfsqltype="CF_SQL_DATE">
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byDay")>
 				<cfif instance.blogDBType is "MSSQL">
-					and day(dateAdd(hh, #instance.offset#, tblblogentries.posted))
+					and day(dateAdd(hh, #instance.offset#, #application.tableprefix#tblblogentries.posted)) 
 				<cfelseif  instance.blogDBType is "MSACCESS">
-					and day(dateAdd('h', #instance.offset#, tblblogentries.posted))
+					and day(dateAdd('h', #instance.offset#, #application.tableprefix#tblblogentries.posted)) 
 				<cfelseif instance.blogDBType is "MYSQL">
 					and dayOfMonth(date_add(posted, interval #instance.offset# hour))
 				<cfelseif instance.blogDBType is "ORACLE">
-					and to_number(to_char(tblblogentries.posted + (#instance.offset#/24), 'dd'))
+					and to_number(to_char(#application.tableprefix#tblblogentries.posted + (#instance.offset#/24), 'dd'))	
 				</cfif>
 					<cfif instance.blogDBType is not "ORACLE">
 					= <cfqueryparam value="#arguments.params.byDay#" cfsqltype="CF_SQL_NUMERIC">
@@ -1385,56 +1405,56 @@
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byMonth")>
 				<cfif instance.blogDBType is "MSSQL">
-					and month(dateAdd(hh, #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
+					and month(dateAdd(hh, #instance.offset#, #application.tableprefix#tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
 				<cfelseif instance.blogDBType is "MSACCESS">
-					and month(dateAdd('h', #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
+					and month(dateAdd('h', #instance.offset#, #application.tableprefix#tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
 				<cfelseif instance.blogDBType is "MYSQL">
 					and month(date_add(posted, interval #instance.offset# hour)) = <cfqueryparam value="#arguments.params.byMonth#" cfsqltype="CF_SQL_NUMERIC">
 				<cfelseif instance.blogDBType is "ORACLE">
-					and to_number(to_char(tblblogentries.posted + (#instance.offset#/24), 'MM')) = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.params.byMonth#">
+					and to_number(to_char(#application.tableprefix#tblblogentries.posted + (#instance.offset#/24), 'MM')) = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.params.byMonth#">	
 				</cfif>
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byYear")>
 				<cfif instance.blogDBType is "MSSQL">
-					and year(dateAdd(hh, #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
+					and year(dateAdd(hh, #instance.offset#, #application.tableprefix#tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
 				<cfelseif instance.blogDBType is "MSACCESS">
-					and year(dateAdd('h', #instance.offset#, tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
+					and year(dateAdd('h', #instance.offset#, #application.tableprefix#tblblogentries.posted)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
 				<cfelseif instance.blogDBType is "MYSQL">
 					and year(date_add(posted, interval #instance.offset# hour)) = <cfqueryparam value="#arguments.params.byYear#" cfsqltype="CF_SQL_NUMERIC">
 				<cfelseif instance.blogDBType is "ORACLE">
-					and to_number(to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY')) = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.params.byYear#">
-				</cfif>
+					and to_number(to_char(#application.tableprefix#tblblogentries.posted + (#instance.offset#/24), 'YYYY')) = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.params.byYear#">	
+				</cfif>					
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byTitle")>
-				and tblblogentries.title = <cfqueryparam value="#arguments.params.byTitle#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+				and #application.tableprefix#tblblogentries.title = <cfqueryparam value="#arguments.params.byTitle#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byCat")>
-				and tblblogentriescategories.entryidfk = tblblogentries.id
-				and tblblogentriescategories.categoryidfk in (<cfqueryparam value="#arguments.params.byCat#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" list=true>)
+				and #application.tableprefix#tblblogentriescategories.entryidfk = #application.tableprefix#tblblogentries.id
+				and #application.tableprefix#tblblogentriescategories.categoryidfk in (<cfqueryparam value="#arguments.params.byCat#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" list=true>)
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byPosted")>
-				and tblblogentries.username =  <cfqueryparam value="#arguments.params.byPosted#" cfsqltype="CF_SQL_VARCHAR" maxlength="50" list=true>
+				and #application.tableprefix#tblblogentries.username =  <cfqueryparam value="#arguments.params.byPosted#" cfsqltype="CF_SQL_VARCHAR" maxlength="50" list=true>
 			</cfif>				
 			<cfif structKeyExists(arguments.params,"searchTerms")>
 				<cfif not structKeyExists(arguments.params, "dontlogsearch")>
 					<cfset logSearch(arguments.params.searchTerms)>
 				</cfif>
 				<cfif instance.blogDBType is not "ORACLE">
-					and (tblblogentries.title like '%#arguments.params.searchTerms#%' OR tblblogentries.body like '%#arguments.params.searchTerms#%' or tblblogentries.morebody like '%#arguments.params.searchTerms#%')
+					and (#application.tableprefix#tblblogentries.title like '%#arguments.params.searchTerms#%' OR #application.tableprefix#tblblogentries.body like '%#arguments.params.searchTerms#%' or #application.tableprefix#tblblogentries.morebody like '%#arguments.params.searchTerms#%')
 				<cfelse>
-				and (lower(tblblogentries.title) like '%#lcase(arguments.params.searchTerms)#%' OR lower(tblblogentries.body) like '%#lcase(arguments.params.searchTerms)#%' or lower(tblblogentries.morebody) like '%#lcase(arguments.params.searchTerms)#%')
+				and (lower(#application.tableprefix#tblblogentries.title) like '%#lcase(arguments.params.searchTerms)#%' OR lower(#application.tableprefix#tblblogentries.body) like '%#lcase(arguments.params.searchTerms)#%' or lower(#application.tableprefix#tblblogentries.morebody) like '%#lcase(arguments.params.searchTerms)#%')
 				</cfif>
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byEntry")>
-				and tblblogentries.id = <cfqueryparam value="#arguments.params.byEntry#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+				and #application.tableprefix#tblblogentries.id = <cfqueryparam value="#arguments.params.byEntry#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfif>
 			<cfif structKeyExists(arguments.params,"byAlias")>
-				and tblblogentries.alias = <cfqueryparam value="#left(arguments.params.byAlias,100)#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
+				and #application.tableprefix#tblblogentries.alias = <cfqueryparam value="#arguments.params.byAlias#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 			</cfif>
 			<!--- Don't allow future posts unless logged in. --->
 			<cfif not isUserInRole("admin") or (structKeyExists(arguments.params, "releasedonly") and arguments.params.releasedonly)>
 				<cfif instance.blogDBType IS "ORACLE">
-					 and			to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#">
+					 and			to_char(#application.tableprefix#tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#"> 
 				<cfelse>
 					and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
 				</cfif>
@@ -1445,7 +1465,7 @@
 			and	released = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.params.released#">
 			</cfif>
 
-			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
+			order by 	#application.tableprefix#tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
 		</cfquery>
 
 		<!--- we now have a query from row 1 to our max, we need to get a 'page' of IDs --->
@@ -1464,40 +1484,37 @@
 		<!--- I now get the full info --->
 		<cfquery name="getEm" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#" maxrows="#arguments.params.maxEntries+arguments.params.startRow-1#">
 		<!--- DS 8/22/06: added Oracle pseudo top n code --->
-			select
-					tblblogentries.id, tblblogentries.title,
-					tblblogentries.alias,
+			select		
+					#application.tableprefix#tblblogentries.id, #application.tableprefix#tblblogentries.title, 
+					#application.tableprefix#tblblogentries.alias, 
 					<!--- Handle offset --->
 					<cfif instance.blogDBType is "MSACCESS">
-						dateAdd('h', #instance.offset#, tblblogentries.posted) as posted,
+						dateAdd('h', #instance.offset#, #application.tableprefix#tblblogentries.posted) as posted, 
 					<cfelseif instance.blogDBType is "MSSQL">
-						dateAdd(hh, #instance.offset#, tblblogentries.posted) as posted,
+						dateAdd(hh, #instance.offset#, #application.tableprefix#tblblogentries.posted) as posted, 
 					<cfelseif instance.blogDBType is "ORACLE">
-						tblblogentries.posted + (#instance.offset#/24) as posted,
+						#application.tableprefix#tblblogentries.posted + (#instance.offset#/24) as posted,	
 					<cfelse>
 					date_add(posted, interval #instance.offset# hour) as posted,
 					</cfif>
-					tblusers.name, tblblogentries.allowcomments,
-					tblblogentries.enclosure, tblblogentries.filesize, tblblogentries.mimetype, tblblogentries.released, tblblogentries.views,
-					tblblogentries.summary, tblblogentries.subtitle, tblblogentries.keywords, tblblogentries.duration
-				<cfif arguments.params.mode is "full">, tblblogentries.body, tblblogentries.morebody</cfif>
-			from	tblblogentries, tblusers
-			where
-				tblblogentries.id in (<cfqueryparam cfsqltype="cf_sql_varchar" list="true" value="#pageIdList#">)
-						and tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
-						and tblblogentries.username = tblusers.username
-						<!--- fix by Amy Wilson --->
-						and	tblblogentries.blog = tblusers.blog
-
-			order by 	tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
+					#application.tableprefix#tblusers.name, #application.tableprefix#tblblogentries.allowcomments,
+					#application.tableprefix#tblblogentries.enclosure, #application.tableprefix#tblblogentries.filesize, #application.tableprefix#tblblogentries.mimetype, #application.tableprefix#tblblogentries.released, #application.tableprefix#tblblogentries.views,
+					#application.tableprefix#tblblogentries.summary, #application.tableprefix#tblblogentries.subtitle, #application.tableprefix#tblblogentries.keywords, #application.tableprefix#tblblogentries.duration
+				<cfif arguments.params.mode is "full">, #application.tableprefix#tblblogentries.body, #application.tableprefix#tblblogentries.morebody</cfif>
+			from	#application.tableprefix#tblblogentries, #application.tableprefix#tblusers
+			where		
+				#application.tableprefix#tblblogentries.id in (<cfqueryparam cfsqltype="cf_sql_varchar" list="true" value="#pageIdList#">)
+						and #application.tableprefix#tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+						and #application.tableprefix#tblblogentries.username = #application.tableprefix#tblusers.username
+			order by 	#application.tableprefix#tblblogentries.#arguments.params.orderBy# #arguments.params.orderByDir#
 		</cfquery>
 
 		<cfif arguments.params.mode is "full" and getEm.recordCount>
 			<cfset queryAddColumn(getEm,"commentCount",arrayNew(1))>
 			<cfquery name="getComments" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 				select count(id) as commentCount, entryidfk
-				from 	tblblogcomments
-				where	entryidfk in (<cfqueryparam value="#valueList(getEm.id)#" cfsqltype="CF_SQL_VARCHAR" list="Yes">)
+				from 	#application.tableprefix#tblblogcomments
+				where	entryidfk in (<cfqueryparam value="#valueList(getEm.id)#" cfsqltype="CF_SQL_VARCHAR" list="Yes">)	
 				<!--- added 12/5/2006 by Trent Richardson --->
 				<cfif instance.moderate>
 					and moderated = 1
@@ -1518,9 +1535,9 @@
 			<cfloop query="getEm">
 				<cfquery name="getCategories" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 					select	categoryid,categoryname
-					from	tblblogcategories, tblblogentriescategories
-					where	tblblogentriescategories.entryidfk = <cfqueryparam value="#getEm.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
-					and		tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
+					from	#application.tableprefix#tblblogcategories, #application.tableprefix#tblblogentriescategories
+					where	#application.tableprefix#tblblogentriescategories.entryidfk = <cfqueryparam value="#getEm.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+					and		#application.tableprefix#tblblogentriescategories.categoryidfk = #application.tableprefix#tblblogcategories.categoryid
 				</cfquery>
 				<!---
 				<cfset querySetCell(getEm,"categoryids",valueList(getCategories.categoryID),currentRow)>
@@ -1551,7 +1568,7 @@
 		
 	    <cfquery name="getPostedDate" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
       		select posted
-      		from tblblogentries
+      		from #application.tableprefix#tblblogentries
       		where id = <cfqueryparam value="#arguments.entryId#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" />
     	</cfquery>
     	
@@ -1565,7 +1582,7 @@
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	name
-		from	tblusers
+		from	#application.tableprefix#tblUsers
 		where	username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
 		</cfquery>
 
@@ -1576,8 +1593,8 @@
 				hint="Returns the number of unmodderated comments for a specific blog entry.">
 		<cfset var getUnmoderated = "" />
 		<cfquery name="getUnmoderated" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select count(c.moderated) as unmoderated
-			from tblblogcomments c, tblblogentries e
+			select count(c.moderated) as unmoderated 
+			from #application.tableprefix#tblBlogComments c, #application.tableprefix#tblBlogEntries e
 			where c.moderated=0
 			and	 e.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			and c.entryidfk = e.id
@@ -1634,8 +1651,8 @@
 		<cfelse>
 		    date_add(c.posted, interval #instance.offset# hour) as posted
 		</cfif>
-		from tblblogcomments c
-		inner join tblblogentries e on c.entryidfk = e.id
+		from #application.tableprefix#tblBlogComments c
+		inner join #application.tableprefix#tblBlogEntries e on c.entryidfk = e.id
 		where	 blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		<!--- added 12/5/2006 by Trent Richardson --->
 		<cfif instance.moderate>
@@ -1692,44 +1709,44 @@
 		</cfif>
 	    <cfquery name="getRelatedIds" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 	      select distinct relatedid
-	      from tblblogentriesrelated
+	      from #application.tableprefix#tblBlogEntriesrelated
 	      where entryid = <cfqueryparam value="#arguments.entryId#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" />
 
 	      <cfif bDislayBackwardRelations>
 	      union
 
 	      select distinct entryid as relatedid
-	      from tblblogentriesrelated
+	      from #application.tableprefix#tblBlogEntriesrelated
 	      where relatedid = <cfqueryparam value="#arguments.entryId#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" />
 	      </cfif>
 	    </cfquery>
 	    <cfloop query="getRelatedIds">
 		  <cfquery name="getThisRelatedEntry" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select
-				tblblogentries.id,
-				tblblogentries.title,
-				tblblogentries.posted,
-				tblblogentries.alias,
-				tblblogcategories.categoryname
+				#application.tableprefix#tblBlogEntries.id,
+				#application.tableprefix#tblBlogEntries.title,
+				#application.tableprefix#tblBlogEntries.posted,
+				#application.tableprefix#tblBlogEntries.alias,
+				#application.tableprefix#tblBlogCategories.categoryname
 			from
-				(tblblogcategories
-				inner join tblblogentriescategories on
-					tblblogcategories.categoryid = tblblogentriescategories.categoryidfk)
-				inner join tblblogentries on
-					tblblogentriescategories.entryidfk = tblblogentries.id
-	        where tblblogentries.id = <cfqueryparam value="#getrelatedids.relatedid#" cfsqltype="cf_sql_varchar" maxlength="35" />
-	        and   tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="255">
+				(#application.tableprefix#tblBlogCategories 
+				inner join #application.tableprefix#tblBlogEntriescategories on 
+					#application.tableprefix#tblBlogCategories.categoryid = #application.tableprefix#tblBlogEntriescategories.categoryidfk)
+				inner join #application.tableprefix#tblBlogEntries on 
+					#application.tableprefix#tblBlogEntriescategories.entryidfk = #application.tableprefix#tblBlogEntries.id
+	        where #application.tableprefix#tblBlogEntries.id = <cfqueryparam value="#getrelatedids.relatedid#" cfsqltype="cf_sql_varchar" maxlength="35" />
+	        and   #application.tableprefix#tblBlogEntries.blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="255">
 	        <cfif bdislayfuturelinks is false>
 				<cfif instance.blogDBType is not "ORACLE">
-				and tblblogentries.posted <= #createodbcdatetime(postedDate)#
+				and #application.tableprefix#tblblogentries.posted <= #createodbcdatetime(postedDate)#
 				<cfelse>
-				and tblblogentries.posted <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#postedDate#">
+				and #application.tableprefix#tblblogentries.posted <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#postedDate#">
 				</cfif>
 	        </cfif>
 
 			<cfif not arguments.bDisplayForAdmin>
 				<cfif instance.blogDBType IS "ORACLE">
-					 and			to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#">
+					 and			to_char(#application.tableprefix#tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#">
 				<cfelse>
 					and			posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
 				</cfif>
@@ -1780,29 +1797,29 @@
 		
 		<cfquery name="getRelatedBlogEntryCount" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			SELECT count(entryId) AS relatedEntryCount
-				FROM tblblogentriesrelated, tblblogentries
-				WHERE tblblogentriesrelated.entryID = tblblogentries.id
-				AND (tblblogentriesrelated.entryid = <cfqueryparam value="#arguments.entryId#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+				FROM #application.tableprefix#tblblogentriesrelated, #application.tableprefix#tblblogentries
+				WHERE #application.tableprefix#tblblogentriesrelated.entryID = tblblogentries.id
+				AND (#application.tableprefix#tblblogentriesrelated.entryid = <cfqueryparam value="#arguments.entryId#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			<cfif arguments.bDislayBackwardRelations>
-				OR tblblogentriesrelated.relatedid = <cfqueryparam value="#arguments.entryId#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" />
+				OR #application.tableprefix#tblblogentriesrelated.relatedid = <cfqueryparam value="#arguments.entryId#" cfsqltype="CF_SQL_VARCHAR" maxlength="35" />
 			</cfif>					
 				)
 	        <cfif bdislayfuturelinks is false>
 				<cfif instance.blogDBType is not "ORACLE">
-				AND tblblogentries.posted <= #createodbcdatetime(postedDate)#
+				AND #application.tableprefix#tblblogentries.posted <= #createodbcdatetime(postedDate)#
 				<cfelse>
-				AND tblblogentries.posted <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#postedDate#">
+				AND #application.tableprefix#tblblogentries.posted <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#postedDate#">
 				</cfif>
 	        </cfif>				
 				
 			<cfif arguments.bDisplayForAdmin is false>	
 				<cfif instance.blogDBType IS "ORACLE">
-			 		AND	to_char(tblblogentries.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#">
+			 		AND	to_char(#application.tableprefix#.posted + (#instance.offset#/24), 'YYYY-MM-DD HH24:MI:SS') <= <cfqueryparam cfsqltype="cf_sql_varchar" value="#dateformat(now(), 'YYYY-MM-DD')# #timeformat(now(), 'HH:mm:ss')#">
 				<cfelse>
-					AND	tblblogentries.posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
+					AND	#application.tableprefix#tblblogentries.posted < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
 				</cfif>
 			</cfif>			
-				AND	tblblogentries.released = 1
+				AND	#application.tableprefix#tblblogentries.released = 1
 		</cfquery>
 		
 		<cfreturn getRelatedBlogEntryCount.relatedEntryCount>
@@ -1814,21 +1831,21 @@
 		<cfset var getRelatedP = "" />
 
 		<cfquery name="getRelatedP" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select
-				tblblogcategories.categoryname,
-				tblblogentries.id,
-				tblblogentries.title,
-				tblblogentries.posted
-			from
-				tblblogentries inner join
-					(tblblogcategories inner join tblblogentriescategories on tblblogcategories.categoryid = tblblogentriescategories.categoryidfk) on
-						tblblogentries.id = tblblogentriescategories.entryidfk
+			select 
+				#application.tableprefix#tblBlogCategories.categoryname, 
+				#application.tableprefix#tblBlogEntries.id, 
+				#application.tableprefix#tblBlogEntries.title, 
+				#application.tableprefix#tblBlogEntries.posted
+			from 
+				#application.tableprefix#tblBlogEntries inner join 
+					(#application.tableprefix#tblBlogCategories inner join #application.tableprefix#tblBlogEntriescategories on #application.tableprefix#tblBlogCategories.categoryid = #application.tableprefix#tblBlogEntriescategories.categoryidfk) on 
+						#application.tableprefix#tblBlogEntries.id = #application.tableprefix#tblBlogEntriescategories.entryidfk
 
-			where tblblogcategories.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			where #application.tableprefix#tblBlogCategories.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">						
 			order by
-				tblblogcategories.categoryname,
-				tblblogentries.posted,
-				tblblogentries.title
+				#application.tableprefix#tblBlogCategories.categoryname, 
+				#application.tableprefix#tblBlogEntries.posted,
+				#application.tableprefix#tblBlogEntries.title
 		</cfquery>
 
 		<cfreturn getRelatedP />
@@ -1849,7 +1866,7 @@
 
 		<cfquery name="getPeople" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select		email, token, verified
-		from		tblblogsubscribers
+		from		#application.tableprefix#tblBlogSubscribers
 		where		blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="50">
 		<cfif		arguments.verifiedonly>
 		and			verified = 1
@@ -1878,18 +1895,18 @@
 
 		<!--- RBB 11/02/2005: Added website to query --->
 		<cfquery name="getC" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			select		tblblogcomments.id, tblblogcomments.name, tblblogcomments.email, tblblogcomments.website,
-						<cfif instance.blogDBTYPE is NOT "ORACLE">tblblogcomments.comment<cfelse>to_char(tblblogcomments.comments) as comments</cfif>, tblblogcomments.posted, tblblogcomments.subscribe, tblblogentries.title as entrytitle, tblblogcomments.entryidfk
-			from		tblblogcomments, tblblogentries
-			where		tblblogcomments.entryidfk = tblblogentries.id
+			select		#application.tableprefix#tblBlogComments.id, #application.tableprefix#tblBlogComments.name, #application.tableprefix#tblBlogComments.email, #application.tableprefix#tblBlogComments.website, 
+						<cfif instance.blogDBTYPE is NOT "ORACLE">#application.tableprefix#tblBlogComments.comment<cfelse>to_char(#application.tableprefix#tblBlogComments.comments) as comments</cfif>, #application.tableprefix#tblBlogComments.posted, #application.tableprefix#tblBlogComments.subscribe, #application.tableprefix#tblBlogEntries.title as entrytitle, #application.tableprefix#tblBlogComments.entryidfk
+			from		#application.tableprefix#tblBlogComments, #application.tableprefix#tblBlogEntries
+			where		#application.tableprefix#tblBlogComments.entryidfk = #application.tableprefix#tblBlogEntries.id
 			<cfif structKeyExists(arguments, "id")>
-			and			tblblogcomments.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+			and			#application.tableprefix#tblBlogComments.entryidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			</cfif>
-			and			tblblogentries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+			and			#application.tableprefix#tblBlogEntries.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 			<!--- added 12/5/2006 by Trent Richardson --->
-			and tblblogcomments.moderated = 0
-
-			order by	tblblogcomments.posted #arguments.sortdir#
+			and #application.tableprefix#tblBlogComments.moderated = 0 
+			
+			order by	#application.tableprefix#tblBlogComments.posted #arguments.sortdir#
 		</cfquery>
 
 		<!--- DS 8/22/06: if this is oracle, do a q of q to return the data with column named "comment" --->
@@ -1915,7 +1932,7 @@
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	username, password, name
-		from	tblusers
+		from	#application.tableprefix#tblusers
 		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		and		username = <cfqueryparam value="#arguments.username#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
@@ -1937,7 +1954,7 @@
 		
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	username
-		from	tblusers
+		from	#application.tableprefix#tblusers
 		where	name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#replace(arguments.name,"_"," ","all")#" maxlength="50">
 		</cfquery>
 		
@@ -1953,18 +1970,18 @@
 		<!--- MSACCESS fix provided by Andy Florino --->
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		<cfif instance.blogDBType is "MSACCESS">
-		select tblblogroles.id
-		from tblblogroles, tbluserroles, tblusers
-		where (tblblogroles.id = tbluserroles.roleidfk and tbluserroles.username = tblusers.username)
-		and tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
-		and tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		select #application.tableprefix#tblblogroles.id
+		from #application.tableprefix#tblblogroles, #application.tableprefix#tbluserroles, #application.tableprefix#tblusers
+		where (#application.tableprefix#tblblogroles.id = #application.tableprefix#tbluserroles.roleidfk and #application.tableprefix#tbluserroles.username = #application.tableprefix#tblusers.username)
+		and #application.tableprefix#tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and #application.tableprefix#tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		<cfelse>
-		select	tblblogroles.id
-		from	tblblogroles
-		left join tbluserroles on tbluserroles.roleidfk = tblblogroles.id
-		left join tblusers on tbluserroles.username = tblusers.username
-		where tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
-		and tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
+		select	#application.tableprefix#tblblogroles.id
+		from	#application.tableprefix#tblblogroles
+		left join #application.tableprefix#tbluserroles on #application.tableprefix#tbluserroles.roleidfk = #application.tableprefix#tblblogroles.id
+		left join #application.tableprefix#tblusers on #application.tableprefix#tbluserroles.username = #application.tableprefix#tblusers.username
+		where #application.tableprefix#tblusers.username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
+		and #application.tableprefix#tblusers.blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfif>
 		</cfquery>
 
@@ -1976,7 +1993,7 @@
 
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	username, name
-		from	tblusers
+		from	#application.tableprefix#tblusers
 		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="CF_SQL_VARCHAR" maxlength="50">
 		</cfquery>
 
@@ -2003,7 +2020,7 @@
 		<cfif not structKeyExists(variables.roles, 'admin')>
 			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	id
-			from	tblblogroles
+			from	#application.tableprefix#tblblogroles
 			where	role = <cfqueryparam cfsqltype="cf_sql_varchar" value="Admin" maxlength="50">
 			</cfquery>
 			<cfset variables.roles['admin'] = q.id>
@@ -2012,7 +2029,7 @@
 		<cfif not structKeyExists(variables.roles, arguments.role)>
 			<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	id
-			from	tblblogroles
+			from	#application.tableprefix#tblblogroles
 			where	role = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.role#" maxlength="50">
 			</cfquery>
 			<cfset variables.roles[arguments.role] = q.id>
@@ -2036,8 +2053,8 @@
 
 		<!--- delete comment based on kill --->
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete from tblblogcomments
-			where killcomment = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.kid#" maxlength="35">
+			delete from #application.tableprefix#tblBlogComments
+			where killcomment = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.kid#" maxlength="35">		
 		</cfquery>
 
 	</cffunction>
@@ -2047,7 +2064,7 @@
 		<cfargument name="searchterm" type="string" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		insert into tblblogsearchstats(searchterm, searched, blog)
+		insert into #application.tableprefix#tblBlogSearchStats(searchterm, searched, blog)
 		values(
 			<cfqueryparam value="#arguments.searchterm#" cfsqltype="cf_sql_varchar" maxlength="255">,
 			<cfqueryparam value="#blogNow()#" cfsqltype="cf_sql_timestamp">,
@@ -2062,7 +2079,7 @@
 		<cfargument name="entryid" type="uuid" required="true">
 	
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		update	tblblogentries
+		update	#application.tableprefix#tblblogentries
 		set		views = views + 1
 		where	id = <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
@@ -2107,8 +2124,8 @@ To unsubscribe, please go to this URL:
 			no subscribers. I don't think this is an issue though.
 		--->
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		update tblblogentries
-		set		mailed =
+		update #application.tableprefix#tblBlogEntries
+		set		mailed = 
 				<cfif instance.blogDBType is not "MYSQL">
 					<cfqueryparam value="true" cfsqltype="CF_SQL_BIT">
 			   <cfelse>
@@ -2136,7 +2153,7 @@ To unsubscribe, please go to this URL:
 		
 		<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	categoryalias
-		from	tblblogcategories
+		from	#application.tableprefix#tblBlogCategories
 		where	categoryid = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.catid#" maxlength="35">
 		</cfquery>
 
@@ -2195,7 +2212,7 @@ To unsubscribe, please go to this URL:
 				<cfif not structKeyExists(variables.lCache, arguments.entryid)>
 					<cfquery name="q" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 					select	posted, alias
-					from	tblblogentries
+					from	#application.tableprefix#tblBlogEntries
 					where	id = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.entryid#" maxlength="35">
 					</cfquery>
 					<!---// cache the link //--->
@@ -2370,7 +2387,7 @@ To unsubscribe, please go to this URL:
 		<cfargument name="categoryid" type="uuid" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete from tblblogentriescategories
+			delete from #application.tableprefix#tblBlogEntriescategories
 			where categoryidfk = <cfqueryparam value="#arguments.categoryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and entryidfk = <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
@@ -2382,7 +2399,7 @@ To unsubscribe, please go to this URL:
 		<cfargument name="entryid" type="uuid" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete from tblblogentriescategories
+			delete from #application.tableprefix#tblBlogEntriescategories
 			where	entryidfk = <cfqueryparam value="#arguments.entryid#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 	</cffunction>
@@ -2400,7 +2417,7 @@ To unsubscribe, please go to this URL:
 		<!--- First, lets see if this guy is already subscribed. --->
 		<cfquery name="getMe" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	email
-		from	tblblogsubscribers
+		from	#application.tableprefix#tblBlogSubscribers
 		where	email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar" maxlength="50">
 		<cfif structKeyExists(arguments, "token")>
 		and		token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar" maxlength="35">
@@ -2409,7 +2426,7 @@ To unsubscribe, please go to this URL:
 
 		<cfif getMe.recordCount is 1>
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete	from tblblogsubscribers
+			delete	from #application.tableprefix#tblBlogSubscribers
 			where	email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar" maxlength="50">
 			<cfif structKeyExists(arguments, "token")>
 			and		token = <cfqueryparam value="#arguments.token#" cfsqltype="cf_sql_varchar" maxlength="35">
@@ -2428,7 +2445,7 @@ To unsubscribe, please go to this URL:
 				hint="Removes all subscribers who are not verified.">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		delete	from tblblogsubscribers
+		delete	from #application.tableprefix#tblBlogSubscribers
 		where	blog = <cfqueryparam value="#instance.name#" cfsqltype="cf_sql_varchar" maxlength="50">
 		and		verified = 0
 		</cfquery>
@@ -2551,7 +2568,7 @@ To unsubscribe, please go to this URL:
 			</cfif>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			update	tblblogcategories
+			update	#application.tableprefix#tblblogcategories
 			set		categoryname = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar" maxlength="50">,
 					categoryalias = <cfqueryparam value="#arguments.alias#" cfsqltype="cf_sql_varchar" maxlength="50">
 			where	categoryid = <cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar" maxlength="35">
@@ -2578,7 +2595,7 @@ To unsubscribe, please go to this URL:
 
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		update tblblogcomments
+		update #application.tableprefix#tblBlogComments
 		set name = <cfqueryparam value="#arguments.name#" maxlength="50">,
 		email = <cfqueryparam value="#arguments.email#" maxlength="50">,
 		website = <cfqueryparam value="#arguments.website#" maxlength="255">,
@@ -2640,7 +2657,7 @@ To unsubscribe, please go to this URL:
 		</cfif>
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			update tblblogentries
+			update #application.tableprefix#tblBlogEntries
 			set		title = <cfqueryparam value="#arguments.title#" cfsqltype="CF_SQL_CHAR" maxlength="100">,
 					<cfif instance.blogDBType is not "ORACLE">
 					body = <cfqueryparam value="#arguments.body#" cfsqltype="CF_SQL_LONGVARCHAR">
@@ -2739,16 +2756,16 @@ To unsubscribe, please go to this URL:
 		<cfset var ppost = "" />
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			delete from
-				tblblogentriesrelated
-			where
+			delete from 
+				#application.tableprefix#tblBlogEntriesrelated 
+			where 
 				entryid = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 		</cfquery>
 
 		<cfloop list="#arguments.relatedpposts#" index="ppost">
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 				insert into
-					tblblogentriesrelated(
+					#application.tableprefix#tblBlogEntriesrelated(
 						entryid,
 						relatedid
 					) values (
@@ -2768,7 +2785,7 @@ To unsubscribe, please go to this URL:
 		<cfset var salt = generateSalt()>
 		
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		update	tblusers
+		update	#application.tableprefix#tblusers
 		set		name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.name#" maxlength="50">
 				<!--- RBB 1/17/11: if no password is passed in, we can assume that only the user's name is being updated --->
 				<cfif structKeyExists(arguments, "password")>
@@ -2802,7 +2819,7 @@ To unsubscribe, please go to this URL:
 		<cfargument name="id" type="string" required="true">
 
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			update tblblogcomments set moderated=1 where id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">
+			update #application.tableprefix#tblblogcomments set moderated=1 where id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 
 	</cffunction>
@@ -2815,14 +2832,14 @@ To unsubscribe, please go to this URL:
 		<cfset var r = "" />
 		<!--- first, nuke old roles --->
 		<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-		delete from tbluserroles
+		delete from #application.tableprefix#tbluserroles
 		where username = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">
 		and blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#instance.name#" maxlength="50">
 		</cfquery>
 
 		<cfloop index="r" list="#arguments.roles#">
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			insert into tbluserroles(username, roleidfk, blog)
+			insert into #application.tableprefix#tbluserroles(username, roleidfk, blog)
 			values(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.username#" maxlength="50">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#r#" maxlength="35">,
@@ -2843,7 +2860,7 @@ To unsubscribe, please go to this URL:
 		<!--- First ensure that the commentID equals the email --->
 		<cfquery name="verifySubscribe" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 			select	entryidfk
-			from	tblblogcomments
+			from	#application.tableprefix#tblBlogComments
 			where	id = <cfqueryparam value="#arguments.commentID#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 			and		email = <cfqueryparam value="#arguments.email#" cfsqltype="CF_SQL_VARCHAR" maxlength="100">
 		</cfquery>
@@ -2852,7 +2869,7 @@ To unsubscribe, please go to this URL:
 		<cfif verifySubscribe.recordCount>
 
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-				update	tblblogcomments
+				update	#application.tableprefix#tblBlogComments
 				set		subscribe = 0
 				where	entryidfk = <cfqueryparam value="#verifySubscribe.entryidfk#"
 									cfsqltype="CF_SQL_VARCHAR" maxlength="35">
@@ -2875,7 +2892,7 @@ To unsubscribe, please go to this URL:
 
 		<cfquery name="checkit" datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
 		select	password, salt
-		from	tblusers
+		from	#application.tableprefix#tblusers
 		where	username = <cfqueryparam value="#getAuthUser()#" cfsqltype="cf_sql_varchar" maxlength="50">
 		<!---
 		and		password = <cfqueryparam value="#arguments.oldpassword#" cfsqltype="cf_sql_varchar" maxlength="255">
@@ -2887,7 +2904,7 @@ To unsubscribe, please go to this URL:
 			<!--- generate a new salt --->
 			
 			<cfquery datasource="#instance.dsn#" username="#instance.username#" password="#instance.password#">
-			update	tblusers
+			update	#application.tableprefix#tblusers
 			set		password = <cfqueryparam value="#hash(salt & arguments.newpassword, instance.hashalgorithm)#" cfsqltype="cf_sql_varchar" maxlength="256">,
 					salt = <cfqueryparam value="#salt#" cfsqltype="cf_sql_varchar" maxlength="256">
 			where	username = <cfqueryparam value="#getAuthUser()#" cfsqltype="cf_sql_varchar" maxlength="50">
@@ -2908,8 +2925,5 @@ To unsubscribe, please go to this URL:
 		
 		<cfreturn generateSecretKey(instance.saltAlgorithm, instance.saltKeySize)>
 	</cffunction>
-
-	
-	
 
 </cfcomponent>

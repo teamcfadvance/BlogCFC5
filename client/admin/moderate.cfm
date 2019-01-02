@@ -22,7 +22,7 @@
 	<cfset entry = application.blog.getEntry(c.entryidfk)>
 	<cfset application.blog.approveComment(url.approve)>
 
-	<cfset subject = rb("commentaddedtoblog") & ": " & application.blog.getProperty("blogTitle") & " / " & rb("entry") & ": " & entry.title>
+	<cfset subject = request.rb("commentaddedtoblog") & ": " & application.blog.getProperty("blogTitle") & " / " & request.rb("entry") & ": " & entry.title>
 	<cfsavecontent variable="email">
 	<cfoutput>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -38,7 +38,7 @@
 		<tr><td colspan=2 style="height:10px"></td></tr>
 		<tr id="content" style="padding: 20px;">
 			<td id="comment" style="width:75%;">
-#paragraphformat2(htmlEditFormat(c.comment))#
+#application.utils.ParagraphFormat2(htmlEditFormat(c.comment))#
 			</td>
 			<td id="commentor" valign=top style="width:25%;background-color: ##edf0c9;height:100%">
 				<div id="avatar" style="text-align: center;margin:30px 0 0 0;padding:20px 0 20px 0;width: 100%;height: 100%;">

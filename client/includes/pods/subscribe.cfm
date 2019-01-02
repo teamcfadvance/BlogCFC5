@@ -29,9 +29,11 @@ I'm making it dynamic in case folks to want to change it quickly on their own bl
 	  a deal. In fact, I bet no one is even going to read this. If you do, hi, how are you. Send me an email
 	  and we can talk about how sometimes it is necessary to break the rules a bit. Then maybe we can have a
 	  beer and talk about good sci-fi movies.
+
+	  JH 12/30/2018 Moved isEmail into application.utils class so no more caller syntax but I'm still up for that beer
 --->
 <cfif structKeyExists(form, formField) and len(trim(form[formField]))>
-	<cfif caller.isEmail(trim(form[formField]))>
+	<cfif application.utils.isEmail(trim(form[formField]))>
 		
 		<cfset token = application.blog.addSubscriber(trim(form[formField]))>
 		

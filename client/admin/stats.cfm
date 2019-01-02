@@ -16,7 +16,7 @@
 --->
 
 <cfmodule template="../tags/adminlayout.cfm" title="Stats">
-	
+
 	<cfset dsn = application.blog.getProperty("dsn")>
 	<cfset dbtype = application.blog.getProperty("blogdbtype")>
 	<cfset blog = application.blog.getProperty("name")>
@@ -28,27 +28,27 @@
 		select	count(id) as totalentries, 
 				min(posted) as firstentry,
 				max(posted) as lastentry
-		from	tblblogentries
-		where 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		from	#application.tableprefix#tblblogentries
+		where 	#application.tableprefix#tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 	</cfquery>
 
 	<cfquery name="getTotalSubscribers" datasource="#dsn#" username="#username#" password="#password#">
 		select	count(email) as totalsubscribers 
-		from	tblblogsubscribers
-		where 	tblblogsubscribers.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		from	#application.tableprefix#tblBlogSubscribers
+		where 	#application.tableprefix#tblBlogSubscribers.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		and		verified = 1
 	</cfquery>
 
 	<cfquery name="getTotalViews" datasource="#dsn#" username="#username#" password="#password#">
 		select		sum(views) as total
-		from		tblblogentries
-		where 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		from		#application.tableprefix#tblblogentries
+		where 	#application.tableprefix#tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 	</cfquery>
 
 	<cfquery name="getTopViews" datasource="#dsn#" username="#username#" password="#password#">
 		select		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif> id, title, views
-		from		tblblogentries
-		where 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		from		#application.tableprefix#tblblogentries
+		where 	#application.tableprefix#tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif dbtype is "oracle">
 		and		rownum <= 10
 		</cfif>
@@ -60,28 +60,28 @@
 	<cfset thirtyDaysAgo = dateAdd("d", -30, now())>
 	<cfquery name="last30" datasource="#dsn#" username="#username#" password="#password#">
 		select	count(id) as totalentries
-		from	tblblogentries
-		where 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		from	#application.tableprefix#tblblogentries
+		where 	#application.tableprefix#tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		and		posted >= <cfqueryparam cfsqltype="cf_sql_date" value="#thirtyDaysAgo#">
 	</cfquery>
 	
 	<cfquery name="getTotalComments" datasource="#dsn#" username="#username#" password="#password#">
-		select	count(tblblogcomments.id) as totalcomments
-		from	tblblogcomments, tblblogentries
-		where	tblblogcomments.entryidfk = tblblogentries.id
-		and		tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		select	count(#application.tableprefix#tblBlogComments.id) as totalcomments
+		from	#application.tableprefix#tblBlogComments, #application.tableprefix#tblblogentries
+		where	#application.tableprefix#tblBlogComments.entryidfk = #application.tableprefix#tblblogentries.id
+		and		#application.tableprefix#tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif application.commentmoderation>
-		and		tblblogcomments.moderated = 1
+		and		#application.tableprefix#tblBlogComments.moderated = 1
 		</cfif>
 	</cfquery>
 	
 	<!--- gets num of entries per category --->
 	<cfquery name="getCategoryCount" datasource="#dsn#" username="#username#" password="#password#">
 		select	categoryid, categoryname, count(categoryidfk) as total
-		from	tblblogcategories, tblblogentriescategories
-		where	tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
-		and		tblblogcategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
-		group by tblblogcategories.categoryid, tblblogcategories.categoryname
+		from	#application.tableprefix#tblBlogCategories, #application.tableprefix#tblBlogEntriesCategories
+		where	#application.tableprefix#tblBlogEntriesCategories.categoryidfk = #application.tableprefix#tblBlogCategories.categoryid
+		and		#application.tableprefix#tblBlogCategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		group by #application.tableprefix#tblBlogCategories.categoryid, #application.tableprefix#tblBlogCategories.categoryname
 		<cfif dbtype is not "msaccess">
 			order by total desc
 		<cfelse>
@@ -93,22 +93,22 @@
 	<cfquery name="topCommentedEntries" datasource="#dsn#" username="#username#" password="#password#">
 		select 
 		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif>
-		tblblogentries.id, tblblogentries.title, count(tblblogcomments.id) as commentcount
-		from			tblblogentries, tblblogcomments
-		where			tblblogcomments.entryidfk = tblblogentries.id
+		#application.tableprefix#tblblogentries.id, #application.tableprefix#tblblogentries.title, count(#application.tableprefix#tblBlogComments.id) as commentcount
+		from			#application.tableprefix#tblblogentries, #application.tableprefix#tblBlogComments
+		where			#application.tableprefix#tblBlogComments.entryidfk = #application.tableprefix#tblblogentries.id
 		<cfif dbtype is "oracle">
 		and		rownum <= 10
 		</cfif>		
-		and				tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		and				#application.tableprefix#tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif application.commentmoderation>
-		and				tblblogcomments.moderated = 1
+		and				#application.tableprefix#tblBlogComments.moderated = 1
 		</cfif>
 
-		group by		tblblogentries.id, tblblogentries.title
+		group by		#application.tableprefix#tblblogentries.id, #application.tableprefix#tblblogentries.title
 		<cfif dbtype is not "msaccess">
 			order by	commentcount desc
 		<cfelse>
-			order by 	count(tblblogcomments.id) desc
+			order by 	count(#application.tableprefix#tblBlogComments.id) desc
 		</cfif>
 		<cfif dbtype is "mysql">limit 10</cfif>
 	</cfquery>
@@ -117,24 +117,24 @@
 	<cfquery name="topCommentedCategories" datasource="#dsn#" username="#username#" password="#password#">
 		select 
 		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif>
-						tblblogcategories.categoryid, 
-						tblblogcategories.categoryname, 
-						count(tblblogcomments.id) as commentcount
-		from			tblblogcategories, tblblogcomments, tblblogentriescategories
-		where			tblblogcomments.entryidfk = tblblogentriescategories.entryidfk
+						#application.tableprefix#tblBlogCategories.categoryid,
+						#application.tableprefix#tblBlogCategories.categoryname,
+						count(#application.tableprefix#tblBlogComments.id) as commentcount
+		from			#application.tableprefix#tblBlogCategories, #application.tableprefix#tblBlogComments, #application.tableprefix#tblBlogEntriesCategories
+		where			#application.tableprefix#tblBlogComments.entryidfk = #application.tableprefix#tblBlogEntriesCategories.entryidfk
 		<cfif dbtype is "oracle">
 		and		rownum <= 10
 		</cfif>		
-		and				tblblogentriescategories.categoryidfk = tblblogcategories.categoryid
-		and				tblblogcategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+		and				#application.tableprefix#tblBlogEntriesCategories.categoryidfk = #application.tableprefix#tblBlogCategories.categoryid
+		and				#application.tableprefix#tblBlogCategories.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif application.commentmoderation>
-		and				tblblogcomments.moderated = 1
+		and				#application.tableprefix#tblBlogComments.moderated = 1
 		</cfif>		
-		group by		tblblogcategories.categoryid, tblblogcategories.categoryname
+		group by		#application.tableprefix#tblBlogCategories.categoryid, #application.tableprefix#tblBlogCategories.categoryname
 		<cfif dbtype is not "msaccess">
 			order by	commentcount desc
 		<cfelse>
-			order by	count(tblblogcomments.id) desc
+			order by	count(#application.tableprefix#tblBlogComments.id) desc
 		</cfif>
 		<cfif dbtype is "mysql">limit 10</cfif>
 	</cfquery>
@@ -143,7 +143,7 @@
 		select		
 		<cfif not listFindNoCase("mysql,oracle",dbtype)>top 10 </cfif>
 					searchterm, count(searchterm) as total
-		from		tblblogsearchstats
+		from		#application.tableprefix#tblBlogSearchStats
 		where		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
 		<cfif dbtype is "oracle">
 		and		rownum <= 10
@@ -158,15 +158,15 @@
 	</cfquery>
 	
 	<cfquery name="topCommenters" datasource="#dsn#" username="#username#" password="#password#" maxrows="10">
-	select	count(tblblogcomments.email) as emailCount, email, tblblogcomments.name
-	from	tblblogcomments, tblblogentries
-	where	tblblogcomments.entryidfk = tblblogentries.id
-	and 	tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
-	group by tblblogcomments.email, tblblogcomments.name
+	select	count(#application.tableprefix#tblBlogComments.email) as emailCount, email, #application.tableprefix#tblBlogComments.name
+	from	#application.tableprefix#tblBlogComments, #application.tableprefix#tblblogentries
+	where	#application.tableprefix#tblBlogComments.entryidfk = #application.tableprefix#tblblogentries.id
+	and 	#application.tableprefix#tblblogentries.blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#blog#">
+	group by #application.tableprefix#tblBlogComments.email, #application.tableprefix#tblBlogComments.name
 	<cfif dbtype is not "msaccess">
 	order by emailCount desc
 	<cfelse>
-	order by count(tblblogcomments.email) desc
+	order by count(#application.tableprefix#tblBlogComments.email) desc
 	</cfif>
 	</cfquery>
 				
@@ -189,56 +189,56 @@
 	<div id="statstabs">
 	
 		<ul>
-			<li><a href="##generalstats">#rb("generalstats")#</a></li>
-			<li><a href="##topviews">#rb("topviews")#</a></li>
-			<li><a href="##categorystats">#rb("categorystats")#</a></li>
-			<li><a href="##topentriesbycomments">#rb("topentriesbycomments")#</a></li>
-			<li><a href="##topcategoriesbycomments">#rb("topcategoriesbycomments")#</a></li>
-			<li><a href="##topsearchterms">#rb("topsearchterms")#</a></li>
-			<li><a href="##topcommenters">#rb("topcommenters")#</a></li>
+			<li><a href="##generalstats">#request.rb("generalstats")#</a></li>
+			<li><a href="##topviews">#request.rb("topviews")#</a></li>
+			<li><a href="##categorystats">#request.rb("categorystats")#</a></li>
+			<li><a href="##topentriesbycomments">#request.rb("topentriesbycomments")#</a></li>
+			<li><a href="##topcategoriesbycomments">#request.rb("topcategoriesbycomments")#</a></li>
+			<li><a href="##topsearchterms">#request.rb("topsearchterms")#</a></li>
+			<li><a href="##topcommenters">#request.rb("topcommenters")#</a></li>
 		</ul>
 		
 		<div id="generalstats">
 		
 			<table border="1" width="100%">
 				<tr>
-					<td width="50%">#rb("totalnumentries")#:</td>
+					<td width="50%">#request.rb("totalnumentries")#:</td>
 					<td align="right">#numberFormat(getTotalEntries.totalEntries)#</td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("last30")#:</td>
+					<td width="50%">#request.rb("last30")#:</td>
 					<td align="right">#numberFormat(last30.totalEntries)#</td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("last30avg")#:</td>
+					<td width="50%">#request.rb("last30avg")#:</td>
 					<td align="right"><cfif last30.totalentries gt 0>#numberFormat(last30.totalEntries/30,"999.99")#<cfelse>&nbsp;</cfif></td>
 				</tr>				
 				<tr>
-					<td width="50%">#rb("firstentry")#:</td>
+					<td width="50%">#request.rb("firstentry")#:</td>
 					<td align="right"><cfif len(getTotalEntries.firstEntry)>#dateFormat(getTotalEntries.firstEntry,"mm/dd/yy")#<cfelse>&nbsp;</cfif></td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("lastentry")#:</td>
+					<td width="50%">#request.rb("lastentry")#:</td>
 					<td align="right"><cfif len(getTotalEntries.lastEntry)>#dateFormat(getTotalEntries.lastEntry,"mm/dd/yy")#<cfelse>&nbsp;</cfif></td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("bloggingfor")#:</td>
-					<td align="right"><cfif structKeyExists(variables, "dur")>#numberFormat(variables.dur)# #rb("days")#<cfelse>&nbsp;</cfif></td>
+					<td width="50%">#request.rb("bloggingfor")#:</td>
+					<td align="right"><cfif structKeyExists(variables, "dur")>#numberFormat(variables.dur)# #request.rb("days")#<cfelse>&nbsp;</cfif></td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("totalcomments")#:</td>
+					<td width="50%">#request.rb("totalcomments")#:</td>
 					<td align="right">#numberFormat(getTotalComments.totalComments)#</td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("avgcommentsperentry")#:</td>
+					<td width="50%">#request.rb("avgcommentsperentry")#:</td>
 					<td align="right">#numberFormat(averageCommentsPerEntry,"999.99")#</td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("totalviews")#:</td>
+					<td width="50%">#request.rb("totalviews")#:</td>
 					<td align="right">#numberFormat(getTotalViews.total)#</td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("avgviews")#:</td>
+					<td width="50%">#request.rb("avgviews")#:</td>
 					<td align="right">
 						<cfif gettotalentries.totalentries gt 0 and gettotalviews.total gt 0>
 						#numberFormat(gettotalviews.total/gettotalentries.totalentries,"999.99")#
@@ -248,7 +248,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td width="50%">#rb("totalsubscribers")#:</td>
+					<td width="50%">#request.rb("totalsubscribers")#:</td>
 					<td align="right">#getTotalSubscribers.totalsubscribers#</td>
 				</tr>
 				
@@ -311,7 +311,7 @@
 					<cfset avg = numberFormat(avg,"___.___")>
 					<tr>
 						<td width="50%"><a href="index.cfm?mode=cat&amp;catid=#categoryid#" rel="nofollow">#categoryname#</a></td>
-						<td align="right">#commentCount# (#rb("avgcommentperentry")#: #avg#)</td>
+						<td align="right">#commentCount# (#request.rb("avgcommentperentry")#: #avg#)</td>
 					</tr>
 				</cfloop>
 			</table>

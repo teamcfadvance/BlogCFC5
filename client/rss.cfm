@@ -102,6 +102,14 @@
 	
 	<cfcontent type="text/xml; charset=utf-8"><cfoutput>#variables.feedXML#</cfoutput>
 	<cfcatch>
+		<cfmail to="#application.blog.getProperty("ownerEmail")#" from="#application.blog.getProperty("ownerEmail")#" subject="rss bug" type="html">
+		#application.resourceBundle.getResource("type")#=#cfcatch.type#
+		<hr>
+		#application.resourceBundle.getResource("message")#=#cfcatch.message#
+		<hr>
+		#application.resourceBundle.getResource("detail")#=#cfcatch.detail#
+		<cfdump var="#cfcatch#">
+		</cfmail>
 		<!--- Logic is - if they filtered incorrectly, revert to default, if not, abort --->
 		<cfif cgi.query_string neq "">
 			<cflocation url="rss.cfm">

@@ -28,10 +28,10 @@
 	<cfif not len(trim(form.name))>
 		<cfset arrayAppend(errors, "The name cannot be blank.")>
 	</cfif>
-	<cfif not len(trim(form.email)) or not isEmail(form.email)>
+	<cfif not len(trim(form.email)) or not application.utils.isEmail(form.email)>
 		<cfset arrayAppend(errors, "The email cannot be blank and must be a valid email address.")>
 	</cfif>
-	<cfif len(form.website) and not isURL(form.website)>
+	<cfif len(form.website) and not application.utils.isURL(form.website)>
 		<cfset arrayAppend(errors, "Website must be a valid URL.")>
 	</cfif>
 	<cfif not len(trim(form.comment))>

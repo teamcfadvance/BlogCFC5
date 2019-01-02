@@ -23,14 +23,14 @@
 	<cfargument name="id" type="uuid" required="true">
 
 	<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
-	delete from tblblogpages
+	delete from #application.tableprefix#tblblogpages
 	where	id = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
 	and		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	</cfquery>
 
 	<!--- remove all cats --->
 	<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
-	delete from tblblogpagescategories
+	delete from #application.tableprefix#tblblogpagescategories
 	where pageidfk = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
 	</cfquery>
 
@@ -43,10 +43,10 @@
 	<cfquery name="q" datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
 
 
-	select	tblblogcategories.categoryID, tblblogcategories.categoryname
-	from	tblblogcategories, tblblogpagescategories
-	where	tblblogcategories.categoryID = tblblogpagescategories.categoryidfk
-	and		tblblogpagescategories.pageidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
+	select	#application.tableprefix#tblblogcategories.categoryID, #application.tableprefix#tblblogcategories.categoryname
+	from	#application.tableprefix#tblblogcategories, #application.tableprefix#tblblogpagescategories
+	where	#application.tableprefix#tblblogcategories.categoryID = #application.tableprefix#tblblogpagescategories.categoryidfk
+	and		#application.tableprefix#tblblogpagescategories.pageidfk = <cfqueryparam value="#arguments.id#" cfsqltype="CF_SQL_VARCHAR" maxlength="35">
 	</cfquery>
 	<cfreturn q>	
 </cffunction>
@@ -58,7 +58,7 @@
 
 	<cfquery name="q" datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
 	select		id, blog, title, alias, body, showlayout
-	from		tblblogpages
+	from		#application.tableprefix#tblblogpages
 	where		id = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
 	and			blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	</cfquery>
@@ -83,7 +83,7 @@
 
 	<cfquery name="q" datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
 	select		id, blog, title, alias, body, showlayout
-	from		tblblogpages
+	from		#application.tableprefix#tblblogpages
 	where		alias = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.alias#" maxlength="100">
 	and			blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	</cfquery>
@@ -105,7 +105,7 @@
 
 	<cfquery name="q" datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
 	select		id, blog, title, alias, body, showlayout
-	from		tblblogpages
+	from		#application.tableprefix#tblblogpages
 	where		blog = <cfqueryparam cfsqltype="cf_sql_varchar" value="#variables.blog#" maxlength="50">
 	order by 	title asc
 	</cfquery>
@@ -127,7 +127,7 @@
 		<cfset arguments.id = createUUID()>
 
 		<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
-		insert into tblblogpages(id, title, alias, body, blog, showlayout)
+		insert into #application.tableprefix#tblblogpages(id, title, alias, body, blog, showlayout)
 		values(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.title#" maxlength="255">,
@@ -141,7 +141,7 @@
 	<cfelse>
 
 		<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
-		update tblblogpages
+		update #application.tableprefix#tblblogpages
 		set
 				title = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.title#" maxlength="255">,
 				alias = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.alias#" maxlength="100">,
@@ -154,13 +154,13 @@
 
 	<!--- remove all cats --->
 	<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
-	delete from tblblogpagescategories
+	delete from #application.tableprefix#tblblogpagescategories
 	where pageidfk = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">
 	</cfquery>
 	
 	<cfloop index="c" list="#arguments.categories#">
 		<cfquery datasource="#variables.dsn#" username="#variables.username#" password="#variables.password#">
-		insert into tblblogpagescategories(pageidfk,categoryidfk)
+		insert into #application.tableprefix#tblblogpagescategories(pageidfk,categoryidfk)
 		values(
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.id#" maxlength="35">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#c#" maxlength="35">

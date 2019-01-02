@@ -16,10 +16,10 @@
 </cfif>
 
 
-<cfmodule template="tags/layout.cfm" title="#rb("unsubscribe")#">
+<cfmodule template="tags/layout.cfm" title="#request.rb("unsubscribe")#">
 
 <cfoutput>
-<div class="date">#rb("unsubscribe")#</div>
+<div class="date">#request.rb("unsubscribe")#</div>
 </cfoutput>
 
 <cfif isDefined("url.commentID")>
@@ -34,11 +34,11 @@
 	
 	<cfif result>
 		<cfoutput>
-		<p>#rb("unsubscribesuccess")#</p>
+		<p>#request.rb("unsubscribesuccess")#</p>
 		</cfoutput>
 	<cfelse>
 		<cfoutput>
-		<p>#rb("unsubscribefailure")#</p>
+		<p>#request.rb("unsubscribefailure")#</p>
 		</cfoutput>
 	</cfif>
 
@@ -54,17 +54,17 @@
 	
 	<cfif result>
 		<cfoutput>
-		<p>#rb("unsubscribeblogsuccess")#</p>
+		<p>#request.rb("unsubscribeblogsuccess")#</p>
 		</cfoutput>
 	<cfelse>
 		<cfoutput>
-		<p>#rb("unsubscribeblogfailure")#</p>
+		<p>#request.rb("unsubscribeblogfailure")#</p>
 		</cfoutput>
 	</cfif>
 
 </cfif>
 
-<cfoutput><p><a href="#application.blog.getProperty("blogurl")#">#rb("returntoblog")#</a></p></cfoutput>
+<cfoutput><p><a href="#application.blog.getProperty("blogurl")#">#request.rb("returntoblog")#</a></p></cfoutput>
 
 </cfmodule>
 <cfsetting enablecfoutputonly=false>	
