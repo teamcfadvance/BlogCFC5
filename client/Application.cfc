@@ -242,7 +242,7 @@
 
 
 
-		<cfmail to="jeff@dot-com-it.com" from="jhblog@farcryfly.com" subject="#cgi.HTTP_HOST#: There was an error" type="html">
+		<cfmail to="#application.blog.getProperty("ownerEmail")#" from="#application.blog.getProperty("ownerEmail")#" subject="#cgi.HTTP_HOST#: There was an error" type="html">
 			Exception:
 			<cfdump var="#arguments.exception#">
 

@@ -11,8 +11,6 @@ Modification History
 Date       Modifier                Modification
 ******************************************************
 1/13/07  Jeff Houser, DotComIt   Created
-	www.instantcoldfusion.com
-	jeff@instantcoldfusion.com
 1/19/07		Jeff Houser			modified 
 --->
 
