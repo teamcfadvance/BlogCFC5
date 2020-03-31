@@ -2,7 +2,7 @@
 dsn=blogCFCTest
 username=
 password=
-owneremail=info@dot-com-it.com
+owneremail=info@your-domain.com
 blogURL=http://local10.blogcfc.com/client/index.cfm
 blogTitle=Dev Blog
 blogDescription=This is the development blog.
@@ -10,7 +10,7 @@ blogDBType=MSSQL
 locale=en_US
 users=
 commentsFrom=
-failTo=info@dot-com-it.com
+failTo=info@your-domain.com
 mailserver=
 mailusername=
 mailpassword=
